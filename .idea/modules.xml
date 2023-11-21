@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/gruppo10.iml" filepath="$PROJECT_DIR$/.idea/gruppo10.iml" />
+      <module fileurl="file://$PROJECT_DIR$/programmaIFTTT/programmaIFTTT.iml" filepath="$PROJECT_DIR$/programmaIFTTT/programmaIFTTT.iml" />
+    </modules>
+  </component>
+</project>
