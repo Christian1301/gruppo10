@@ -16,9 +16,7 @@ public class Rule {
     }
 
 
-    void executeAction() {
-            action.execute();
-    }
+
     //-------------------------Getter & Setter--------------------------------------------------------------------
     public String getName() {
         return name;
