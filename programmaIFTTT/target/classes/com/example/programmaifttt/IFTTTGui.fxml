@@ -45,7 +45,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.programmaifttt.IFTTTController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.programmaifttt.IFTTTController">
   <children>
     <SplitPane dividerPositions="0.2505567928730512, 0.6748329621380846" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <items>
@@ -54,7 +54,7 @@
             <VBox layoutX="54.0" layoutY="151.0" prefHeight="576.0" prefWidth="222.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <children>
                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select what you want to do:" />
-                <Button fx:id="EditRulesBtn" mnemonicParsing="false" onAction="#ShowRulesPage" text="Edit Rules" />
+                <Button fx:id="editRulesBtn" mnemonicParsing="false" onAction="#showRulesPage" text="Edit Rules" />
               </children>
             </VBox>
           </children>
@@ -62,21 +62,21 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
           </padding>
         </AnchorPane>
-        <AnchorPane fx:id="RuleTablePage" prefHeight="576.0" prefWidth="251.0">
+        <AnchorPane fx:id="ruleTablePage" prefHeight="576.0" prefWidth="251.0">
           <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
           </padding>
           <children>
-            <TableView fx:id="RuleTable" layoutX="44.0" layoutY="40.0" prefHeight="576.0" prefWidth="375.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <TableView fx:id="ruleTable" layoutX="44.0" layoutY="40.0" prefHeight="576.0" prefWidth="375.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <columns>
-                <TableColumn fx:id="RuleTableName" prefWidth="133.0" text="Name" />
-                <TableColumn fx:id="RuleTableTrigger" prefWidth="105.0" text="Trigger" />
-                <TableColumn fx:id="RuleTableAction" prefWidth="116.0" text="Action" />
+                <TableColumn fx:id="ruleTableName" prefWidth="133.0" text="Name" />
+                <TableColumn fx:id="ruleTableTrigger" prefWidth="105.0" text="Trigger" />
+                <TableColumn fx:id="ruleTableAction" prefWidth="116.0" text="Action" />
               </columns>
             </TableView>
           </children>
         </AnchorPane>
-        <AnchorPane fx:id="RuleMenuPage" prefHeight="200.0" prefWidth="200.0">
+        <AnchorPane fx:id="ruleMenuPage" prefHeight="200.0" prefWidth="200.0">
           <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
           </padding>
@@ -84,12 +84,12 @@
             <VBox layoutX="115.0" layoutY="118.0" prefHeight="576.0" prefWidth="289.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <children>
                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert the name for the new rule:" />
-                <TextField fx:id="RuleName" />
+                <TextField fx:id="ruleName" />
                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the Trigger" />
-                <ChoiceBox fx:id="TriggerSelect" prefWidth="150.0" />
+                <ChoiceBox fx:id="triggerSelect" prefWidth="150.0" />
                 <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the Action" />
-                <ChoiceBox fx:id="ActionSelect" prefWidth="150.0" />
-                <Button fx:id="RuleCreateBtn" mnemonicParsing="false" onAction="#CreateRule" text="Create Rule" />
+                <ChoiceBox fx:id="actionSelect" prefWidth="150.0" />
+                <Button fx:id="ruleCreateBtn" mnemonicParsing="false" onAction="#createRule" text="Create Rule" />
               </children>
             </VBox>
           </children>

@@ -5,4 +5,10 @@ module com.example.programmaifttt {
 
     opens com.example.programmaifttt to javafx.fxml;
     exports com.example.programmaifttt;
+    exports com.example.programmaifttt.Triggers;
+    opens com.example.programmaifttt.Triggers to javafx.fxml;
+    exports com.example.programmaifttt.Actions;
+    opens com.example.programmaifttt.Actions to javafx.fxml;
+    exports com.example.programmaifttt.BackEnd;
+    opens com.example.programmaifttt.BackEnd to javafx.fxml;
 }
