@@ -67,7 +67,7 @@
         </AnchorPane>
             <StackPane prefHeight="150.0" prefWidth="200.0">
                <children>
-                  <SplitPane fx:id="rulePage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0">
+                  <SplitPane fx:id="rulePage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0" visible="false">
                      <items>
                     <AnchorPane prefHeight="576.0" prefWidth="251.0">
                       <padding>
@@ -103,7 +103,7 @@
                     </AnchorPane>
                      </items>
                   </SplitPane>
-                  <SplitPane fx:id="triggerPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0">
+                  <SplitPane fx:id="triggerPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0" visible="false">
                      <items>
                         <AnchorPane prefHeight="576.0" prefWidth="251.0">
                            <padding>
@@ -154,6 +154,57 @@
                                        </children>
                                     </StackPane>
                                     <Button fx:id="triggerCreateBtn" mnemonicParsing="false" onAction="#createTrigger" text="Create Trigger" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                     </items>
+                  </SplitPane>
+                  <SplitPane fx:id="actionPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0">
+                     <items>
+                        <AnchorPane prefHeight="576.0" prefWidth="251.0">
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                           <children>
+                              <TableView fx:id="actionTable" layoutX="14.0" layoutY="-21.0" prefHeight="588.6666666666666" prefWidth="415.3333333333333" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <columns>
+                                    <TableColumn fx:id="actionTableName" prefWidth="133.0" text="Name" />
+                                    <TableColumn fx:id="actionTableType" prefWidth="143.33334350585938" text="Type" />
+                                    <TableColumn fx:id="actionTableValue" prefWidth="119.33331298828125" text="Value" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="589.0" prefWidth="334.0">
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                           <children>
+                              <VBox layoutX="115.0" layoutY="118.0" prefHeight="576.0" prefWidth="289.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert the name for the new Action:" />
+                                    <TextField fx:id="actionName" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the Action Type" />
+                                    <ChoiceBox fx:id="actionTypeSelect" onAction="#changeActionValueBox" prefWidth="150.0" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert Action Value" />
+                                    <StackPane prefHeight="150.0" prefWidth="200.0">
+                                       <children>
+                                          <AnchorPane fx:id="dumyActionBox" prefHeight="200.0" prefWidth="200.0">
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                    </StackPane>
+                                    <Button fx:id="actionCreateBtn" mnemonicParsing="false" onAction="#createAction" text="Create Action" />
                                  </children>
                               </VBox>
                            </children>

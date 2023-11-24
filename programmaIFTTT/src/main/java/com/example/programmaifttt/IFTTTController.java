@@ -1,12 +1,11 @@
 package com.example.programmaifttt;
 
 import com.example.programmaifttt.Actions.Action;
-import com.example.programmaifttt.Actions.ActionDummy;
+
 import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.BackEnd.RuleController;
 import com.example.programmaifttt.Triggers.TimeOfDayTrigger;
 import com.example.programmaifttt.Triggers.Trigger;
-import com.example.programmaifttt.Triggers.TriggerDummy;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -76,14 +75,37 @@ public class IFTTTController {
     @FXML
     private SplitPane triggerPage;
 
+    @FXML
+    private SplitPane actionPage;
+    @FXML
+    private TableView<Action> actionTable;
+    @FXML
+    private TableColumn<Action, String> actionTableName;
+    @FXML
+    private TableColumn<Action, String> actionTableType;
+    @FXML
+    private TableColumn<Action, String> actionTableValue;
+    @FXML
+    private TextField actionName;
+    @FXML
+    private ChoiceBox<String> actionTypeSelect;
+    @FXML
+    private Button actionCreateBtn;
+
+    //private variables not from FXML
     private RuleController ruleController;
     private BooleanProperty createRuleButtonDisabled = new SimpleBooleanProperty(true);
     private BooleanProperty createTriggerButtonDisabled = new SimpleBooleanProperty(true);
+    private BooleanProperty createActionButtonDisabled = new SimpleBooleanProperty(true);
 
     private ObservableList<Rule> ruleData = FXCollections.observableArrayList();
     private ObservableList<Trigger> triggerData = FXCollections.observableArrayList();
     private ObservableList<Action> actionData = FXCollections.observableArrayList();
+    @FXML
+    private AnchorPane dumyActionBox;
 
+
+    //init methods
     @FXML
     public void initialize() {
         this.ruleController = new RuleController();
@@ -91,6 +113,7 @@ public class IFTTTController {
         disablePages();
         initRulePage();
         initTriggerPage();
+        initActionPage();
 
     }
 
@@ -104,9 +127,12 @@ public class IFTTTController {
         triggerPage.setVisible(false);
 
         //disable action page
-
+        actionPage.setDisable(true);
+        actionPage.setVisible(false);
 
     }
+
+    //main page methods
 
     @FXML
     public void showRulesPage(ActionEvent actionEvent) {
@@ -125,6 +151,8 @@ public class IFTTTController {
     @FXML
     public void showActionsPage(ActionEvent actionEvent) {
         disablePages();
+        actionPage.setDisable(false);
+        actionPage.setVisible(true);
     }
 
     @FXML
@@ -158,17 +186,28 @@ public class IFTTTController {
 
     }
 
-    private Trigger createNewTrigger(String name, String type) {
+    @FXML
+    public void createAction(ActionEvent actionEvent) {
+        String name = actionName.getText();
+        String type = actionTypeSelect.getValue();
+        Action newAction = createNewAction(name, type);
 
-        switch (triggerTypeSelect.getValue()) {
-            case "Time Of Day" -> {
-                int hours = timeTriggerHours.getValue();
-                int minutes = timeTriggerMinutes.getValue();
-                return  new TimeOfDayTrigger(name,hours,minutes);
+        ruleController.addAction(newAction);
+        //refresh the table after adding a new action
+        actionData.setAll(ruleController.getActions());
+        //refresh the action list in rule page
+        actionSelect.setItems(FXCollections.observableArrayList(ruleController.getActions()));
+    }
+
+    private Action createNewAction(String name, String type) {
+        switch (type) {
+            case "Dummy" -> {
+                return null;
             }
         }
         return null;
     }
+
 
     @FXML
     public void changeTriggerValueBox(ActionEvent event) {
@@ -176,18 +215,8 @@ public class IFTTTController {
     }
 
 
-    private void updateTriggerValueBox() {
-        disableTriggerValueBox();
-        String selectedType = triggerTypeSelect.getValue();
-        switch (selectedType) {
-            case "Time Of Day" -> {
-                timeOfDayTriggerValSel.setDisable(false);
-                timeOfDayTriggerValSel.setVisible(true);
-            }
-        }
 
-    }
-
+    //rule page methods
     private void initRulePage(){
 
         // Set up the rule table columns
@@ -217,6 +246,8 @@ public class IFTTTController {
 
     }
 
+
+    //trigger page init methods
     private void initTriggerPage(){
         // Set up the trigger table columns
         triggerTableName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -240,7 +271,7 @@ public class IFTTTController {
         );
 
         // Populate the ChoiceBox with all the known types
-        triggerTypeSelect.setItems(FXCollections.observableArrayList("Time Of Day", "Test"));
+        triggerTypeSelect.setItems(FXCollections.observableArrayList(TimeOfDayTrigger.type));
 
         initTriggerTypes();
 
@@ -255,8 +286,12 @@ public class IFTTTController {
 
     private void disableTriggerValueBox() {
         //disable all the trigger value boxes
+
+        //Time Of Day
         timeOfDayTriggerValSel.setDisable(true);
         timeOfDayTriggerValSel.setVisible(false);
+        //new trigger types here
+
     }
 
     private void initTriggerTypeTOD(){
@@ -275,6 +310,82 @@ public class IFTTTController {
         timeTriggerMinutes.setValue(0);
     }
 
+    private void updateTriggerValueBox() {
+        disableTriggerValueBox();
+        String selectedType = triggerTypeSelect.getValue();
+        switch (selectedType) {
+            case TimeOfDayTrigger.type -> {
+                timeOfDayTriggerValSel.setDisable(false);
+                timeOfDayTriggerValSel.setVisible(true);
+            }
+        }
+
+    }
+
+    private Trigger createNewTrigger(String name, String type) {
+
+        switch (triggerTypeSelect.getValue()) {
+            case TimeOfDayTrigger.type -> {
+                int hours = timeTriggerHours.getValue();
+                int minutes = timeTriggerMinutes.getValue();
+                return  new TimeOfDayTrigger(name,hours,minutes);
+            }
+        }
+        return null;
+    }
 
 
+    //action page init methods
+    private void initActionPage() {
+        // Set up the action table columns
+        actionTableName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        actionTableType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        actionTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+
+        // Connect the actionData to the table
+        actionTable.setItems(actionData);
+
+        // Load initial data into the table (if any)
+        actionData.addAll(ruleController.getActions());
+
+        // Disable "Create" button by default
+        actionCreateBtn.disableProperty().bind(createActionButtonDisabled);
+
+        // Bind the createButtonDisabled property based on whether all three values are inserted
+        createActionButtonDisabled.bind(
+                Bindings.isEmpty(actionName.textProperty())
+                        .or(Bindings.isNull(actionTypeSelect.valueProperty()))
+        );
+
+        // Populate the ChoiceBox with all the known types
+        actionTypeSelect.setItems(FXCollections.observableArrayList("Dummy"));
+
+
+    }
+
+    @FXML
+    public void changeActionValueBox(ActionEvent actionEvent) {
+        updateActionValueBox();
+    }
+
+    private void updateActionValueBox() {
+        //disable all the action value boxes
+        disbleActionValueBox();
+        String selectedType = actionTypeSelect.getValue();
+        switch (selectedType) {
+            case "Dummy" -> {
+                dumyActionBox.setDisable(false);
+                dumyActionBox.setVisible(true);
+            }
+        }
+    }
+
+    private void disbleActionValueBox() {
+        //disable all the action value boxes
+
+        //Dummy
+        dumyActionBox.setDisable(true);
+        dumyActionBox.setVisible(false);
+
+    }
 }

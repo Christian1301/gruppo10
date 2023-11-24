@@ -1,16 +1,17 @@
 package com.example.programmaifttt.Triggers;
 import java.time.LocalTime;
-public class TimeOfDayTrigger implements Trigger{
-    private String name;
+public class TimeOfDayTrigger extends Trigger{
+    public static final String type = "Time Of Day";
     private int hours;
     private int minutes;
 
 
     // Constructor
     public TimeOfDayTrigger(String name,int hours,int minutes) {
-        this.name = name;
+        super(name,type, hours + ":" + minutes);
         this.hours = hours;
         this.minutes = minutes;
+
     }
 
     public int getHours() {
@@ -29,26 +30,6 @@ public class TimeOfDayTrigger implements Trigger{
         this.minutes = minutes;
     }
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String getValue(){
-        String time = hours + ":" + minutes;
-        return time;
-    }
-
-    @Override
-    public String getType() {
-        return "Time Of Day";
-    }
 
     @Override
     public boolean evaluate() {
@@ -57,12 +38,6 @@ public class TimeOfDayTrigger implements Trigger{
         // Compare the two times
         return localHours == hours && localMinutes == minutes;
 
-    }
-
-    // Override toString to provide a meaningful representation
-    @Override
-    public String toString() {
-        return name;
     }
 
 
