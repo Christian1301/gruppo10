@@ -3,14 +3,12 @@ package com.example.programmaifttt.Actions;
 import javax.swing.*;
 import java.io.File;
 
-public class AudioTextAction extends Action {
+public class AudioAction extends Action {
     private String audioFilePath;
-    private String messageText;
 
-    public AudioTextAction(String name, String type, String audioFilePath, String messageText) {
+    public AudioAction(String name, String type, String audioFilePath, String messageText) {
         super(name, type, "Path" + audioFilePath + "Message" + messageText);
         this.audioFilePath = audioFilePath;
-        this.messageText = messageText;
     }
 
     public String getAudioFilePath() {
@@ -21,17 +19,9 @@ public class AudioTextAction extends Action {
         this.audioFilePath = audioFilePath;
     }
 
-    public String getMessageText() {
-        return messageText;
-    }
-
-    public void setMessageText(String messageText) {
-        this.messageText = messageText;
-    }
-
     @Override
     public String getValue() {
-        return audioFilePath == null ? messageText : audioFilePath;
+        return audioFilePath;
     }
 
     @Override
@@ -46,8 +36,6 @@ public class AudioTextAction extends Action {
                     return false;
                 }
             }
-            JOptionPane.showMessageDialog(null, messageText, "Messaggio", JOptionPane.INFORMATION_MESSAGE);
-            System.out.println("Eseguendo l'azione AudioTextAction: " + getValue());
             return true;
         } catch (Exception e) {
             e.printStackTrace();
