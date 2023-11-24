@@ -15,10 +15,6 @@ public class Rule {
         this.action = action;
     }
 
-
-    void executeAction() {
-            action.execute();
-    }
     //-------------------------Getter & Setter--------------------------------------------------------------------
     public String getName() {
         return name;

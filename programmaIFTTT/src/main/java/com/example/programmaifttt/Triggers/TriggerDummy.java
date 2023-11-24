@@ -19,6 +19,16 @@ public class TriggerDummy implements Trigger {
     }
 
     @Override
+    public String getValue() {
+        return "Test";
+    }
+
+    @Override
+    public String getType() {
+        return "Test";
+    }
+
+    @Override
     public boolean evaluate() {
         // Add your logic to evaluate the trigger here
         return true; // Replace with your actual evaluation logic
