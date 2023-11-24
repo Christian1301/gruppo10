@@ -1,17 +1,14 @@
 package com.example.programmaifttt;
 
 import com.example.programmaifttt.Actions.Action;
-import com.example.programmaifttt.Actions.ActionDummy;
 import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.BackEnd.RuleController;
 import com.example.programmaifttt.Triggers.TimeOfDayTrigger;
 import com.example.programmaifttt.Triggers.Trigger;
-import com.example.programmaifttt.Triggers.TriggerDummy;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
