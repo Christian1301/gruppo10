@@ -46,7 +46,7 @@ public abstract class Trigger {
     public boolean equals(Object obj) {
         if (obj instanceof Trigger) {
             Trigger trigger = (Trigger) obj;
-            return this.name.equals(trigger.name) && this.type.equals(trigger.type) && this.value.equals(trigger.value);
+            return this.name.equals(trigger.name);
         }
         return false;
     }

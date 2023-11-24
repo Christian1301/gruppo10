@@ -45,7 +45,7 @@ public class Rule {
     public boolean equals(Object obj) {
         if (obj instanceof Rule) {
             Rule rule = (Rule) obj;
-            return this.name.equals(rule.name) && this.trigger.equals(rule.trigger) && this.action.equals(rule.action);
+            return this.name.equals(rule.name);
         }
         return false;
     }
