@@ -79,6 +79,8 @@
       - `substituteVariables(inputString: String): String`
 
 
+![VPR1KkCm38RlVGeVqs7x0Xc6WQ5m0ifG1iucKLCFhjsrdMxPxhxxrbPYb4RTMwnFagM_ijrh7wGBxKPF9fMMtekNLiEjDS5PhS69mqI8cN17eo_5W_BXCZfS9Mjmgcd0zU0LbyXa5PGrFRf9gqWkXAphcAA8ESkqtJJPQz0GO8mmf4lUeMv50rc778u5T10ND9Z5Vwaaua1RpXkGNll0PB86](https://github.com/Christian1301/gruppo10/assets/76565091/7a8495e8-0aae-4663-81d1-2cf9102a4dfa)
+
 Le interfacce dei trigger e delle azioni sono concepite con due metodi distinti, "valuta" ed "esegui", ai quali fanno riferimento le classi corrispondenti. Ciò facilita l'aggiunta agevole di nuovi trigger e azioni.
 
 Una regola è costituita da diverse componenti, tra cui il trigger, l'azione, la durata di sleep, un indicatore di attivazione e un indicatore di attivazione singola. La classe implementa metodi dedicati per attivare e disattivare la regola, eseguire l'azione e verificare lo stato di attivazione.
@@ -95,4 +97,3 @@ Il controllore delle regole è invece costituito da tre liste che contengono le 
 
 
 
-![VPR1KkCm38RlVGeVqs7x0Xc6WQ5m0ifG1iucKLCFhjsrdMxPxhxxrbPYb4RTMwnFagM_ijrh7wGBxKPF9fMMtekNLiEjDS5PhS69mqI8cN17eo_5W_BXCZfS9Mjmgcd0zU0LbyXa5PGrFRf9gqWkXAphcAA8ESkqtJJPQz0GO8mmf4lUeMv50rc778u5T10ND9Z5Vwaaua1RpXkGNll0PB86](https://github.com/Christian1301/gruppo10/assets/76565091/7a8495e8-0aae-4663-81d1-2cf9102a4dfa)
