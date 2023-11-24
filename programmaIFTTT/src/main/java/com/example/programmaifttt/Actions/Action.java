@@ -1,19 +1,46 @@
 package com.example.programmaifttt.Actions;
 
-public interface Action {
-  // Get the name of the action
-  String getName();
+public abstract class Action {
+      private String name;
+      private String type;
+      private String value;
 
-  // Set the name of the action
-  void setName(String name);
+      // Constructor
+      public Action(String name, String type, String value) {
+        this.name = name;
+        this.type = type;
+        this.value = value;
+      }
 
-  // Get the value of the action
-  String getValue();
+      public String getName() {
+        return name;
+      }
 
-  // Get the type of the action
-  String getType();
+      public void setName(String name) {
+        this.name = name;
+      }
 
+      public String getType() {
+        return type;
+      }
 
-  // Execute the action
-  void execute();
+      public String getValue() {
+          return value;
+      }
+
+      @Override
+      public String toString() {return name;
+      }
+
+      //equals
+      @Override
+      public boolean equals(Object obj) {
+        if (obj instanceof Action) {
+          Action action = (Action) obj;
+          return this.name.equals(action.name);
+        }
+        return false;
+      }
+
+      public abstract boolean execute();
 }
