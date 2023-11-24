@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Copyright (c) 2015, 2019, Gluon and/or its affiliates.
+  All rights reserved. Use is subject to license terms.
+
+  This file is available and licensed under the following license:
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  - Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the distribution.
+  - Neither the name of Oracle Corporation nor the names of its
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+  OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.programmaifttt.IFTTTController">
+  <children>
+    <SplitPane dividerPositions="0.2505567928730512" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <items>
+        <AnchorPane>
+          <children>
+            <VBox layoutX="54.0" layoutY="151.0" prefHeight="576.0" prefWidth="222.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <children>
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select what you want to do:" />
+                <Button fx:id="editRulesBtn" mnemonicParsing="false" onAction="#showRulesPage" text="Edit Rules" />
+                        <Button fx:id="editTriggersBtn" mnemonicParsing="false" onAction="#showTriggersPage" text="Edit Triggers" />
+                        <Button fx:id="editActionsBtn" mnemonicParsing="false" onAction="#showActionsPage" text="Edit Actions" />
+              </children>
+            </VBox>
+          </children>
+          <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+          </padding>
+        </AnchorPane>
+            <StackPane prefHeight="150.0" prefWidth="200.0">
+               <children>
+                  <SplitPane fx:id="rulePage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0">
+                     <items>
+                    <AnchorPane prefHeight="576.0" prefWidth="251.0">
+                      <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                      </padding>
+                      <children>
+                        <TableView fx:id="ruleTable" layoutX="14.0" layoutY="-21.0" prefHeight="588.6666666666666" prefWidth="415.3333333333333" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columns>
+                            <TableColumn fx:id="ruleTableName" prefWidth="133.0" text="Name" />
+                            <TableColumn fx:id="ruleTableTrigger" prefWidth="105.0" text="Trigger" />
+                            <TableColumn fx:id="ruleTableAction" prefWidth="116.0" text="Action" />
+                          </columns>
+                        </TableView>
+                      </children>
+                    </AnchorPane>
+                    <AnchorPane prefHeight="589.0" prefWidth="334.0">
+                      <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                      </padding>
+                      <children>
+                        <VBox layoutX="115.0" layoutY="118.0" prefHeight="576.0" prefWidth="289.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <children>
+                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert the name for the new Rule:" />
+                            <TextField fx:id="ruleName" />
+                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the Trigger" />
+                            <ChoiceBox fx:id="triggerSelect" prefWidth="150.0" />
+                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the Action" />
+                            <ChoiceBox fx:id="actionSelect" prefWidth="150.0" />
+                            <Button fx:id="ruleCreateBtn" mnemonicParsing="false" onAction="#createRule" text="Create Rule" />
+                          </children>
+                        </VBox>
+                      </children>
+                    </AnchorPane>
+                     </items>
+                  </SplitPane>
+                  <SplitPane fx:id="triggerPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0">
+                     <items>
+                        <AnchorPane prefHeight="576.0" prefWidth="251.0">
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                           <children>
+                              <TableView fx:id="triggerTable" layoutX="14.0" layoutY="-21.0" prefHeight="588.6666666666666" prefWidth="415.3333333333333" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <columns>
+                                    <TableColumn fx:id="triggerTableName" prefWidth="133.0" text="Name" />
+                                    <TableColumn fx:id="triggerTableType" prefWidth="143.33334350585938" text="Type" />
+                                    <TableColumn fx:id="triggerTableValue" prefWidth="119.33331298828125" text="Value" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="589.0" prefWidth="334.0">
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                           <children>
+                              <VBox layoutX="115.0" layoutY="118.0" prefHeight="576.0" prefWidth="289.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert the name for the new Trigger:" />
+                                    <TextField fx:id="triggerName" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the Trigger Type" />
+                                    <ChoiceBox fx:id="triggerTypeSelect" onAction="#changeTriggerValueBox" prefWidth="150.0" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert Trigger Value" />
+                                    <StackPane prefHeight="150.0" prefWidth="200.0">
+                                       <children>
+                                          <AnchorPane fx:id="timeOfDayTriggerValSel" prefHeight="200.0" prefWidth="200.0">
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the Hours:" />
+                                                      <ChoiceBox fx:id="timeTriggerHours" prefWidth="150.0" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the Minutes" />
+                                                      <ChoiceBox fx:id="timeTriggerMinutes" prefWidth="150.0" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                    </StackPane>
+                                    <Button fx:id="triggerCreateBtn" mnemonicParsing="false" onAction="#createTrigger" text="Create Trigger" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                     </items>
+                  </SplitPane>
+               </children>
+            </StackPane>
+      </items>
+    </SplitPane>
+    <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0" VBox.vgrow="NEVER">
+      <children>
+        <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
+      </children>
+      <padding>
+        <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+      </padding>
+    </HBox>
+  </children>
+</VBox>
