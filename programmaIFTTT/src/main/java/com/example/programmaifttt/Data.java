@@ -1,53 +1,75 @@
 package com.example.programmaifttt;
 
 import com.example.programmaifttt.Actions.Action;
-import com.example.programmaifttt.Rules.Rules;
+import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.Triggers.Trigger;
 import org.json.JSONObject;
+
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class Data {
     private Trigger[] triggers;
     private Action[] actions;
-    private Rules[] rules;
+    private Rule[] rules;
 
     // Constructor
-    public Data(Trigger[] triggers, Action[] actions, Rules[] rules) {
+    public Data(Trigger[] triggers, Action[] actions, Rule[] rules) {
         this.triggers = triggers;
         this.actions = actions;
         this.rules = rules;
+    }
+
+    public Data() {
+        this.triggers = new Trigger[0];
+        this.actions = new Action[0];
+        this.rules = new Rule[0];
     }
 
     public Trigger[] getTriggers() {
         return triggers;
     }
 
-    public void setTriggers(Trigger[] triggers) {
-        this.triggers = triggers;
+    public void addTrigger(Trigger trigger) {
+        Trigger[] newTriggers = new Trigger[triggers.length + 1];
+        for (int i = 0; i < triggers.length; i++) {
+            newTriggers[i] = triggers[i];
+        }
+        newTriggers[triggers.length] = trigger;
+        triggers = newTriggers;
     }
 
     public Action[] getActions() {
         return actions;
     }
 
-    public void setActions(Action[] actions) {
-        this.actions = actions;
+    public void addActions(Action action) {
+        Action[] newActions = new Action[actions.length + 1];
+        for (int i = 0; i < actions.length; i++) {
+            newActions[i] = actions[i];
+        }
+        newActions[actions.length] = action;
+        actions = newActions;
     }
 
-    public Rules[] getRules() {
+    public Rule[] getRules() {
         return rules;
     }
 
-    public void setRules(Rules[] rules) {
-        this.rules = rules;
+    public void addRule(Rule rule) {
+        Rule[] newRules = new Rule[rules.length + 1];
+        for (int i = 0; i < rules.length; i++) {
+            newRules[i] = rules[i];
+        }
+        newRules[rules.length] = rule;
+        rules = newRules;
     }
 
     public String toJson() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("trigger", this.triggers);
-        jsonObject.put("action", this.actions);
-        jsonObject.put("rules", this.rules);
+        jsonObject.put("trigger", triggers);
+        jsonObject.put("action", actions);
+        jsonObject.put("rules", rules);
         return jsonObject.toString();
     }
 
@@ -66,6 +88,6 @@ public class Data {
         return new Data(
                 (Trigger[]) jsonObject.get("trigger"),
                 (Action[]) jsonObject.get("action"),
-                (Rules[]) jsonObject.get("rules"));
+                (Rule[]) jsonObject.get("rules"));
     }
 }
