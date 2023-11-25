@@ -1,7 +1,6 @@
 package com.example.programmaifttt.BackEnd;
 
 import com.example.programmaifttt.Actions.Action;
-import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.Triggers.Trigger;
 
 import java.util.ArrayList;
@@ -51,8 +50,8 @@ public class RuleController{
         rules.add(rule);
     }
 
-    public void deleteRule(Rule rule) {
-        rules.remove(rule);
+    public void deleteRule(Rule ruleToDelete) {
+        rules.removeIf(rule -> rule.equals(ruleToDelete));
     }
 
     public void addTrigger(Trigger trigger) {
@@ -70,4 +69,5 @@ public class RuleController{
     public void deleteAction(Action action) {
         actions.remove(action);
     }
+
 }
