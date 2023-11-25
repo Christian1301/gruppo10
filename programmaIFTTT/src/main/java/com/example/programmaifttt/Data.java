@@ -1,6 +1,8 @@
 package com.example.programmaifttt;
 
 import org.json.JSONObject;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Data {
     private String campo1;
@@ -34,6 +36,16 @@ public class Data {
         jsonObject.put("campo1", campo1);
         jsonObject.put("campo2", campo2);
         return jsonObject.toString();
+    }
+
+    public void saveDatas() {
+        String percorsoFile = "src/main/resources/data.json";
+
+        try (FileWriter fileWriter = new FileWriter(percorsoFile)) {
+            fileWriter.write(this.toJson());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static Data fromJson(String json) {
