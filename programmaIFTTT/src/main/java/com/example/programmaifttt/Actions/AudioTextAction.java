@@ -1,10 +1,9 @@
 package com.example.programmaifttt.Actions;
 
 import javafx.application.Platform;
-
-import javax.sound.sampled.*;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.Media;
 import java.io.File;
-import java.io.IOException;
 
 public class AudioTextAction extends Action {
     public static final String type = "Audio Text";
@@ -26,18 +25,20 @@ public class AudioTextAction extends Action {
 
     @Override
     public boolean execute() {
-        //play the audio file and return true if the audio file is played correctly
         try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
-            Clip clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            clip.start();
+            String mediaSource = audioFile.toURI().toString();
+            Media media = new Media(mediaSource);
+            MediaPlayer mediaPlayer = new MediaPlayer(media);
+
+            mediaPlayer.setOnEndOfMedia(() -> {
+                // This is called when the audio finishes playing
+                mediaPlayer.stop();
+            });
+
+            mediaPlayer.play();
 
             // Sleep while the audio is playing
-            Thread.sleep(clip.getMicrosecondLength() / 1000);
-
-            // Close the clip
-            clip.close();
+            Thread.sleep((long) media.getDuration().toMillis());
 
             // Use Platform.runLater to safely interact with JavaFX components
             Platform.runLater(() -> {
@@ -45,12 +46,10 @@ public class AudioTextAction extends Action {
             });
 
             return true;
-        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException | InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
             return false;
         }
-
-
 
     }
 }
