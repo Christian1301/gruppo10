@@ -1,40 +1,53 @@
 package com.example.programmaifttt;
 
+import com.example.programmaifttt.Actions.Action;
+import com.example.programmaifttt.Rules.Rules;
+import com.example.programmaifttt.Triggers.Trigger;
 import org.json.JSONObject;
 import java.io.FileWriter;
 import java.io.IOException;
 
 public class Data {
-    private String campo1;
-    private int campo2;
+    private Trigger[] triggers;
+    private Action[] actions;
+    private Rules[] rules;
 
     // Constructor
-    public Data(String campo1, int campo2) {
-        this.campo1 = campo1;
-        this.campo2 = campo2;
+    public Data(Trigger[] triggers, Action[] actions, Rules[] rules) {
+        this.triggers = triggers;
+        this.actions = actions;
+        this.rules = rules;
     }
 
-    // Getters and Setters
-    public String getCampo1() {
-        return campo1;
+    public Trigger[] getTriggers() {
+        return triggers;
     }
 
-    public void setCampo1(String campo1) {
-        this.campo1 = campo1;
+    public void setTriggers(Trigger[] triggers) {
+        this.triggers = triggers;
     }
 
-    public int getCampo2() {
-        return campo2;
+    public Action[] getActions() {
+        return actions;
     }
 
-    public void setCampo2(int campo2) {
-        this.campo2 = campo2;
+    public void setActions(Action[] actions) {
+        this.actions = actions;
+    }
+
+    public Rules[] getRules() {
+        return rules;
+    }
+
+    public void setRules(Rules[] rules) {
+        this.rules = rules;
     }
 
     public String toJson() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("campo1", campo1);
-        jsonObject.put("campo2", campo2);
+        jsonObject.put("trigger", this.triggers);
+        jsonObject.put("action", this.actions);
+        jsonObject.put("rules", this.rules);
         return jsonObject.toString();
     }
 
@@ -50,6 +63,9 @@ public class Data {
 
     public static Data fromJson(String json) {
        JSONObject jsonObject = new JSONObject(json);
-        return new Data(jsonObject.getString("campo1"), jsonObject.getInt("campo2"));
+        return new Data(
+                (Trigger[]) jsonObject.get("trigger"),
+                (Action[]) jsonObject.get("action"),
+                (Rules[]) jsonObject.get("rules"));
     }
 }
