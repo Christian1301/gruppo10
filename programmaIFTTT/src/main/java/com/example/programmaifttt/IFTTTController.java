@@ -2,6 +2,7 @@ package com.example.programmaifttt;
 
 import com.example.programmaifttt.Actions.Action;
 
+import com.example.programmaifttt.Actions.AudioTextAction;
 import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.BackEnd.RuleController;
 import com.example.programmaifttt.Triggers.TimeOfDayTrigger;
@@ -17,6 +18,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import javax.swing.*;
+import java.io.File;
 
 public class IFTTTController {
 
@@ -94,6 +98,7 @@ public class IFTTTController {
 
     //private variables not from FXML
     private RuleController ruleController;
+    private File audioFile;
     private BooleanProperty createRuleButtonDisabled = new SimpleBooleanProperty(true);
     private BooleanProperty createTriggerButtonDisabled = new SimpleBooleanProperty(true);
     private BooleanProperty createActionButtonDisabled = new SimpleBooleanProperty(true);
@@ -102,7 +107,11 @@ public class IFTTTController {
     private ObservableList<Trigger> triggerData = FXCollections.observableArrayList();
     private ObservableList<Action> actionData = FXCollections.observableArrayList();
     @FXML
-    private AnchorPane dumyActionBox;
+    private AnchorPane audioTextValSel;
+    @FXML
+    private Button selectAudioFileBtn;
+    @FXML
+    private Label audioFileSelectedLabel;
 
 
     //init methods
@@ -201,8 +210,8 @@ public class IFTTTController {
 
     private Action createNewAction(String name, String type) {
         switch (type) {
-            case "Dummy" -> {
-                return null;
+            case AudioTextAction.type -> {
+                return new AudioTextAction(name, audioFile);
             }
         }
         return null;
@@ -358,8 +367,21 @@ public class IFTTTController {
         );
 
         // Populate the ChoiceBox with all the known types
-        actionTypeSelect.setItems(FXCollections.observableArrayList("Dummy"));
+        actionTypeSelect.setItems(FXCollections.observableArrayList(AudioTextAction.type));
 
+        initActionTypes();
+    }
+
+    private void initActionTypes() {
+        //Audio Text init
+        initActionTypeAudioText();
+        disbleActionValueBox();
+
+    }
+
+    private void initActionTypeAudioText() {
+        // Set the default value for the audio file path
+        audioFileSelectedLabel.setText("No file selected");
 
     }
 
@@ -373,9 +395,9 @@ public class IFTTTController {
         disbleActionValueBox();
         String selectedType = actionTypeSelect.getValue();
         switch (selectedType) {
-            case "Dummy" -> {
-                dumyActionBox.setDisable(false);
-                dumyActionBox.setVisible(true);
+            case AudioTextAction.type -> {
+                audioTextValSel.setDisable(false);
+                audioTextValSel.setVisible(true);
             }
         }
     }
@@ -383,9 +405,28 @@ public class IFTTTController {
     private void disbleActionValueBox() {
         //disable all the action value boxes
 
-        //Dummy
-        dumyActionBox.setDisable(true);
-        dumyActionBox.setVisible(false);
+        //Audio Text
+        audioTextValSel.setDisable(true);
+        audioTextValSel.setVisible(false);
+        //new action types here
+
+
+    }
+
+    @FXML
+    public void selectAudioFile(ActionEvent actionEvent) {
+        //open a file chooser to select an audio file and set the label to the selected file
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        int result = fileChooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            audioFileSelectedLabel.setText(selectedFile.getName());
+            audioFile = selectedFile;
+        }
+
+
 
     }
 }

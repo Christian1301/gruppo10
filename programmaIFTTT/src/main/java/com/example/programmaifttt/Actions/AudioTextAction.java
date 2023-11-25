@@ -1,57 +1,56 @@
 package com.example.programmaifttt.Actions;
 
-import javax.swing.*;
+import javafx.application.Platform;
+
+import javax.sound.sampled.*;
 import java.io.File;
+import java.io.IOException;
 
 public class AudioTextAction extends Action {
-    private String audioFilePath;
-    private String messageText;
+    public static final String type = "Audio Text";
+    private File audioFile;
 
-    public AudioTextAction(String name, String type, String audioFilePath, String messageText) {
-        super(name, type, "Path" + audioFilePath + "Message" + messageText);
-        this.audioFilePath = audioFilePath;
-        this.messageText = messageText;
+    public AudioTextAction(String name, File audioFile) {
+        super(name, type, "File:" + audioFile.getName());
+        this.audioFile = audioFile;
+
     }
 
-    public String getAudioFilePath() {
-        return audioFilePath;
+    public File getAudioFile() {
+        return audioFile;
     }
 
-    public void setAudioFilePath(String audioFilePath) {
-        this.audioFilePath = audioFilePath;
-    }
-
-    public String getMessageText() {
-        return messageText;
-    }
-
-    public void setMessageText(String messageText) {
-        this.messageText = messageText;
-    }
-
-    @Override
-    public String getValue() {
-        return audioFilePath == null ? messageText : audioFilePath;
+    public void setAudioFile(File audioFile) {
+        this.audioFile = audioFile;
     }
 
     @Override
     public boolean execute() {
+        //play the audio file and return true if the audio file is played correctly
         try {
-            if (audioFilePath != null && !audioFilePath.isEmpty()) {
-                File audioFile = new File(audioFilePath);
-                if (audioFile.exists()) {
-                    Runtime.getRuntime().exec("cmd /c start " + audioFilePath);
-                } else {
-                    JOptionPane.showMessageDialog(null, "Il file audio non esiste", "Errore", JOptionPane.ERROR_MESSAGE);
-                    return false;
-                }
-            }
-            JOptionPane.showMessageDialog(null, messageText, "Messaggio", JOptionPane.INFORMATION_MESSAGE);
-            System.out.println("Eseguendo l'azione AudioTextAction: " + getValue());
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(audioFile);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            clip.start();
+
+            // Sleep while the audio is playing
+            Thread.sleep(clip.getMicrosecondLength() / 1000);
+
+            // Close the clip
+            clip.close();
+
+            // Use Platform.runLater to safely interact with JavaFX components
+            Platform.runLater(() -> {
+                // Update JavaFX components or perform UI-related tasks here if needed
+            });
+
             return true;
-        } catch (Exception e) {
+        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException | InterruptedException e) {
             e.printStackTrace();
             return false;
         }
+
+
+
     }
 }

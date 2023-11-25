@@ -33,11 +33,13 @@ public class TimeOfDayTrigger extends Trigger{
 
     @Override
     public boolean evaluate() {
-        int localHours = LocalTime.now().getHour(); // Use the current hour for a true case
-        int localMinutes = LocalTime.now().getMinute();
-        // Compare the two times
-        return localHours == hours && localMinutes == minutes;
-
+        // Get the current time
+        LocalTime currentTime = LocalTime.now();
+        // Check if the current time is greater than or equal to the time of the trigger
+        if (currentTime.getHour() >= hours && currentTime.getMinute() >= minutes) {
+            return true;
+        }
+        return false;
     }
 
 
