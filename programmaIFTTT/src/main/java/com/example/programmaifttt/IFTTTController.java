@@ -10,6 +10,8 @@ import com.example.programmaifttt.Triggers.Trigger;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableObjectValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -103,6 +105,8 @@ public class IFTTTController {
     private BooleanProperty createTriggerButtonDisabled = new SimpleBooleanProperty(true);
     private BooleanProperty createActionButtonDisabled = new SimpleBooleanProperty(true);
 
+    private BooleanProperty actionValueSelected = new SimpleBooleanProperty(true);
+
     private ObservableList<Rule> ruleData = FXCollections.observableArrayList();
     private ObservableList<Trigger> triggerData = FXCollections.observableArrayList();
     private ObservableList<Action> actionData = FXCollections.observableArrayList();
@@ -118,6 +122,7 @@ public class IFTTTController {
     @FXML
     public void initialize() {
         this.ruleController = new RuleController();
+        this.audioFile = null;
         //init the pages
         disablePages();
         initRulePage();
@@ -360,6 +365,7 @@ public class IFTTTController {
         // Disable "Create" button by default
         actionCreateBtn.disableProperty().bind(createActionButtonDisabled);
 
+
         // Bind the createButtonDisabled property based on whether all three values are inserted
         createActionButtonDisabled.bind(
                 Bindings.isEmpty(actionName.textProperty())
@@ -381,7 +387,8 @@ public class IFTTTController {
 
     private void initActionTypeAudioText() {
         // Set the default value for the audio file path
-        audioFileSelectedLabel.setText("No file selected");
+        audioFile = new File("Default resources/alarm.mp3");
+        audioFileSelectedLabel.setText(audioFile.getName());
 
     }
 
