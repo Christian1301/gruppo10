@@ -1,15 +1,18 @@
 package com.example.programmaifttt;
 
 import com.example.programmaifttt.Actions.Action;
-import com.example.programmaifttt.Actions.ActionDummy;
+
+import com.example.programmaifttt.Actions.AudioTextAction;
+import com.example.programmaifttt.Actions.MessageBoxAction;
 import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.BackEnd.RuleController;
 import com.example.programmaifttt.Triggers.TimeOfDayTrigger;
 import com.example.programmaifttt.Triggers.Trigger;
-import com.example.programmaifttt.Triggers.TriggerDummy;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableObjectValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -18,6 +21,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import javax.swing.*;
+import java.io.File;
 
 public class IFTTTController {
 
@@ -76,21 +82,57 @@ public class IFTTTController {
     @FXML
     private SplitPane triggerPage;
 
+    @FXML
+    private SplitPane actionPage;
+    @FXML
+    private TableView<Action> actionTable;
+    @FXML
+    private TableColumn<Action, String> actionTableName;
+    @FXML
+    private TableColumn<Action, String> actionTableType;
+    @FXML
+    private TableColumn<Action, String> actionTableValue;
+    @FXML
+    private TextField actionName;
+    @FXML
+    private ChoiceBox<String> actionTypeSelect;
+    @FXML
+    private Button actionCreateBtn;
+
+    //private variables not from FXML
     private RuleController ruleController;
+    private File audioFile;
     private BooleanProperty createRuleButtonDisabled = new SimpleBooleanProperty(true);
     private BooleanProperty createTriggerButtonDisabled = new SimpleBooleanProperty(true);
+    private BooleanProperty createActionButtonDisabled = new SimpleBooleanProperty(true);
+
+    private BooleanProperty actionValueSelected = new SimpleBooleanProperty(true);
 
     private ObservableList<Rule> ruleData = FXCollections.observableArrayList();
     private ObservableList<Trigger> triggerData = FXCollections.observableArrayList();
     private ObservableList<Action> actionData = FXCollections.observableArrayList();
+    @FXML
+    private AnchorPane audioTextValSel;
+    @FXML
+    private Button selectAudioFileBtn;
+    @FXML
+    private Label audioFileSelectedLabel;
+    @FXML
+    private AnchorPane messageBoxValSel;
+    @FXML
+    private TextField messageBoxVal;
 
+
+    //init methods
     @FXML
     public void initialize() {
         this.ruleController = new RuleController();
+        this.audioFile = null;
         //init the pages
         disablePages();
         initRulePage();
         initTriggerPage();
+        initActionPage();
 
     }
 
@@ -104,9 +146,12 @@ public class IFTTTController {
         triggerPage.setVisible(false);
 
         //disable action page
-
+        actionPage.setDisable(true);
+        actionPage.setVisible(false);
 
     }
+
+    //main page methods
 
     @FXML
     public void showRulesPage(ActionEvent actionEvent) {
@@ -125,6 +170,8 @@ public class IFTTTController {
     @FXML
     public void showActionsPage(ActionEvent actionEvent) {
         disablePages();
+        actionPage.setDisable(false);
+        actionPage.setVisible(true);
     }
 
     @FXML
@@ -158,17 +205,35 @@ public class IFTTTController {
 
     }
 
-    private Trigger createNewTrigger(String name, String type) {
+    @FXML
+    public void createAction(ActionEvent actionEvent) {
+        String name = actionName.getText();
+        String type = actionTypeSelect.getValue();
+        Action newAction = createNewAction(name, type);
 
-        switch (triggerTypeSelect.getValue()) {
-            case "Time Of Day" -> {
-                int hours = timeTriggerHours.getValue();
-                int minutes = timeTriggerMinutes.getValue();
-                return  new TimeOfDayTrigger(name,hours,minutes);
+        ruleController.addAction(newAction);
+        //refresh the table after adding a new action
+        actionData.setAll(ruleController.getActions());
+        //refresh the action list in rule page
+        actionSelect.setItems(FXCollections.observableArrayList(ruleController.getActions()));
+    }
+
+    private Action createNewAction(String name, String type) {
+        switch (type) {
+            case AudioTextAction.type -> {
+                AudioTextAction audioTextAction = new AudioTextAction(name, audioFile);
+                //audioTextAction.execute();
+                return audioTextAction;
+            }
+            case MessageBoxAction.type -> {
+                MessageBoxAction messageBoxAction = new MessageBoxAction(name, messageBoxVal.getText());
+                //messageBoxAction.execute();
+                return messageBoxAction;
             }
         }
         return null;
     }
+
 
     @FXML
     public void changeTriggerValueBox(ActionEvent event) {
@@ -176,18 +241,8 @@ public class IFTTTController {
     }
 
 
-    private void updateTriggerValueBox() {
-        disableTriggerValueBox();
-        String selectedType = triggerTypeSelect.getValue();
-        switch (selectedType) {
-            case "Time Of Day" -> {
-                timeOfDayTriggerValSel.setDisable(false);
-                timeOfDayTriggerValSel.setVisible(true);
-            }
-        }
 
-    }
-
+    //rule page methods
     private void initRulePage(){
 
         // Set up the rule table columns
@@ -217,6 +272,8 @@ public class IFTTTController {
 
     }
 
+
+    //trigger page init methods
     private void initTriggerPage(){
         // Set up the trigger table columns
         triggerTableName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -240,7 +297,7 @@ public class IFTTTController {
         );
 
         // Populate the ChoiceBox with all the known types
-        triggerTypeSelect.setItems(FXCollections.observableArrayList("Time Of Day", "Test"));
+        triggerTypeSelect.setItems(FXCollections.observableArrayList(TimeOfDayTrigger.type));
 
         initTriggerTypes();
 
@@ -255,8 +312,12 @@ public class IFTTTController {
 
     private void disableTriggerValueBox() {
         //disable all the trigger value boxes
+
+        //Time Of Day
         timeOfDayTriggerValSel.setDisable(true);
         timeOfDayTriggerValSel.setVisible(false);
+        //new trigger types here
+
     }
 
     private void initTriggerTypeTOD(){
@@ -275,6 +336,136 @@ public class IFTTTController {
         timeTriggerMinutes.setValue(0);
     }
 
+    private void updateTriggerValueBox() {
+        disableTriggerValueBox();
+        String selectedType = triggerTypeSelect.getValue();
+        switch (selectedType) {
+            case TimeOfDayTrigger.type -> {
+                timeOfDayTriggerValSel.setDisable(false);
+                timeOfDayTriggerValSel.setVisible(true);
+            }
+        }
+
+    }
+
+    private Trigger createNewTrigger(String name, String type) {
+
+        switch (triggerTypeSelect.getValue()) {
+            case TimeOfDayTrigger.type -> {
+                int hours = timeTriggerHours.getValue();
+                int minutes = timeTriggerMinutes.getValue();
+                return  new TimeOfDayTrigger(name,hours,minutes);
+            }
+        }
+        return null;
+    }
 
 
+    //action page init methods
+    private void initActionPage() {
+        // Set up the action table columns
+        actionTableName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        actionTableType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        actionTableValue.setCellValueFactory(new PropertyValueFactory<>("value"));
+
+        // Connect the actionData to the table
+        actionTable.setItems(actionData);
+
+        // Load initial data into the table (if any)
+        actionData.addAll(ruleController.getActions());
+
+        // Disable "Create" button by default
+        actionCreateBtn.disableProperty().bind(createActionButtonDisabled);
+
+
+        // Bind the createButtonDisabled property based on whether all three values are inserted
+        createActionButtonDisabled.bind(
+                Bindings.isEmpty(actionName.textProperty())
+                        .or(Bindings.isNull(actionTypeSelect.valueProperty()))
+        );
+
+        // Populate the ChoiceBox with all the known types
+        actionTypeSelect.setItems(FXCollections.observableArrayList(AudioTextAction.type, MessageBoxAction.type));
+
+        initActionTypes();
+    }
+
+    private void initActionTypes() {
+        //Audio Text init
+        initActionTypeAudioText();
+        initActionTypeMessageBox();
+
+        disbleActionValueBox();
+
+    }
+
+    private void initActionTypeMessageBox() {
+        // Set the default value for the message
+        messageBoxVal.setText("Rule triggered!");
+    }
+
+    private void initActionTypeAudioText() {
+        // Set the default value for the audio file path
+        //get the default path name of the project and add the default audio file name
+        String defaultPath = System.getProperty("user.dir");
+        String defaultAudioFileName = "programmaIFTTT\\Default resources\\alarm.mp3";
+        String defaultAudioFilePath = defaultPath + "\\" + defaultAudioFileName;
+        System.out.println(defaultAudioFilePath);
+        audioFileSelectedLabel.setText(defaultAudioFileName);
+        audioFile = new File(defaultAudioFilePath);
+
+
+    }
+
+    @FXML
+    public void changeActionValueBox(ActionEvent actionEvent) {
+        updateActionValueBox();
+    }
+
+    private void updateActionValueBox() {
+        //disable all the action value boxes
+        disbleActionValueBox();
+        String selectedType = actionTypeSelect.getValue();
+        switch (selectedType) {
+            case AudioTextAction.type -> {
+                audioTextValSel.setDisable(false);
+                audioTextValSel.setVisible(true);
+            }
+            case "Message Box" -> {
+                messageBoxValSel.setDisable(false);
+                messageBoxValSel.setVisible(true);
+            }
+        }
+    }
+
+    private void disbleActionValueBox() {
+        //disable all the action value boxes
+
+        //Audio Text
+        audioTextValSel.setDisable(true);
+        audioTextValSel.setVisible(false);
+        //Message Box
+        messageBoxValSel.setDisable(true);
+        messageBoxValSel.setVisible(false);
+        //new action types here
+
+
+    }
+
+    @FXML
+    public void selectAudioFile(ActionEvent actionEvent) {
+        //open a file chooser to select an audio file and set the label to the selected file
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        int result = fileChooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            audioFileSelectedLabel.setText(selectedFile.getName());
+            audioFile = selectedFile;
+        }
+
+
+
+    }
 }

@@ -48,26 +48,33 @@ public class RuleController{
     }
 
     public void addRule(Rule rule) {
-        rules.add(rule);
+        if (!rules.contains(rule)) {
+            rules.add(rule);
+        }
     }
 
-    public void deleteRule(Rule rule) {
-        rules.remove(rule);
+    public void deleteRule(String ruleName) {
+        rules.removeIf(rule -> rule.getName().equals(ruleName));
     }
 
     public void addTrigger(Trigger trigger) {
-        triggers.add(trigger);
+        //check if the list contains the trigger with the same name,type and value and if it doesn't add it
+        if (!triggers.contains(trigger)) {
+            triggers.add(trigger);
+        }
     }
 
-    public void deleteTrigger(Trigger trigger) {
-        triggers.remove(trigger);
+    public void deleteTrigger(String triggerName) {
+        triggers.removeIf(trigger -> trigger.getName().equals(triggerName));
     }
 
     public void addAction(Action action) {
-        actions.add(action);
+        if (!actions.contains(action)) {
+            actions.add(action);
+        }
     }
 
-    public void deleteAction(Action action) {
-        actions.remove(action);
+    public void deleteAction(String actionName) {
+        actions.removeIf(action -> action.getName().equals(actionName));
     }
 }

@@ -40,4 +40,13 @@ public class Rule {
         this.action = action;
     }
     //------------------------------------------------------------------------------------------------------------
+    @Override
+    //equals method
+    public boolean equals(Object obj) {
+        if (obj instanceof Rule) {
+            Rule rule = (Rule) obj;
+            return this.name.equals(rule.name);
+        }
+        return false;
+    }
 }
