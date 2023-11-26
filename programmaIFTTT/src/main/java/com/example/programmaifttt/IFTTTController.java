@@ -189,6 +189,8 @@ public class IFTTTController {
 
         Rule newRule = new Rule(name, trigger, action);
         ruleController.addRule(newRule);
+        Data data = new Data();
+        data.addRule(newRule);
         // Refresh the table after adding a new rule
         ruleData.setAll(ruleController.getRules());
 
@@ -203,6 +205,8 @@ public class IFTTTController {
         Trigger newTrigger = createNewTrigger(name, type);
 
         ruleController.addTrigger(newTrigger);
+        Data data = new Data();
+        data.addTrigger(newTrigger);
         //refresh the table after adding a new trigger
         triggerData.setAll(ruleController.getTriggers());
         //refresh the trigger list in rule page
