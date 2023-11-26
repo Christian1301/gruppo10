@@ -1,5 +1,7 @@
 package com.example.programmaifttt.Triggers;
 
+import org.json.JSONObject;
+
 public abstract class Trigger {
 
     private String name;
@@ -54,4 +56,26 @@ public abstract class Trigger {
 
     // Abstract method to evaluate the trigger
     public abstract boolean evaluate();
+
+    public JSONObject toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", name);
+        jsonObject.put("type", type);
+        jsonObject.put("value", value);
+        return jsonObject;
+    }
+
+    public static Trigger fromJson(String json) {
+        JSONObject jsonObject = new JSONObject(json);
+        String name = jsonObject.getString("name");
+        String type = jsonObject.getString("type");
+        String value = jsonObject.getString("value");
+        if (type.equals("Time Of Day")) {
+            String[] time = value.split(":");
+            int hours = Integer.parseInt(time[0]);
+            int minutes = Integer.parseInt(time[1]);
+            return new TimeOfDayTrigger(name, hours, minutes);
+        }
+        return null;
+    }
 }

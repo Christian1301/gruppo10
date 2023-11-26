@@ -1,84 +1,85 @@
 package com.example.programmaifttt;
 
-import com.example.programmaifttt.Actions.Action;
 import com.example.programmaifttt.BackEnd.Rule;
-import com.example.programmaifttt.Triggers.Trigger;
+import org.json.JSONArray;
 import org.json.JSONObject;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.io.FileWriter;
+
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Data {
-    private Trigger[] triggers;
-    private Rule[] rules;
+    private List<Rule> rules;
 
     // Constructor
-    public Data(Trigger[] triggers, Action[] actions, Rule[] rules) {
-        this.triggers = triggers;
+    public Data(List<Rule> rules) {
         this.rules = rules;
     }
 
     public Data() {
-        this.triggers = new Trigger[0];
-        this.rules = new Rule[0];
+        this.rules = new ArrayList<>();
     }
 
-    public Trigger[] getTriggers() {
-        return triggers;
-    }
-
-    public void addTrigger(Trigger trigger) {
-        Trigger[] newTriggers = new Trigger[triggers.length + 1];
-        for (int i = 0; i < triggers.length; i++) {
-            newTriggers[i] = triggers[i];
-        }
-        newTriggers[triggers.length] = trigger;
-        triggers = newTriggers;
-    }
-
-    public Rule[] getRules() {
+    // Getters for rules
+    public List<Rule> getRules() {
         return rules;
     }
 
     public void addRule(Rule rule) {
-        Rule[] newRules = new Rule[rules.length + 1];
-        for (int i = 0; i < rules.length; i++) {
-            newRules[i] = rules[i];
+        rules.add(rule);
+    }
+
+    public JSONObject toJson() {
+        JSONArray ruleArray = new JSONArray();
+        for (Rule rule : rules) {
+            ruleArray.put(rule.toJson());
         }
-        newRules[rules.length] = rule;
-        rules = newRules;
-    }
 
-    public String toJson() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("trigger", triggers);
-        jsonObject.put("rules", rules);
-        return jsonObject.toString();
+        jsonObject.put("rules", ruleArray);
+
+        return jsonObject;
     }
 
-    public void saveDatas() {
-        String percorsoFile = "src/main/resources/data.json";
+    public static Data fromJson(String json) {
+        JSONObject jsonObject = new JSONObject(json);
 
-        try (FileWriter fileWriter = new FileWriter(percorsoFile)) {
-            fileWriter.write(this.toJson());
+        JSONArray ruleArray = jsonObject.getJSONArray("rules");
+        List<Rule> rules = new ArrayList<>();
+        for (int i = 0; i < ruleArray.length(); i++) {
+            rules.add(Rule.fromJson(ruleArray.getJSONObject(i).toString()));
+        }
+
+        return new Data(rules);
+    }
+
+    public void saveDatas(String fileName) {
+        try {
+            ClassLoader classLoader = IFTTTApplication.class.getClassLoader();
+            File file = new File(classLoader.getResource(fileName).getFile());
+
+            // Utilizza una PrintWriter per scrivere il JSON nel file
+            try (PrintWriter writer = new PrintWriter(file)) {
+                writer.println(this.toJson());
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static Data fromJson(String json) {
-        JSONObject jsonObject = new JSONObject(json);
-        return new Data(
-                (Trigger[]) jsonObject.get("trigger"),
-                (Action[]) jsonObject.get("action"),
-                (Rule[]) jsonObject.get("rules"));
-    }
-
     public static Data loadDatas() {
-        String percorsoFile = "src/main/resources/data.json";
         try {
-            String content = new String(Files.readAllBytes(Paths  .get(percorsoFile)));
+            ClassLoader classLoader = IFTTTApplication.class.getClassLoader();
+            File file = new File(classLoader.getResource("data.txt").getFile());
+            String content = new String(Files.readAllBytes(file.toPath()));
+
+            if (content.isEmpty()) {
+                return new Data();
+            }
+
             return Data.fromJson(content);
         } catch (IOException e) {
             e.printStackTrace();

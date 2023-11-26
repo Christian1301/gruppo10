@@ -1,5 +1,9 @@
 package com.example.programmaifttt.Actions;
 
+import org.json.JSONObject;
+
+import java.io.File;
+
 public abstract class Action {
       private String name;
       private String type;
@@ -43,4 +47,26 @@ public abstract class Action {
       }
 
       public abstract boolean execute();
+
+    public JSONObject toJson() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", name);
+        jsonObject.put("type", type);
+        jsonObject.put("value", value);
+        return jsonObject;
+    }
+
+    public static Action fromJson(String json) {
+        JSONObject jsonObject = new JSONObject(json);
+        String name = jsonObject.getString("name");
+        String type = jsonObject.getString("type");
+        String value = jsonObject.getString("value");
+        if (type.equals("Audio Text")) {
+            return new AudioTextAction(name, new File(value));
+        } else if (type.equals("Message Box")) {
+            return new MessageBoxAction(name, value);
+        } else {
+            return null;
+        }
+    }
 }
