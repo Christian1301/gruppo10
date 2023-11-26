@@ -413,7 +413,7 @@ public class IFTTTController {
     private void initActionTypeAudioText() {
         // Set the default value for the audio file path
         //get the default path name of the project and add the default audio file name
-        String defaultPath = System.getProperty("user.dir")+ "programmaIFTTT\\Default resources";
+        String defaultPath = System.getProperty("user.dir")+ "\\programmaIFTTT\\Default resources";
         String defaultAudioFileName = "alarm.mp3";
         String defaultAudioFilePath = defaultPath + "\\" + defaultAudioFileName;
         System.out.println(defaultAudioFilePath);
