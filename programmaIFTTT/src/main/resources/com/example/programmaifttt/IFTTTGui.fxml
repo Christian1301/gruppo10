@@ -36,6 +36,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -59,6 +60,10 @@
                 <Button fx:id="editRulesBtn" mnemonicParsing="false" onAction="#showRulesPage" text="Edit Rules" />
                         <Button fx:id="editTriggersBtn" mnemonicParsing="false" onAction="#showTriggersPage" text="Edit Triggers" />
                         <Button fx:id="editActionsBtn" mnemonicParsing="false" onAction="#showActionsPage" text="Edit Actions" />
+                        <Separator prefWidth="200.0" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start or stop the program" />
+                        <Button fx:id="startSchedulerBtn" mnemonicParsing="false" onAction="#startScheduler" text="Start" />
+                        <Button fx:id="stopSchedulerBtn" mnemonicParsing="false" onAction="#stopScheduler" text="Stop" />
               </children>
             </VBox>
           </children>

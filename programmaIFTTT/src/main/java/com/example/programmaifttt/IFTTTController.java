@@ -6,15 +6,14 @@ import com.example.programmaifttt.Actions.AudioTextAction;
 import com.example.programmaifttt.Actions.MessageBoxAction;
 import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.BackEnd.RuleController;
+import com.example.programmaifttt.BackEnd.Scheduler;
 import com.example.programmaifttt.Triggers.TimeOfDayTrigger;
 import com.example.programmaifttt.Triggers.Trigger;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableObjectValue;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -101,6 +100,7 @@ public class IFTTTController {
 
     //private variables not from FXML
     private RuleController ruleController;
+    private Scheduler scheduler;
     private File audioFile;
     private BooleanProperty createRuleButtonDisabled = new SimpleBooleanProperty(true);
     private BooleanProperty createTriggerButtonDisabled = new SimpleBooleanProperty(true);
@@ -121,6 +121,10 @@ public class IFTTTController {
     private AnchorPane messageBoxValSel;
     @FXML
     private TextField messageBoxVal;
+    @FXML
+    private Button startSchedulerBtn;
+    @FXML
+    private Button stopSchedulerBtn;
 
 
     //init methods
@@ -128,6 +132,8 @@ public class IFTTTController {
     public void initialize() {
         this.ruleController = new RuleController();
         this.audioFile = null;
+        scheduler = new Scheduler( 10 ,ruleController, this);
+        stopSchedulerBtn.setDisable(true);
         //init the pages
         disablePages();
         initRulePage();
@@ -407,8 +413,8 @@ public class IFTTTController {
     private void initActionTypeAudioText() {
         // Set the default value for the audio file path
         //get the default path name of the project and add the default audio file name
-        String defaultPath = System.getProperty("user.dir");
-        String defaultAudioFileName = "programmaIFTTT\\Default resources\\alarm.mp3";
+        String defaultPath = System.getProperty("user.dir")+ "programmaIFTTT\\Default resources";
+        String defaultAudioFileName = "alarm.mp3";
         String defaultAudioFilePath = defaultPath + "\\" + defaultAudioFileName;
         System.out.println(defaultAudioFilePath);
         audioFileSelectedLabel.setText(defaultAudioFileName);
@@ -467,5 +473,37 @@ public class IFTTTController {
 
 
 
+    }
+
+    @FXML
+    public void startScheduler(ActionEvent actionEvent) {
+        if(ruleController.getRules().size() > 0) {
+            scheduler.start();
+            stopSchedulerBtn.setDisable(false);
+            startSchedulerBtn.setDisable(true);
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("No rules to schedule!");
+
+            // Wait for the user to click OK
+            alert.showAndWait();
+        }
+    }
+
+    @FXML
+    public void stopScheduler(ActionEvent actionEvent) {
+        scheduler.stop();
+        stopSchedulerBtn.setDisable(true);
+        startSchedulerBtn.setDisable(false);
+    }
+
+    public void updateList() {
+        Platform.runLater(() -> {
+            ruleData.setAll(ruleController.getRules());
+            triggerData.setAll(ruleController.getTriggers());
+            actionData.setAll(ruleController.getActions());
+        });
     }
 }
