@@ -10,7 +10,7 @@ public class AudioTextAction extends Action {
     private File audioFile;
 
     public AudioTextAction(String name, File audioFile) {
-        super(name, type, "File:" + audioFile.getName());
+        super(name, type, "File: " + audioFile.getName());
         this.audioFile = audioFile;
 
     }

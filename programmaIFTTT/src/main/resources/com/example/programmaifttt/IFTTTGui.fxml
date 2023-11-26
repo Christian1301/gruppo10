@@ -191,7 +191,7 @@
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert Action Value" />
                                     <StackPane prefHeight="150.0" prefWidth="200.0">
                                        <children>
-                                          <AnchorPane fx:id="audioTextValSel" prefHeight="200.0" prefWidth="200.0">
+                                          <AnchorPane fx:id="audioTextValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
                                              <StackPane.margin>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </StackPane.margin>
@@ -208,6 +208,22 @@
                                                    </children>
                                                 </VBox>
                                              </children>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="messageBoxValSel" prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert the message" />
+                                                      <TextField fx:id="messageBoxVal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
                                           </AnchorPane>
                                        </children>
                                     </StackPane>

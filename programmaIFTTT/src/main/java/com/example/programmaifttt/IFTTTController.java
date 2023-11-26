@@ -3,6 +3,7 @@ package com.example.programmaifttt;
 import com.example.programmaifttt.Actions.Action;
 
 import com.example.programmaifttt.Actions.AudioTextAction;
+import com.example.programmaifttt.Actions.MessageBoxAction;
 import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.BackEnd.RuleController;
 import com.example.programmaifttt.Triggers.TimeOfDayTrigger;
@@ -116,6 +117,10 @@ public class IFTTTController {
     private Button selectAudioFileBtn;
     @FXML
     private Label audioFileSelectedLabel;
+    @FXML
+    private AnchorPane messageBoxValSel;
+    @FXML
+    private TextField messageBoxVal;
 
 
     //init methods
@@ -217,6 +222,9 @@ public class IFTTTController {
         switch (type) {
             case AudioTextAction.type -> {
                 return new AudioTextAction(name, audioFile);
+            }
+            case MessageBoxAction.type -> {
+                return new MessageBoxAction(name, messageBoxVal.getText());
             }
         }
         return null;
@@ -373,7 +381,7 @@ public class IFTTTController {
         );
 
         // Populate the ChoiceBox with all the known types
-        actionTypeSelect.setItems(FXCollections.observableArrayList(AudioTextAction.type));
+        actionTypeSelect.setItems(FXCollections.observableArrayList(AudioTextAction.type, MessageBoxAction.type));
 
         initActionTypes();
     }
@@ -381,8 +389,15 @@ public class IFTTTController {
     private void initActionTypes() {
         //Audio Text init
         initActionTypeAudioText();
+        initActionTypeMessageBox();
+
         disbleActionValueBox();
 
+    }
+
+    private void initActionTypeMessageBox() {
+        // Set the default value for the message
+        messageBoxVal.setText("Rule triggered!");
     }
 
     private void initActionTypeAudioText() {
@@ -406,6 +421,10 @@ public class IFTTTController {
                 audioTextValSel.setDisable(false);
                 audioTextValSel.setVisible(true);
             }
+            case "Message Box" -> {
+                messageBoxValSel.setDisable(false);
+                messageBoxValSel.setVisible(true);
+            }
         }
     }
 
@@ -415,6 +434,9 @@ public class IFTTTController {
         //Audio Text
         audioTextValSel.setDisable(true);
         audioTextValSel.setVisible(false);
+        //Message Box
+        messageBoxValSel.setDisable(true);
+        messageBoxValSel.setVisible(false);
         //new action types here
 
 
