@@ -10,11 +10,27 @@ public class RuleController{
     private List<Rule> rules;
     private List<Trigger> triggers;
     private List<Action> actions;
+    private List<RuleControllerObserver> observers;
 
     public RuleController() {
         this.rules = new ArrayList<>();
         this.triggers = new ArrayList<>();
         this.actions = new ArrayList<>();
+        this.observers = new ArrayList<>();
+    }
+
+    public void addObserver(RuleControllerObserver observer) {
+        observers.add(observer);
+    }
+
+    public void removeObserver(RuleControllerObserver observer) {
+        observers.remove(observer);
+    }
+
+    public void notifyObservers() {
+        for (RuleControllerObserver observer : observers) {
+            observer.update(this);
+        }
     }
 
     // Getters for rules
@@ -50,11 +66,13 @@ public class RuleController{
     public void addRule(Rule rule) {
         if (!rules.contains(rule)) {
             rules.add(rule);
+            notifyObservers();
         }
     }
 
     public void deleteRule(String ruleName) {
         rules.removeIf(rule -> rule.getName().equals(ruleName));
+        notifyObservers();
     }
 
     public void addTrigger(Trigger trigger) {
