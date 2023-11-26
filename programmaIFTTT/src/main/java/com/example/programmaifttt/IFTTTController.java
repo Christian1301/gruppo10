@@ -221,10 +221,14 @@ public class IFTTTController {
     private Action createNewAction(String name, String type) {
         switch (type) {
             case AudioTextAction.type -> {
-                return new AudioTextAction(name, audioFile);
+                AudioTextAction audioTextAction = new AudioTextAction(name, audioFile);
+                //audioTextAction.execute();
+                return audioTextAction;
             }
             case MessageBoxAction.type -> {
-                return new MessageBoxAction(name, messageBoxVal.getText());
+                MessageBoxAction messageBoxAction = new MessageBoxAction(name, messageBoxVal.getText());
+                //messageBoxAction.execute();
+                return messageBoxAction;
             }
         }
         return null;
@@ -402,8 +406,14 @@ public class IFTTTController {
 
     private void initActionTypeAudioText() {
         // Set the default value for the audio file path
-        audioFile = new File("Default resources/alarm.mp3");
-        audioFileSelectedLabel.setText(audioFile.getName());
+        //get the default path name of the project and add the default audio file name
+        String defaultPath = System.getProperty("user.dir");
+        String defaultAudioFileName = "programmaIFTTT\\Default resources\\alarm.mp3";
+        String defaultAudioFilePath = defaultPath + "\\" + defaultAudioFileName;
+        System.out.println(defaultAudioFilePath);
+        audioFileSelectedLabel.setText(defaultAudioFileName);
+        audioFile = new File(defaultAudioFilePath);
+
 
     }
 

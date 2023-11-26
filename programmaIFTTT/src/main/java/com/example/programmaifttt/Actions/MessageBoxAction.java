@@ -24,8 +24,8 @@ public class MessageBoxAction extends Action{
     @Override
     public boolean execute() {
         try {
-            // Sleep for 5 seconds
-            Thread.sleep(5000);
+            // Sleep for 1 seconds
+            Thread.sleep(1000);
 
             // Use Platform.runLater to safely interact with JavaFX components
             Platform.runLater(() -> {
