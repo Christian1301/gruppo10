@@ -34,9 +34,7 @@ public class IFTTTApplication extends Application {
             iftttController.updateRules(data.getRules());
             iftttController.updateList();
         }
-
         stage.setOnCloseRequest((event) -> {
-            assert iftttController != null;
             Data dataToSave = new Data(iftttController.getRules());
             dataToSave.saveDatas("data.txt");
         });

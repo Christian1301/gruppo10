@@ -5,7 +5,6 @@ public class TimeOfDayTrigger extends Trigger{
     private int hours;
     private int minutes;
 
-
     // Constructor
     public TimeOfDayTrigger(String name,int hours,int minutes) {
         super(name,type, hours + ":" + minutes);
@@ -29,7 +28,6 @@ public class TimeOfDayTrigger extends Trigger{
     public void setMinutes(int minutes) {
         this.minutes = minutes;
     }
-
 
     @Override
     public boolean evaluate() {
