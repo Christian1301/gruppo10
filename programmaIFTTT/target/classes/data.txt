@@ -1,0 +1,1 @@
+{"rules":[{"name":"testRule","action":{"name":"testAction","type":"Message Box","value":"Rule triggered!"},"trigger":{"name":"testTrigger","type":"Time Of Day","value":"23:30"}}]}
