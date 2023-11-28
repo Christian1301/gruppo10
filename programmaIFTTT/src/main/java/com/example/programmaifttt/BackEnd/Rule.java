@@ -11,7 +11,7 @@ public class Rule {
 
     private boolean state ;
 
-    public Rule(String name, Trigger trigger, Action action) {
+    public Rule(String name, Trigger trigger, Action action, boolean state) {
         this.name = name;
         this.trigger = trigger;
         this.action = action;
