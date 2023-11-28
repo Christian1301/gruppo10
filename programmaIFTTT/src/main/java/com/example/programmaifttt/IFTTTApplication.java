@@ -13,9 +13,8 @@ public class IFTTTApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         Data data = Data.loadDatas();
+        IFTTTController iftttController;
 
-        // Crea un'istanza di RuleUpdateListener
-        RuleUpdateListener ruleUpdateListener = new IFTTTController();
 
         FXMLLoader fxmlLoader = new FXMLLoader(IFTTTApplication.class.getResource("IFTTTGui.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 900, 600);
@@ -23,21 +22,9 @@ public class IFTTTApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
-        // Ottieni il controller
-        IFTTTController iftttController = fxmlLoader.getController();
-
-        // Passa l'istanza dell'interfaccia al controller
-        iftttController.setRuleUpdateListener(ruleUpdateListener);
-
-        // Aggiungi le regole caricate al RuleController
-        if (data != null) {
-            iftttController.updateRules(data.getRules());
-            iftttController.updateList();
-        }
-
+        iftttController = fxmlLoader.getController();
         stage.setOnCloseRequest((event) -> {
-            assert iftttController != null;
-            Data dataToSave = new Data(iftttController.getRules());
+            Data dataToSave = new Data(iftttController.getRuleController());
             dataToSave.saveDatas("data.txt");
         });
     }

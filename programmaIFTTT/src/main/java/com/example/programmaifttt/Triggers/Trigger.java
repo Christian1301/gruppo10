@@ -8,8 +8,6 @@ public abstract class Trigger {
     private String type;
     private String value;
 
-
-
     // Constructor
     public Trigger(String name, String type,String value) {
         this.name = name;
@@ -37,7 +35,6 @@ public abstract class Trigger {
         return value;
     }
 
-
     //toString method
     @Override
     public String toString() {
@@ -52,7 +49,6 @@ public abstract class Trigger {
         }
         return false;
     }
-
 
     // Abstract method to evaluate the trigger
     public abstract boolean evaluate();
