@@ -1,11 +1,11 @@
 package com.example.programmaifttt;
 
 import com.example.programmaifttt.Actions.Action;
-
 import com.example.programmaifttt.Actions.AudioTextAction;
 import com.example.programmaifttt.Actions.MessageBoxAction;
 import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.BackEnd.RuleController;
+import com.example.programmaifttt.BackEnd.RuleUpdateListener;
 import com.example.programmaifttt.BackEnd.Scheduler;
 import com.example.programmaifttt.Triggers.TimeOfDayTrigger;
 import com.example.programmaifttt.Triggers.Trigger;
@@ -13,18 +13,19 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.List;
 
-public class IFTTTController {
+public class IFTTTController implements RuleUpdateListener {
 
     @FXML
     private ChoiceBox<Action> actionSelect;
@@ -100,6 +101,9 @@ public class IFTTTController {
 
     //private variables not from FXML
     private RuleController ruleController;
+    private Data data;
+    private RuleUpdateListener ruleUpdateListener;
+
     private Scheduler scheduler;
     private File audioFile;
     private BooleanProperty createRuleButtonDisabled = new SimpleBooleanProperty(true);
@@ -131,6 +135,7 @@ public class IFTTTController {
     @FXML
     public void initialize() {
         this.ruleController = new RuleController();
+        this.data = new Data();
         this.audioFile = null;
         scheduler = new Scheduler( 10 ,ruleController, this);
         stopSchedulerBtn.setDisable(true);
@@ -188,6 +193,9 @@ public class IFTTTController {
 
 
         Rule newRule = new Rule(name, trigger, action);
+        if (data != null) {
+            data.addRule(newRule);
+        }
         ruleController.addRule(newRule);
         // Refresh the table after adding a new rule
         ruleData.setAll(ruleController.getRules());
@@ -505,5 +513,18 @@ public class IFTTTController {
             triggerData.setAll(ruleController.getTriggers());
             actionData.setAll(ruleController.getActions());
         });
+    }
+
+    public void setRuleUpdateListener(RuleUpdateListener listener) {
+        this.ruleUpdateListener = listener;
+    }
+
+    public List<Rule> getRules() {
+        return ruleController.getRules();
+    }
+
+    @Override
+    public void updateRules(List<Rule> rules) {
+        ruleController.setRules(rules);
     }
 }
