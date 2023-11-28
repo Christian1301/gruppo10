@@ -63,25 +63,26 @@ public class Scheduler implements RuleControllerObserver {
     public void checkRules() {
         synchronized (ruleController) {
             List<Rule> rulesToDelete = new ArrayList<>();
-
             for (Rule rule : ruleController.getRules()) {
-                if (rule.getTrigger().evaluate()) {
-                    if (rule.getAction().execute()) {
-                        // Action executed successfully
-                    } else {
-                        // Create popup window with error
-                        Platform.runLater(() -> {
-                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                            alert.setTitle("Error");
-                            alert.setHeaderText(null);
-                            alert.setContentText("Error with action " + rule.getAction().getName() +
-                                    " of rule " + rule.getName());
+                if(!rule.getState()) {
+                    if (rule.getTrigger().evaluate()) {
+                        if (rule.getAction().execute()) {
+                            // Action executed successfully
+                        } else {
+                            // Create popup window with error
+                            Platform.runLater(() -> {
+                                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                alert.setTitle("Error");
+                                alert.setHeaderText(null);
+                                alert.setContentText("Error with action " + rule.getAction().getName() +
+                                        " of rule " + rule.getName());
 
-                            // Wait for the user to click OK
-                            alert.showAndWait();
-                        });
+                                // Wait for the user to click OK
+                                alert.showAndWait();
+                            });
+                        }
+                        rulesToDelete.add(rule);
                     }
-                    rulesToDelete.add(rule);
                 }
             }
 

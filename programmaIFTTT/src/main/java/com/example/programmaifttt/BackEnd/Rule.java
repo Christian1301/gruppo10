@@ -2,7 +2,6 @@ package com.example.programmaifttt.BackEnd;
 
 import com.example.programmaifttt.Actions.Action;
 import com.example.programmaifttt.Triggers.Trigger;
-import org.json.JSONObject;
 
 public class Rule {
     private String name;
@@ -11,16 +10,27 @@ public class Rule {
     private boolean multiUse;
     private int sleepTime;
 
+    private boolean state ;
 
-    public Rule(String name, Trigger trigger, Action action, boolean multiUse, int sleepTime) {
+    public Rule(String name, Trigger trigger, Action action) {
         this.name = name;
         this.trigger = trigger;
         this.action = action;
+        this.state = state;
         this.multiUse = multiUse;
         this.sleepTime = sleepTime;
     }
 
     //-------------------------Getter & Setter--------------------------------------------------------------------
+
+    public boolean getState() {
+        return state;
+    }
+
+    public void setState(boolean state) {
+        this.state = state;
+    }
+
     public String getName() {
         return name;
     }
