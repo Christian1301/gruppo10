@@ -10,6 +10,7 @@ public class RuleController{
     private List<Rule> rules;
     private List<Trigger> triggers;
     private List<Action> actions;
+
     private List<RuleControllerObserver> observers;
 
     public RuleController() {

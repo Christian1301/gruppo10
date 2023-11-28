@@ -8,14 +8,25 @@ public class Rule {
     private Trigger trigger;
     private Action action;
 
+    private boolean state ;
 
     public Rule(String name, Trigger trigger, Action action) {
         this.name = name;
         this.trigger = trigger;
         this.action = action;
+        this.state = state;
     }
 
     //-------------------------Getter & Setter--------------------------------------------------------------------
+
+    public boolean getState() {
+        return state;
+    }
+
+    public void setState(boolean state) {
+        this.state = state;
+    }
+
     public String getName() {
         return name;
     }
