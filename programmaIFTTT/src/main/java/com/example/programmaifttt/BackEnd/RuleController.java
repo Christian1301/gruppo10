@@ -1,6 +1,7 @@
 package com.example.programmaifttt.BackEnd;
 
 import com.example.programmaifttt.Actions.Action;
+import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.Triggers.Trigger;
 
 import java.util.ArrayList;

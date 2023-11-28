@@ -1,6 +1,9 @@
 package com.example.programmaifttt;
 
+import com.example.programmaifttt.Actions.Action;
 import com.example.programmaifttt.BackEnd.Rule;
+import com.example.programmaifttt.BackEnd.RuleController;
+import com.example.programmaifttt.Triggers.Trigger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.File;
@@ -11,44 +14,68 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Data {
-    private List<Rule> rules;
+    private RuleController ruleController;
 
     // Constructor
-    public Data(List<Rule> rules) {
-        this.rules = rules;
-    }
-
     public Data() {
-        this.rules = new ArrayList<>();
+        this.ruleController = new RuleController();
     }
 
-    // Getters for rules
-    public List<Rule> getRules() {
-        return rules;
+    public Data(RuleController ruleController) {
+        this.ruleController = ruleController;
     }
 
-    public void addRule(Rule rule) {
-        rules.add(rule);
+    // Getters
+    public RuleController getRuleController() {
+        return ruleController;
     }
 
+    // Setters
+    public void setRuleController(RuleController ruleController) {
+        this.ruleController = ruleController;
+    }
+
+
+    //take the rulecontroller and put it in the data the rules, the triggers and the actions
     public JSONObject toJson() {
-        JSONArray ruleArray = new JSONArray();
-        for (Rule rule : rules) {
-            ruleArray.put(rule.toJson());
-        }
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("rules", ruleArray);
+        JSONArray rules = new JSONArray();
+        JSONArray triggers = new JSONArray();
+        JSONArray actions = new JSONArray();
+        for (Rule rule : ruleController.getRules()) {
+            rules.put(rule.toJson());
+        }
+        for (Trigger trigger : ruleController.getTriggers()) {
+            triggers.put(trigger.toJson());
+        }
+        for (Action action : ruleController.getActions()) {
+            actions.put(action.toJson());
+        }
+        jsonObject.put("rules", rules);
+        jsonObject.put("triggers", triggers);
+        jsonObject.put("actions", actions);
         return jsonObject;
     }
 
     public static Data fromJson(String json) {
         JSONObject jsonObject = new JSONObject(json);
-        JSONArray ruleArray = jsonObject.getJSONArray("rules");
-        List<Rule> rules = new ArrayList<>();
-        for (int i = 0; i < ruleArray.length(); i++) {
-            rules.add(Rule.fromJson(ruleArray.getJSONObject(i).toString()));
+        Data data = new Data();
+        JSONArray rules = jsonObject.getJSONArray("rules");
+        JSONArray triggers = jsonObject.getJSONArray("triggers");
+        JSONArray actions = jsonObject.getJSONArray("actions");
+        for (int i = 0; i < rules.length(); i++) {
+            JSONObject rule = rules.getJSONObject(i);
+            data.ruleController.addRule(Rule.fromJson(String.valueOf(rule)));
         }
-        return new Data(rules);
+        for (int i = 0; i < triggers.length(); i++) {
+            JSONObject trigger = triggers.getJSONObject(i);
+            data.ruleController.addTrigger(Trigger.fromJson(String.valueOf(trigger)));
+        }
+        for (int i = 0; i < actions.length(); i++) {
+            JSONObject action = actions.getJSONObject(i);
+            data.ruleController.addAction(Action.fromJson(String.valueOf(action)));
+        }
+        return data;
     }
 
     public void saveDatas(String fileName) {
