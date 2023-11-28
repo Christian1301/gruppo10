@@ -8,12 +8,16 @@ public class Rule {
     private String name;
     private Trigger trigger;
     private Action action;
+    private boolean multiUse;
+    private int sleepTime;
 
 
-    public Rule(String name, Trigger trigger, Action action) {
+    public Rule(String name, Trigger trigger, Action action, boolean multiUse, int sleepTime) {
         this.name = name;
         this.trigger = trigger;
         this.action = action;
+        this.multiUse = multiUse;
+        this.sleepTime = sleepTime;
     }
 
     //-------------------------Getter & Setter--------------------------------------------------------------------
@@ -40,6 +44,10 @@ public class Rule {
     public void setAction(Action action) {
         this.action = action;
     }
+
+    public boolean isMultiUse() {
+        return multiUse;
+    }
     //------------------------------------------------------------------------------------------------------------
     @Override
     //equals method
@@ -56,6 +64,8 @@ public class Rule {
         jsonRule.put("name", this.name);
         jsonRule.put("action", this.action.toJson());
         jsonRule.put("trigger", this.trigger.toJson());
+        jsonRule.put("multiUse", this.multiUse);
+        jsonRule.put("sleepTime", this.sleepTime);
         return jsonRule;
     }
 
@@ -64,6 +74,8 @@ public class Rule {
         String name = jsonObject.getString("name");
         Trigger trigger = Trigger.fromJson(jsonObject.getJSONObject("trigger").toString());
         Action action = Action.fromJson(jsonObject.getJSONObject("action").toString());
-        return new Rule(name, trigger, action);
+        boolean multiUse = jsonObject.getBoolean("multiUse");
+        int sleepTime = jsonObject.getInt("sleepTime");
+        return new Rule(name, trigger, action, multiUse, sleepTime);
     }
 }

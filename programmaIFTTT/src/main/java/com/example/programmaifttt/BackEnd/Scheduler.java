@@ -1,13 +1,10 @@
 package com.example.programmaifttt.BackEnd;
 
 
-import com.example.programmaifttt.BackEnd.Rule;
-import com.example.programmaifttt.BackEnd.RuleController;
 import com.example.programmaifttt.IFTTTController;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 

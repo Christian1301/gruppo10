@@ -70,7 +70,7 @@ public class RuleController{
     }
 
     public void deleteRule(String ruleName) {
-        rules.removeIf(rule -> rule.getName().equals(ruleName));
+        rules.removeIf(rule -> rule.getName().equals(ruleName) && !rule.isMultiUse() && rule.getTrigger().isEvaluable());
         notifyObservers();
     }
 

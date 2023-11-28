@@ -40,6 +40,15 @@ public class TimeOfDayTrigger extends Trigger{
         return false;
     }
 
-
+    @Override
+    public boolean isEvaluable() {
+        // Get the current time
+        LocalTime currentTime = LocalTime.now();
+        // Check if the current time is greater than or equal to the time of the trigger
+        if (currentTime.getHour() > hours && currentTime.getMinute() > minutes) {
+            return true;
+        }
+        return false;
+    }
 }
 

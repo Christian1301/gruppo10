@@ -191,15 +191,13 @@ public class IFTTTController implements RuleUpdateListener {
         Trigger trigger = triggerSelect.getValue();
         Action action = actionSelect.getValue();
 
-
-        Rule newRule = new Rule(name, trigger, action);
+        Rule newRule = new Rule(name, trigger, action, true, 60);
         if (data != null) {
             data.addRule(newRule);
         }
         ruleController.addRule(newRule);
         // Refresh the table after adding a new rule
         ruleData.setAll(ruleController.getRules());
-
 
     }
 
