@@ -193,13 +193,10 @@ public class IFTTTController {
         Trigger trigger = triggerSelect.getValue();
         Action action = actionSelect.getValue();
 
-
-        Rule newRule = new Rule(name, trigger, action);
+        Rule newRule = new Rule(name, trigger, action, true, true, 15);
         ruleController.addRule(newRule);
         // Refresh the table after adding a new rule
         ruleData.setAll(ruleController.getRules());
-
-
     }
 
     @FXML
