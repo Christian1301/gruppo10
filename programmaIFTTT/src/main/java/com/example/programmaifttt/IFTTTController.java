@@ -126,11 +126,18 @@ public class IFTTTController {
     @FXML
     private Button stopSchedulerBtn;
 
+    //get rule controller
+    public RuleController getRuleController() {
+        return ruleController;
+    }
+
 
     //init methods
     @FXML
     public void initialize() {
-        this.ruleController = new RuleController();
+        Data data = Data.loadDatas();
+        this.ruleController = data.getRuleController();
+
         this.audioFile = null;
         scheduler = new Scheduler( 10 ,ruleController, this);
         stopSchedulerBtn.setDisable(true);
