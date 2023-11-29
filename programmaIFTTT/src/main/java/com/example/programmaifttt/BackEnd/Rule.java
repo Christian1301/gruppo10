@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import org.json.JSONObject;
 
 import java.util.Date;
+import java.util.Optional;
 
 public class Rule {
     private String name;
@@ -104,6 +105,11 @@ public class Rule {
         jsonRule.put("trigger", this.trigger.toJson());
         jsonRule.put("state", this.state);
         jsonRule.put("multiUse", this.multiUse);
+        if (this.lastUse != null) {
+            jsonRule.put("lastUse", this.lastUse.getTime());
+        } else {
+            jsonRule.put("lastUse", Optional.empty());
+        }
         jsonRule.put("sleepTime", this.sleepTime);
         return jsonRule;
     }
@@ -115,8 +121,10 @@ public class Rule {
         Action action = Action.fromJson(jsonObject.getJSONObject("action").toString());
         boolean state = jsonObject.getBoolean("state");
         boolean multiUse = jsonObject.getBoolean("multiUse");
+        Date lastUse = jsonObject.get("lastUse").equals(Optional.empty()) ? null : new Date(jsonObject.getLong("lastUse"));
+        System.out.println(lastUse);
         int sleepTime = jsonObject.getInt("sleepTime");
-        return new Rule(name, trigger, action, state, multiUse, sleepTime);
+        return new Rule(name, trigger, action, state, multiUse, lastUse, sleepTime);
     }
 
 }

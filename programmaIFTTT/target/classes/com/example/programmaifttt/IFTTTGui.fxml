@@ -61,7 +61,7 @@
                 <Button fx:id="editRulesBtn" mnemonicParsing="false" onAction="#showRulesPage" text="Edit Rules" />
                         <Button fx:id="editTriggersBtn" mnemonicParsing="false" onAction="#showTriggersPage" text="Edit Triggers" />
                         <Button fx:id="editActionsBtn" mnemonicParsing="false" onAction="#showActionsPage" text="Edit Actions" />
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Set the interfal for the check in seconds" wrappingWidth="169.634765625" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Set the interval for the check in seconds" wrappingWidth="169.634765625" />
                         <TextField fx:id="intervalSchedulerSel" prefHeight="27.0" prefWidth="159.0" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start or stop the program" />
                         <Button fx:id="startSchedulerBtn" mnemonicParsing="false" onAction="#startScheduler" text="Start" />

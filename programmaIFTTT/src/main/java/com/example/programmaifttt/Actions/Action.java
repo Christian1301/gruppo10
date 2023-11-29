@@ -61,12 +61,11 @@ public abstract class Action {
         String name = jsonObject.getString("name");
         String type = jsonObject.getString("type");
         String value = jsonObject.getString("value");
-        if (type.equals("Audio")) {
-            return new AudioAction(name, new File(value));
-        } else if (type.equals("Message Box")) {
-            return new MessageBoxAction(name, value);
-        } else {
-            return null;
-        }
+        return switch (type) {
+            case "Audio" -> new AudioAction(name, new File(value));
+            case "Message Box" -> new MessageBoxAction(name, value);
+            case "External Program" -> new ExternalProgramAction(name, value.split(" ")[0], value.substring(value.indexOf("[") + 1, value.indexOf("]")).split(", "));
+            default -> null;
+        };
     }
 }
