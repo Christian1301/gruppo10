@@ -62,7 +62,7 @@ public abstract class Action {
         String type = jsonObject.getString("type");
         String value = jsonObject.getString("value");
         if (type.equals("Audio Text")) {
-            return new AudioTextAction(name, new File(value));
+            return new AudioAction(name, new File(value));
         } else if (type.equals("Message Box")) {
             return new MessageBoxAction(name, value);
         } else {

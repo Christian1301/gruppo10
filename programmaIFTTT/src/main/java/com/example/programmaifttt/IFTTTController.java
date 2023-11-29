@@ -2,7 +2,7 @@ package com.example.programmaifttt;
 
 import com.example.programmaifttt.Actions.Action;
 
-import com.example.programmaifttt.Actions.AudioTextAction;
+import com.example.programmaifttt.Actions.AudioAction;
 import com.example.programmaifttt.Actions.MessageBoxAction;
 import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.BackEnd.RuleController;
@@ -230,10 +230,10 @@ public class IFTTTController {
 
     private Action createNewAction(String name, String type) {
         switch (type) {
-            case AudioTextAction.type -> {
-                AudioTextAction audioTextAction = new AudioTextAction(name, audioFile);
-                //audioTextAction.execute();
-                return audioTextAction;
+            case AudioAction.type -> {
+                AudioAction audioAction = new AudioAction(name, audioFile);
+                //audioAction.execute();
+                return audioAction;
             }
             case MessageBoxAction.type -> {
                 MessageBoxAction messageBoxAction = new MessageBoxAction(name, messageBoxVal.getText());
@@ -395,7 +395,7 @@ public class IFTTTController {
         );
 
         // Populate the ChoiceBox with all the known types
-        actionTypeSelect.setItems(FXCollections.observableArrayList(AudioTextAction.type, MessageBoxAction.type));
+        actionTypeSelect.setItems(FXCollections.observableArrayList(AudioAction.type, MessageBoxAction.type));
 
         initActionTypes();
     }
@@ -437,7 +437,7 @@ public class IFTTTController {
         disbleActionValueBox();
         String selectedType = actionTypeSelect.getValue();
         switch (selectedType) {
-            case AudioTextAction.type -> {
+            case AudioAction.type -> {
                 audioTextValSel.setDisable(false);
                 audioTextValSel.setVisible(true);
             }
