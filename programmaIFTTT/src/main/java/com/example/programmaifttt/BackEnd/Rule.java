@@ -2,6 +2,8 @@ package com.example.programmaifttt.BackEnd;
 
 import com.example.programmaifttt.Actions.Action;
 import com.example.programmaifttt.Triggers.Trigger;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleBooleanProperty;
 import org.json.JSONObject;
 
 import java.util.Date;
@@ -116,4 +118,5 @@ public class Rule {
         int sleepTime = jsonObject.getInt("sleepTime");
         return new Rule(name, trigger, action, state, multiUse, sleepTime);
     }
+
 }

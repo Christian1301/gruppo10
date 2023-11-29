@@ -95,4 +95,24 @@ public class RuleController{
     public void deleteAction(String actionName) {
         actions.removeIf(action -> action.getName().equals(actionName));
     }
+
+    public boolean isTriggerUsed(Trigger selectedTrigger) {
+        //check if the trigger is used in a rule
+        for (Rule rule : rules) {
+            if (rule.getTrigger().equals(selectedTrigger)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isActionUsed(Action selectedAction) {
+        //check if the action is used in a rule
+        for (Rule rule : rules) {
+            if (rule.getAction().equals(selectedAction)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
