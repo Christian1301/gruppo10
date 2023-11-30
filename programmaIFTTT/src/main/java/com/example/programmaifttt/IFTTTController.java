@@ -2,7 +2,7 @@ package com.example.programmaifttt;
 
 import com.example.programmaifttt.Actions.Action;
 
-import com.example.programmaifttt.Actions.AudioTextAction;
+import com.example.programmaifttt.Actions.AudioAction;
 import com.example.programmaifttt.Actions.MessageBoxAction;
 import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.BackEnd.RuleController;
@@ -23,6 +23,7 @@ import javafx.collections.ObservableList;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.List;
 
 public class IFTTTController {
 
@@ -125,6 +126,26 @@ public class IFTTTController {
     private Button startSchedulerBtn;
     @FXML
     private Button stopSchedulerBtn;
+    @FXML
+    private TextField intervalSchedulerSel;
+    @FXML
+    private Button deleteSelectedRuleBtn;
+    @FXML
+    private Button deleteSelectedTriggerBtn;
+    @FXML
+    private Button deleteSelectedActionBtn;
+    @FXML
+    private TableColumn ruleTableMultiUse;
+    @FXML
+    private TableColumn ruleTableSleepTime;
+    @FXML
+    private TableColumn ruleTableState;
+    @FXML
+    private CheckBox multiUseCheckBox;
+    @FXML
+    private TextField sleepTimeSelBox;
+    @FXML
+    private CheckBox toggleActiveRuleCheckBox;
 
     //get rule controller
     public RuleController getRuleController() {
@@ -139,7 +160,9 @@ public class IFTTTController {
         this.ruleController = data.getRuleController();
 
         this.audioFile = null;
-        scheduler = new Scheduler( 10 ,ruleController, this);
+
+        intervalSchedulerSel.setText("10");
+        scheduler = new Scheduler(Integer.parseInt(intervalSchedulerSel.getText()), ruleController, this);
         stopSchedulerBtn.setDisable(true);
         //init the pages
         disablePages();
@@ -171,6 +194,10 @@ public class IFTTTController {
         disablePages();
         rulePage.setDisable(false);
         rulePage.setVisible(true);
+        editRulesBtn.setDisable(true);
+        editTriggersBtn.setDisable(false);
+        editActionsBtn.setDisable(false);
+
     }
 
     @FXML
@@ -178,6 +205,9 @@ public class IFTTTController {
         disablePages();
         triggerPage.setDisable(false);
         triggerPage.setVisible(true);
+        editRulesBtn.setDisable(false);
+        editTriggersBtn.setDisable(true);
+        editActionsBtn.setDisable(false);
     }
 
     @FXML
@@ -185,6 +215,10 @@ public class IFTTTController {
         disablePages();
         actionPage.setDisable(false);
         actionPage.setVisible(true);
+        editRulesBtn.setDisable(false);
+        editTriggersBtn.setDisable(false);
+        editActionsBtn.setDisable(true);
+
     }
 
     @FXML
@@ -192,14 +226,27 @@ public class IFTTTController {
         String name = ruleName.getText();
         Trigger trigger = triggerSelect.getValue();
         Action action = actionSelect.getValue();
+        Boolean multiUse = multiUseCheckBox.isSelected();
+        //get the sleep time from the text field and if its not a number call the error alert
+        int sleepTime;
+        //if the multi use checkbox is not selected the sleep time is null
+        if (multiUse) {
+            try {
+                sleepTime = Integer.parseInt(sleepTimeSelBox.getText());
+            } catch (NumberFormatException e) {
+                showErrorAlert("Error", "Sleep time must be a number!");
+                return;
+            }
+        } else {
+            sleepTime = 0;
+        }
+        //create the rule
 
 
-        Rule newRule = new Rule(name, trigger, action);
+        Rule newRule = new Rule(name, trigger, action, true, multiUse, sleepTime);
         ruleController.addRule(newRule);
         // Refresh the table after adding a new rule
         ruleData.setAll(ruleController.getRules());
-
-
     }
 
     @FXML
@@ -233,10 +280,10 @@ public class IFTTTController {
 
     private Action createNewAction(String name, String type) {
         switch (type) {
-            case AudioTextAction.type -> {
-                AudioTextAction audioTextAction = new AudioTextAction(name, audioFile);
-                //audioTextAction.execute();
-                return audioTextAction;
+            case AudioAction.type -> {
+                AudioAction audioAction = new AudioAction(name, audioFile);
+                //audioAction.execute();
+                return audioAction;
             }
             case MessageBoxAction.type -> {
                 MessageBoxAction messageBoxAction = new MessageBoxAction(name, messageBoxVal.getText());
@@ -262,6 +309,10 @@ public class IFTTTController {
         ruleTableName.setCellValueFactory(new PropertyValueFactory<>("name"));
         ruleTableTrigger.setCellValueFactory(new PropertyValueFactory<>("trigger"));
         ruleTableAction.setCellValueFactory(new PropertyValueFactory<>("action"));
+        ruleTableMultiUse.setCellValueFactory(new PropertyValueFactory<>("multiUse"));
+        ruleTableSleepTime.setCellValueFactory(new PropertyValueFactory<>("sleepTime"));
+        ruleTableState.setCellValueFactory(new PropertyValueFactory<>("state"));
+
 
         // Connect the ruleData to the table
         ruleTable.setItems(ruleData);
@@ -278,6 +329,33 @@ public class IFTTTController {
                         .or(Bindings.isNull(triggerSelect.valueProperty()))
                         .or(Bindings.isNull(actionSelect.valueProperty()))
         );
+
+        //bind the delete button disabled property based on whether a rule is selected
+        deleteSelectedRuleBtn.disableProperty().bind(Bindings.isNull(ruleTable.getSelectionModel().selectedItemProperty()));
+
+        //bind the sleep time text field disabled property based on whether the multi use checkbox is selected
+        sleepTimeSelBox.disableProperty().bind(multiUseCheckBox.selectedProperty().not());
+
+        //bind the toggle active rule checkbox disabled property based on whether a rule is selected
+        toggleActiveRuleCheckBox.disableProperty().bind(Bindings.isNull(ruleTable.getSelectionModel().selectedItemProperty()));
+
+
+        //set the value of the active rule checkbox based on the state of the selected rule
+        toggleActiveRuleCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            Rule selectedRule = ruleTable.getSelectionModel().getSelectedItem();
+            selectedRule.setState(newValue);
+            //refresh the table after changing the state of a rule
+            ruleData.setAll(ruleController.getRules());
+        });
+
+        //set the active rule checkbox to the state of the selected rule
+        ruleTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                toggleActiveRuleCheckBox.setSelected(newValue.getState());
+            }
+        });
+
+
 
         // Set items for the ChoiceBoxes
         actionSelect.setItems(FXCollections.observableArrayList(ruleController.getActions()));
@@ -299,6 +377,8 @@ public class IFTTTController {
         // Load initial data into the table (if any)
         triggerData.addAll(ruleController.getTriggers());
 
+        //set the sleep time text field to 60 by default
+        sleepTimeSelBox.setText("60");
 
         // Disable "Create" button by default
         triggerCreateBtn.disableProperty().bind(createTriggerButtonDisabled);
@@ -308,6 +388,9 @@ public class IFTTTController {
                 Bindings.isEmpty(triggerName.textProperty())
                         .or(Bindings.isNull(triggerTypeSelect.valueProperty()))
         );
+
+        //bind the delete button disabled property based on whether a trigger is selected
+        deleteSelectedTriggerBtn.disableProperty().bind(Bindings.isNull(triggerTable.getSelectionModel().selectedItemProperty()));
 
         // Populate the ChoiceBox with all the known types
         triggerTypeSelect.setItems(FXCollections.observableArrayList(TimeOfDayTrigger.type));
@@ -397,8 +480,12 @@ public class IFTTTController {
                         .or(Bindings.isNull(actionTypeSelect.valueProperty()))
         );
 
+        //bind the delete button disabled property based on whether an action is selected
+        deleteSelectedActionBtn.disableProperty().bind(Bindings.isNull(actionTable.getSelectionModel().selectedItemProperty()));
+
+
         // Populate the ChoiceBox with all the known types
-        actionTypeSelect.setItems(FXCollections.observableArrayList(AudioTextAction.type, MessageBoxAction.type));
+        actionTypeSelect.setItems(FXCollections.observableArrayList(AudioAction.type, MessageBoxAction.type));
 
         initActionTypes();
     }
@@ -440,7 +527,7 @@ public class IFTTTController {
         disbleActionValueBox();
         String selectedType = actionTypeSelect.getValue();
         switch (selectedType) {
-            case AudioTextAction.type -> {
+            case AudioAction.type -> {
                 audioTextValSel.setDisable(false);
                 audioTextValSel.setVisible(true);
             }
@@ -482,21 +569,35 @@ public class IFTTTController {
 
     }
 
+
     @FXML
     public void startScheduler(ActionEvent actionEvent) {
-        if(ruleController.getRules().size() > 0) {
+        List<Rule> rules = ruleController.getRules();
+
+        if (rules.isEmpty()) {
+            showErrorAlert("Error", "No rules to schedule!");
+            return;
+        }
+
+        try {
+            int interval = Integer.parseInt(intervalSchedulerSel.getText());
+            scheduler = new Scheduler(interval, ruleController, this);
             scheduler.start();
             stopSchedulerBtn.setDisable(false);
             startSchedulerBtn.setDisable(true);
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("No rules to schedule!");
-
-            // Wait for the user to click OK
-            alert.showAndWait();
+        } catch (NumberFormatException e) {
+            showErrorAlert("Error", "Interval must be a number!");
         }
+    }
+
+    private void showErrorAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+
+        // Wait for the user to click OK
+        alert.showAndWait();
     }
 
     @FXML
@@ -512,5 +613,40 @@ public class IFTTTController {
             triggerData.setAll(ruleController.getTriggers());
             actionData.setAll(ruleController.getActions());
         });
+    }
+
+    @FXML
+    public void deleteSelectedRule(ActionEvent actionEvent) {
+        //get the selected rule and delete it
+        Rule selectedRule = ruleTable.getSelectionModel().getSelectedItem();
+        ruleController.deleteRule(selectedRule.getName());
+        //refresh the table after deleting a rule
+        ruleData.setAll(ruleController.getRules());
+    }
+
+    @FXML
+    public void deleteSelectedTrigger(ActionEvent actionEvent) {
+        //get the selected trigger and delete it if it is not used in any rule
+        Trigger selectedTrigger = triggerTable.getSelectionModel().getSelectedItem();
+        if (ruleController.isTriggerUsed(selectedTrigger)) {
+            showErrorAlert("Error", "Trigger is used in a rule!");
+        } else {
+            ruleController.deleteTrigger(selectedTrigger.getName());
+            //refresh the table after deleting a trigger
+            triggerData.setAll(ruleController.getTriggers());
+        }
+    }
+
+    @FXML
+    public void deleteSelectedAction(ActionEvent actionEvent) {
+//get the selected action and delete it if it is not used in any rule
+        Action selectedAction = actionTable.getSelectionModel().getSelectedItem();
+        if (ruleController.isActionUsed(selectedAction)) {
+            showErrorAlert("Error", "Action is used in a rule!");
+        } else {
+            ruleController.deleteAction(selectedAction.getName());
+            //refresh the table after deleting an action
+            actionData.setAll(ruleController.getActions());
+        }
     }
 }

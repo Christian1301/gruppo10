@@ -74,4 +74,6 @@ public abstract class Trigger {
         }
         return null;
     }
+
+    public abstract boolean isEvaluable();
 }

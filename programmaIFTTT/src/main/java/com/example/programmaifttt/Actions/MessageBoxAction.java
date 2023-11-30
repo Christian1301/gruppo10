@@ -20,7 +20,6 @@ public class MessageBoxAction extends Action{
         this.message = message;
     }
 
-
     @Override
     public boolean execute() {
         try {
