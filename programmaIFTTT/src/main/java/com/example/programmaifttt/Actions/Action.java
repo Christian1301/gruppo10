@@ -64,8 +64,9 @@ public abstract class Action {
         return switch (type) {
             case "Audio" -> new AudioAction(name, new File(value));
             case "Message Box" -> new MessageBoxAction(name, value);
-            case "ExternalProgram" -> new ExternalProgramAction(name, value.split("/")[0].split(": ")[1], value.split("/")[1].split(": ")[1].substring(1, value.split("/")[1].split(": ")[1].length() - 1).split(", "));
+            case "External Program" -> new ExternalProgramAction(name, value.split("/")[0].split(": ")[1], value.split("/")[1].split(": ")[1].substring(1, value.split("/")[1].split(": ")[1].length() - 1).split(", "));
             case "String to File" -> new StringToFileAction(name, value.split("/")[1].split(": ")[1], new File(value.split("/")[0].split(": ")[1]));
+            case "Append String to File" -> new AppendStringToFileAction(name, value.split("/")[1].split(": ")[1], new File(value.split("/")[0].split(": ")[1]));
             default -> null;
         };
     }
