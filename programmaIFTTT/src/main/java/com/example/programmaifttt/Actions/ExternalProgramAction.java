@@ -2,15 +2,14 @@ package com.example.programmaifttt.Actions;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class ExternalProgramAction extends Action {
     public static final String type = "External Program";
     private File externalProgram; // Path to the esecutable file
-    private String[] commandLineArguments; // Array of command line arguments
+    private String commandLineArguments; // Array of command line arguments
 
-    public ExternalProgramAction(String name, File externalProgram, String[] commandLineArguments) {
-        super(name, type, "File:" + externalProgram.getName() + "/CommandLineArguments:" + Arrays.toString(commandLineArguments), externalProgram.getAbsolutePath());
+    public ExternalProgramAction(String name, File externalProgram, String commandLineArguments) {
+        super(name, type, "File:" + externalProgram.getName() + "/CommandLineArguments:" + commandLineArguments, externalProgram.getAbsolutePath());
         this.externalProgram = externalProgram;
         this.commandLineArguments = commandLineArguments;
     }
@@ -19,7 +18,7 @@ public class ExternalProgramAction extends Action {
         return externalProgram;
     }
 
-    public String[] getCommandLineArguments() {
+    public String getCommandLineArguments() {
         return commandLineArguments;
     }
 
@@ -29,7 +28,7 @@ public class ExternalProgramAction extends Action {
             // Create a process builder and start the external program
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.command().add(externalProgram.getAbsolutePath());
-            processBuilder.command().addAll(Arrays.asList(commandLineArguments));
+            processBuilder.command().addAll(java.util.Arrays.asList(commandLineArguments.split(" ")));
             Process process = processBuilder.start();
             // Wait for the external program to terminate and print the exit code
             int exitCode = process.waitFor();

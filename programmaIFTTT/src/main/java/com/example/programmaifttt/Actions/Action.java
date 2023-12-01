@@ -76,7 +76,7 @@ public abstract class Action {
         return switch (type) {
             case "Message Box" -> new MessageBoxAction(name, value);
             case "Audio" -> new AudioAction(name, new File(jsonObject.getString("filePath")));
-            case "External Program" -> new ExternalProgramAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1].replace("[", "").replace("]", "").split(", "));
+            case "External Program" -> new ExternalProgramAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
             case "Append String to File" -> new AppendStringToFileAction(name, value, new File(jsonObject.getString("filePath")));
             case "Delete File" -> new DeleteFileAction(name, new File(jsonObject.getString("filePath")));
             case "Move File" -> new MoveFileAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
