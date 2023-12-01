@@ -6,11 +6,12 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public class PasteFileAction extends Action {
+    public static final String type = "Paste File";
     private String sourcePath;
     private String destinationPath;
 
     public PasteFileAction(String name, String sourcePath, String destinationPath) {
-        super(name, "Paste File", "SourcePath:" + sourcePath + "/DestinationPath:" + destinationPath);
+        super(name, type, "SourcePath:" + sourcePath + "/DestinationPath:" + destinationPath);
         this.sourcePath = sourcePath;
         this.destinationPath = destinationPath;
     }

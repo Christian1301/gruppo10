@@ -26,9 +26,10 @@ public class StringToFileAction extends Action {
     @Override
     public boolean execute() {
         try {
-            FileWriter myWriter = new FileWriter(file);
-            myWriter.write(message);
-            myWriter.close();
+            //add the message to the file as a new line
+            FileWriter fileWriter = new FileWriter(file, true);
+            fileWriter.write(message + "\n");
+            fileWriter.close();
             return true;
         } catch (IOException e) {
             System.out.println("An error occurred.");

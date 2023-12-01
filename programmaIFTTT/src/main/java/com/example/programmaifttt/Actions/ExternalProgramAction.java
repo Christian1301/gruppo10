@@ -4,11 +4,12 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class ExternalProgramAction extends Action {
+    public static final String type = "External Program";
     private String externalProgram; // Path to the esecutable file
     private String[] commandLineArguments; // Array of command line arguments
 
     public ExternalProgramAction(String name, String externalProgram, String[] commandLineArguments) {
-        super(name, "External Program", "ProgramPath:" + externalProgram + "/CommandLineArguments" + Arrays.toString(commandLineArguments));
+        super(name, type, "ProgramPath:" + externalProgram + "/CommandLineArguments" + Arrays.toString(commandLineArguments));
         this.externalProgram = externalProgram;
         this.commandLineArguments = commandLineArguments;
     }
