@@ -1,7 +1,6 @@
 package com.example.programmaifttt.Actions;
 
 import org.json.JSONObject;
-
 import java.io.File;
 
 public abstract class Action {
@@ -76,14 +75,22 @@ public abstract class Action {
         String type = jsonObject.getString("type");
         String value = jsonObject.getString("value");
         return switch (type) {
-            case "Message Box" -> new MessageBoxAction(name, value);
-            case "Audio" -> new AudioAction(name, new File(jsonObject.getString("filePath")));
-            case "External Program" -> new ExternalProgramAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
-            case "Append String to File" -> new AppendStringToFileAction(name, value, new File(jsonObject.getString("filePath")));
-            case "Delete File" -> new DeleteFileAction(name, new File(jsonObject.getString("filePath")));
-            case "Move File" -> new MoveFileAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
-            case "Paste File" -> new PasteFileAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
-            default -> null;
+            case "Message Box" ->
+                    new MessageBoxAction(name, value);
+            case "Audio" ->
+                    new AudioAction(name, new File(jsonObject.getString("filePath")));
+            case "External Program" ->
+                    new ExternalProgramAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
+            case "Append String to File" ->
+                    new AppendStringToFileAction(name, value, new File(jsonObject.getString("filePath")));
+            case "Delete File" ->
+                    new DeleteFileAction(name, new File(jsonObject.getString("filePath")));
+            case "Move File" ->
+                    new MoveFileAction(name, new File(jsonObject.getString("filePath").split(" ")[0]), new File(jsonObject.getString("filePath").split(" ")[1]));
+            case "Paste File" ->
+                    new PasteFileAction(name, new File(jsonObject.getString("filePath").split(" ")[0]), new File(jsonObject.getString("filePath").split(" ")[1]));
+            default ->
+                    null;
         };
     }
 }

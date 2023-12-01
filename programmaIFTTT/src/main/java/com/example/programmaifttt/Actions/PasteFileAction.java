@@ -8,10 +8,10 @@ import java.nio.file.StandardCopyOption;
 public class PasteFileAction extends Action {
     public static final String type = "Paste File";
     private File fileToPaste;
-    private String destinationPath;
+    private File destinationPath;
 
-    public PasteFileAction(String name, File fileToPaste, String destinationPath) {
-        super(name, type, "File:" + fileToPaste + "/DestinationPath:" + destinationPath, fileToPaste.getAbsolutePath());
+    public PasteFileAction(String name, File fileToPaste, File destinationPath) {
+        super(name, type, "File:" + fileToPaste + "/DestinationPath:" + destinationPath.getAbsolutePath(), fileToPaste.getAbsolutePath() + " " + destinationPath.getAbsolutePath());
         this.fileToPaste = fileToPaste;
         this.destinationPath = destinationPath;
     }
@@ -21,7 +21,7 @@ public class PasteFileAction extends Action {
     }
 
     public String getDestinationPath() {
-        return destinationPath;
+        return destinationPath.getAbsolutePath();
     }
 
     @Override
@@ -29,7 +29,7 @@ public class PasteFileAction extends Action {
         try {
             // Get the absolute path of the file to paste and of the destination
             Path source = fileToPaste.toPath();
-            Path destination = new File(destinationPath).toPath();
+            Path destination = destinationPath.toPath();
             Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
             return true;
         } catch (Exception e) {

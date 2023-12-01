@@ -8,10 +8,10 @@ import java.nio.file.StandardCopyOption;
 public class MoveFileAction extends Action {
     public static final String type = "Move File";
     private File fileToMove;
-    private String destinationPath;
+    private File destinationPath;
 
-    public MoveFileAction(String name, File fileToMove, String destinationPath) {
-        super(name, type, "File:" + fileToMove.getName() + "/DestinationPath:" + destinationPath, fileToMove.getAbsolutePath());
+    public MoveFileAction(String name, File fileToMove, File destinationPath) {
+        super(name, type, "File:" + fileToMove.getName() + "/DestinationPath:" + destinationPath.getAbsolutePath(), fileToMove.getAbsolutePath() + " " + destinationPath.getAbsolutePath());
         this.fileToMove = fileToMove;
         this.destinationPath = destinationPath;
     }
@@ -21,7 +21,7 @@ public class MoveFileAction extends Action {
     }
 
     public String getDestinationPath() {
-        return destinationPath;
+        return destinationPath.getAbsolutePath();
     }
 
     @Override
@@ -29,7 +29,7 @@ public class MoveFileAction extends Action {
         try {
             // Get the absolute path of the file to move and of the destination
             Path source = fileToMove.toPath();
-            Path destination = new File(destinationPath).toPath();
+            Path destination = destinationPath.toPath();
             Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
             // Delete the file from the original path
             Files.deleteIfExists(source);
