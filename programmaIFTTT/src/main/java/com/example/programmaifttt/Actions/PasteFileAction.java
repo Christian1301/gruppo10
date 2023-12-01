@@ -11,7 +11,7 @@ public class PasteFileAction extends Action {
     private String destinationPath;
 
     public PasteFileAction(String name, File fileToPaste, String destinationPath) {
-        super(name, type, "File:" + fileToPaste + "/DestinationPath:" + destinationPath);
+        super(name, type, "File:" + fileToPaste + "/DestinationPath:" + destinationPath, fileToPaste.getAbsolutePath());
         this.fileToPaste = fileToPaste;
         this.destinationPath = destinationPath;
     }

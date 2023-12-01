@@ -1,8 +1,8 @@
 package com.example.programmaifttt.Actions;
 
 import javafx.application.Platform;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import java.io.File;
 
 public class AudioAction extends Action {
@@ -10,7 +10,7 @@ public class AudioAction extends Action {
     private File audioFile;
 
     public AudioAction(String name, File audioFile) {
-        super(name, type, "File: " + audioFile.getName());
+        super(name, type, "File: " + audioFile.getName(), audioFile.getAbsolutePath());
         this.audioFile = audioFile;
     }
 

@@ -2,8 +2,6 @@ package com.example.programmaifttt.BackEnd;
 
 import com.example.programmaifttt.Actions.Action;
 import com.example.programmaifttt.Triggers.Trigger;
-import javafx.beans.property.Property;
-import javafx.beans.property.SimpleBooleanProperty;
 import org.json.JSONObject;
 
 import java.util.Date;
@@ -110,6 +108,7 @@ public class Rule {
         } else {
             jsonRule.put("lastUse", Optional.empty());
         }
+        System.out.println(this.lastUse);
         jsonRule.put("sleepTime", this.sleepTime);
         return jsonRule;
     }
@@ -121,8 +120,11 @@ public class Rule {
         Action action = Action.fromJson(jsonObject.getJSONObject("action").toString());
         boolean state = jsonObject.getBoolean("state");
         boolean multiUse = jsonObject.getBoolean("multiUse");
-        Date lastUse = jsonObject.get("lastUse").equals(Optional.empty()) ? null : new Date(jsonObject.getLong("lastUse"));
-        System.out.println(lastUse);
+        String lastUseString = jsonObject.get("lastUse").toString();
+        Date lastUse = null;
+        if (!lastUseString.equals("Optional.empty")) {
+            lastUse = new Date(Long.parseLong(lastUseString));
+        }
         int sleepTime = jsonObject.getInt("sleepTime");
         return new Rule(name, trigger, action, state, multiUse, lastUse, sleepTime);
     }

@@ -10,7 +10,7 @@ public class ExternalProgramAction extends Action {
     private String[] commandLineArguments; // Array of command line arguments
 
     public ExternalProgramAction(String name, File externalProgram, String[] commandLineArguments) {
-        super(name, type, "File:" + externalProgram.getName() + "/CommandLineArguments" + Arrays.toString(commandLineArguments));
+        super(name, type, "File:" + externalProgram.getName() + "/CommandLineArguments:" + Arrays.toString(commandLineArguments), externalProgram.getAbsolutePath());
         this.externalProgram = externalProgram;
         this.commandLineArguments = commandLineArguments;
     }

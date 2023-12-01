@@ -11,7 +11,7 @@ public class MoveFileAction extends Action {
     private String destinationPath;
 
     public MoveFileAction(String name, File fileToMove, String destinationPath) {
-        super(name, type, "File:" + fileToMove.getName() + "/DestinationPath:" + destinationPath);
+        super(name, type, "File:" + fileToMove.getName() + "/DestinationPath:" + destinationPath, fileToMove.getAbsolutePath());
         this.fileToMove = fileToMove;
         this.destinationPath = destinationPath;
     }

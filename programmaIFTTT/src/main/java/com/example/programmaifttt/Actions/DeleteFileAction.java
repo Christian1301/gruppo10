@@ -7,7 +7,7 @@ public class DeleteFileAction extends  Action{
     private File fileToDelete;
 
     public DeleteFileAction(String name, File fileToDelete) {
-        super(name, type, "File:" + fileToDelete.getName());
+        super(name, type, "File:" + fileToDelete.getName(), fileToDelete.getAbsolutePath());
         this.fileToDelete = fileToDelete;
     }
 
