@@ -31,7 +31,8 @@ public class MoveFileAction extends Action {
             Path source = fileToMove.toPath();
             Path destination = new File(destinationPath).toPath();
             Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
-            Files.delete(source);
+            // Delete the file from the original path
+            Files.deleteIfExists(source);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

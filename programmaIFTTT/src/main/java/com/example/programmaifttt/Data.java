@@ -10,8 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Data {
     private RuleController ruleController;
@@ -82,7 +80,7 @@ public class Data {
         try {
             ClassLoader classLoader = IFTTTApplication.class.getClassLoader();
             File file = new File(classLoader.getResource(fileName).getFile());
-            // Utilizza una PrintWriter per scrivere il JSON nel file
+            // Use PrintWriter to write to the file
             try (PrintWriter writer = new PrintWriter(file)) {
                 writer.println(this.toJson());
             }

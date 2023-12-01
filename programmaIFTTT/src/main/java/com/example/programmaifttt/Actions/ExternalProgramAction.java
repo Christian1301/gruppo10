@@ -26,10 +26,12 @@ public class ExternalProgramAction extends Action {
     @Override
     public boolean execute() {
         try {
+            // Create a process builder and start the external program
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.command().add(externalProgram.getAbsolutePath());
             processBuilder.command().addAll(Arrays.asList(commandLineArguments));
             Process process = processBuilder.start();
+            // Wait for the external program to terminate and print the exit code
             int exitCode = process.waitFor();
             System.out.println("Il programma esterno è stato eseguito con codice di uscita: " + exitCode);
             return true;
