@@ -66,7 +66,6 @@ public class Scheduler implements RuleControllerObserver {
             for (Rule rule : ruleController.getRules()) {
                 if (rule.getState()) {
                     if (rule.getLastUse() == null || (rule.getLastUse() != null && rule.getLastUse().getTime() + rule.getSleepTime() * 1000 > System.currentTimeMillis())) {
-                        System.out.println(rule.getLastUse() + " " + rule.getSleepTime());
                         if (rule.getTrigger().evaluate()) {
                             if (rule.getAction().execute()) {
                                 rule.setLastUse();

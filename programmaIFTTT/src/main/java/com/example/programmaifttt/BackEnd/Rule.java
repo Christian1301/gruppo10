@@ -108,7 +108,6 @@ public class Rule {
         } else {
             jsonRule.put("lastUse", Optional.empty());
         }
-        System.out.println(this.lastUse);
         jsonRule.put("sleepTime", this.sleepTime);
         return jsonRule;
     }
