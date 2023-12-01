@@ -5,48 +5,49 @@ import org.json.JSONObject;
 import java.io.File;
 
 public abstract class Action {
-      private String name;
-      private String type;
-      private String value;
+    private String name;
+    private String type;
+    private String value;
 
-      // Constructor
-      public Action(String name, String type, String value) {
+    // Constructor
+    public Action(String name, String type, String value) {
         this.name = name;
         this.type = type;
         this.value = value;
-      }
+    }
 
-      public String getName() {
+    public String getName() {
         return name;
-      }
+    }
 
-      public void setName(String name) {
+    public void setName(String name) {
         this.name = name;
-      }
+    }
 
-      public String getType() {
+    public String getType() {
         return type;
-      }
+    }
 
-      public String getValue() {
-          return value;
-      }
+    public String getValue() {
+        return value;
+    }
 
-      @Override
-      public String toString() {return name;
-      }
+    @Override
+    public String toString() {
+        return name;
+    }
 
-      //equals
-      @Override
-      public boolean equals(Object obj) {
+    //equals
+    @Override
+    public boolean equals(Object obj) {
         if (obj instanceof Action) {
-          Action action = (Action) obj;
-          return this.name.equals(action.name);
+            Action action = (Action) obj;
+            return this.name.equals(action.name);
         }
         return false;
-      }
+    }
 
-      public abstract boolean execute();
+    public abstract boolean execute();
 
     public JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
@@ -61,12 +62,21 @@ public abstract class Action {
         String name = jsonObject.getString("name");
         String type = jsonObject.getString("type");
         String value = jsonObject.getString("value");
-        if (type.equals("Audio")) {
-            return new AudioAction(name, new File(value));
-        } else if (type.equals("Message Box")) {
-            return new MessageBoxAction(name, value);
-        } else {
-            return null;
-        }
+        return switch (type) {
+            case "Audio" -> new AudioAction(name, new File(value));
+            case "Message Box" -> new MessageBoxAction(name, value);
+            case "External Program" ->
+                    new ExternalProgramAction(name, value.split("/")[0].split(": ")[1], value.split("/")[1].split(": ")[1].substring(1, value.split("/")[1].split(": ")[1].length() - 1).split(", "));
+            case "String to File" ->
+                    new StringToFileAction(name, value.split("/")[1].split(": ")[1], new File(value.split("/")[0].split(": ")[1]));
+            case "Append String to File" ->
+                    new AppendStringToFileAction(name, value.split("/")[1].split(": ")[1], new File(value.split("/")[0].split(": ")[1]));
+            case "Delete File" -> new DeleteFileAction(name, value.split(": ")[1]);
+            case "Move File" ->
+                    new MoveFileAction(name, value.split("/")[0].split(": ")[1], value.split("/")[1].split(": ")[1]);
+            case "Paste File" ->
+                    new PasteFileAction(name, value.split("/")[0].split(": ")[1], value.split("/")[1].split(": ")[1]);
+            default -> null;
+        };
     }
 }
