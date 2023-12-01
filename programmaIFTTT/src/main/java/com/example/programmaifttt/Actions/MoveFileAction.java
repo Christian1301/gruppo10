@@ -6,11 +6,12 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public class MoveFileAction extends Action {
+    public static final String type = "Move File";
     private String sourcePath;
     private String destinationPath;
 
     public MoveFileAction(String name, String sourcePath, String destinationPath) {
-        super(name, "Move File", "SourcePath:" + sourcePath + "/DestinationPath:" + destinationPath);
+        super(name, type, "SourcePath:" + sourcePath + "/DestinationPath:" + destinationPath);
         this.sourcePath = sourcePath;
         this.destinationPath = destinationPath;
     }
