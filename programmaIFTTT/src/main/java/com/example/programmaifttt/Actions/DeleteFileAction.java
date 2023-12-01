@@ -1,7 +1,7 @@
 package com.example.programmaifttt.Actions;
 
 import java.io.File;
-import java.nio.file.Files;
+
 
 public class DeleteFileAction extends  Action{
 
@@ -9,7 +9,7 @@ public class DeleteFileAction extends  Action{
     private File fileToDelete;
 
     public DeleteFileAction(String name, File fileToDelete) {
-        super(name, type, "File:" + fileToDelete.getName(), fileToDelete.getAbsolutePath());
+        super(name, type, "File:" + fileToDelete.getName());
         this.fileToDelete = fileToDelete;
     }
 
@@ -20,7 +20,8 @@ public class DeleteFileAction extends  Action{
     @Override
     public boolean execute() {
         try {
-            Files.delete(fileToDelete.toPath());
+            //detete file
+            fileToDelete.delete();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
