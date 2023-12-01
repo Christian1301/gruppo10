@@ -27,7 +27,7 @@ public class ExternalProgramAction extends Action {
     public boolean execute() {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder();
-            processBuilder.command().add(externalProgram.getPath());
+            processBuilder.command().add(externalProgram.getAbsolutePath());
             processBuilder.command().addAll(Arrays.asList(commandLineArguments));
             Process process = processBuilder.start();
             int exitCode = process.waitFor();

@@ -27,12 +27,11 @@ public class MoveFileAction extends Action {
     @Override
     public boolean execute() {
         try {
-            // Creazione degli oggetti per rappresentare i percorsi
+            // Get the absolute path of the file to move and of the destination
             Path source = fileToMove.toPath();
             Path destination = new File(destinationPath).toPath();
-
-            // Spostamento del file
             Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
+            Files.delete(source);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

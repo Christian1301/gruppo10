@@ -27,6 +27,7 @@ public class PasteFileAction extends Action {
     @Override
     public boolean execute() {
         try {
+            // Get the absolute path of the file to paste and of the destination
             Path source = fileToPaste.toPath();
             Path destination = new File(destinationPath).toPath();
             Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);

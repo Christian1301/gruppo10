@@ -17,6 +17,12 @@ public class DeleteFileAction extends  Action{
 
     @Override
     public boolean execute() {
-        return fileToDelete.delete();
+        try {
+            fileToDelete.delete();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
