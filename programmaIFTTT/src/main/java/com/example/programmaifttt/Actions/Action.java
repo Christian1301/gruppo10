@@ -63,15 +63,18 @@ public abstract class Action {
         String type = jsonObject.getString("type");
         String value = jsonObject.getString("value");
         return switch (type) {
-            case "Audio" -> new AudioAction(name, new File(value));
-            case "Message Box" -> new MessageBoxAction(name, value);
+            case "Audio" ->
+                    new AudioAction(name, new File(value.split(": ")[1]));
+            case "Message Box" ->
+                    new MessageBoxAction(name, value);
             case "External Program" ->
-                    new ExternalProgramAction(name, value.split("/")[0].split(": ")[1], value.split("/")[1].split(": ")[1].substring(1, value.split("/")[1].split(": ")[1].length() - 1).split(", "));
+                    new ExternalProgramAction(name, new File(value.split("/")[0].split(": ")[1]), value.split("/")[1].split(": ")[1].replace("[", "").replace("]", "").split(", "));
             case "String to File" ->
                     new StringToFileAction(name, value.split("/")[1].split(": ")[1], new File(value.split("/")[0].split(": ")[1]));
             case "Append String to File" ->
                     new AppendStringToFileAction(name, value.split("/")[1].split(": ")[1], new File(value.split("/")[0].split(": ")[1]));
-            case "Delete File" -> new DeleteFileAction(name, value.split(": ")[1]);
+            case "Delete File" ->
+                    new DeleteFileAction(name, new File(value.split(": ")[1]));
             case "Move File" ->
                     new MoveFileAction(name, value.split("/")[0].split(": ")[1], value.split("/")[1].split(": ")[1]);
             case "Paste File" ->

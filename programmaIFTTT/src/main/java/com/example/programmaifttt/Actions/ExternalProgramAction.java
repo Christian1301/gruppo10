@@ -1,19 +1,21 @@
 package com.example.programmaifttt.Actions;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
 public class ExternalProgramAction extends Action {
-    private String externalProgram; // Path to the esecutable file
+    public static final String type = "External Program";
+    private File externalProgram; // Path to the esecutable file
     private String[] commandLineArguments; // Array of command line arguments
 
-    public ExternalProgramAction(String name, String externalProgram, String[] commandLineArguments) {
-        super(name, "External Program", "ProgramPath:" + externalProgram + "/CommandLineArguments" + Arrays.toString(commandLineArguments));
+    public ExternalProgramAction(String name, File externalProgram, String[] commandLineArguments) {
+        super(name, type, "ProgramPath:" + externalProgram.getName() + "/CommandLineArguments" + Arrays.toString(commandLineArguments));
         this.externalProgram = externalProgram;
         this.commandLineArguments = commandLineArguments;
     }
 
-    public String getExternalProgram() {
+    public File getExternalProgram() {
         return externalProgram;
     }
 
@@ -25,7 +27,7 @@ public class ExternalProgramAction extends Action {
     public boolean execute() {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder();
-            processBuilder.command().add(externalProgram);
+            processBuilder.command().add(externalProgram.getPath());
             processBuilder.command().addAll(Arrays.asList(commandLineArguments));
             Process process = processBuilder.start();
             int exitCode = process.waitFor();

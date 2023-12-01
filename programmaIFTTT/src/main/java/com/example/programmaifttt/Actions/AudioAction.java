@@ -12,7 +12,6 @@ public class AudioAction extends Action {
     public AudioAction(String name, File audioFile) {
         super(name, type, "File: " + audioFile.getName());
         this.audioFile = audioFile;
-
     }
 
     public File getAudioFile() {
