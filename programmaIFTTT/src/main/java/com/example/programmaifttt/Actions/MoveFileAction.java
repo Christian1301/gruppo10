@@ -7,17 +7,17 @@ import java.nio.file.StandardCopyOption;
 
 public class MoveFileAction extends Action {
     public static final String type = "Move File";
-    private String sourcePath;
+    private File fileToMove;
     private String destinationPath;
 
-    public MoveFileAction(String name, String sourcePath, String destinationPath) {
-        super(name, type, "SourcePath:" + sourcePath + "/DestinationPath:" + destinationPath);
-        this.sourcePath = sourcePath;
+    public MoveFileAction(String name, File fileToMove, String destinationPath) {
+        super(name, type, "File:" + fileToMove.getName() + "/DestinationPath:" + destinationPath);
+        this.fileToMove = fileToMove;
         this.destinationPath = destinationPath;
     }
 
-    public String getSourcePath() {
-        return sourcePath;
+    public File getFileToMove() {
+        return fileToMove;
     }
 
     public String getDestinationPath() {
@@ -28,7 +28,7 @@ public class MoveFileAction extends Action {
     public boolean execute() {
         try {
             // Creazione degli oggetti per rappresentare i percorsi
-            Path source = new File(sourcePath).toPath();
+            Path source = fileToMove.toPath();
             Path destination = new File(destinationPath).toPath();
 
             // Spostamento del file

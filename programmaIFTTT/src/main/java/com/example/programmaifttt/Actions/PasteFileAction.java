@@ -7,17 +7,17 @@ import java.nio.file.StandardCopyOption;
 
 public class PasteFileAction extends Action {
     public static final String type = "Paste File";
-    private String sourcePath;
+    private File fileToPaste;
     private String destinationPath;
 
-    public PasteFileAction(String name, String sourcePath, String destinationPath) {
-        super(name, type, "SourcePath:" + sourcePath + "/DestinationPath:" + destinationPath);
-        this.sourcePath = sourcePath;
+    public PasteFileAction(String name, File fileToPaste, String destinationPath) {
+        super(name, type, "File:" + fileToPaste + "/DestinationPath:" + destinationPath);
+        this.fileToPaste = fileToPaste;
         this.destinationPath = destinationPath;
     }
 
-    public String getSourcePath() {
-        return sourcePath;
+    public File getFileToPaste() {
+        return fileToPaste;
     }
 
     public String getDestinationPath() {
@@ -27,7 +27,7 @@ public class PasteFileAction extends Action {
     @Override
     public boolean execute() {
         try {
-            Path source = new File(sourcePath).toPath();
+            Path source = fileToPaste.toPath();
             Path destination = new File(destinationPath).toPath();
             Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
             return true;
