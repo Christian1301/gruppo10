@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-public class MoveFileAction extends Action{
+public class MoveFileAction extends Action {
     private String sourcePath;
     private String destinationPath;
 
@@ -32,11 +32,8 @@ public class MoveFileAction extends Action{
 
             // Spostamento del file
             Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
-
-            // Restituzione true se il processo è riuscito
             return true;
         } catch (Exception e) {
-            // Gestione delle eccezioni, ad esempio nel caso di un errore di spostamento del file
             e.printStackTrace();
             return false;
         }

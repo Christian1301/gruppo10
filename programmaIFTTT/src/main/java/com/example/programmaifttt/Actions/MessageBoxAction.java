@@ -3,7 +3,7 @@ package com.example.programmaifttt.Actions;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
-public class MessageBoxAction extends Action{
+public class MessageBoxAction extends Action {
     public static final String type = "Message Box";
     private String message;
 
@@ -35,11 +35,6 @@ public class MessageBoxAction extends Action{
 
                 // Wait for the user to click OK
                 alert.showAndWait();
-
-                // Resume the background thread after the user closes the dialog
-                // You may want to handle this differently based on your requirements
-                // For example, you could use a callback or CompletableFuture
-                // to notify the calling code that the user has closed the dialog.
             });
 
             return true;

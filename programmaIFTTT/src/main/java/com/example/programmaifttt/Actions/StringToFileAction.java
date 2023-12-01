@@ -1,22 +1,25 @@
 package com.example.programmaifttt.Actions;
+
 import java.io.File;
-import java.io.IOException;
 import java.io.FileWriter;
-public class StringToFileAction extends Action{
+import java.io.IOException;
+
+public class StringToFileAction extends Action {
     public static final String type = "String to File";
     String message;
     File file;
-    public StringToFileAction(String name, String message, File file){
-        super(name,type,"File: " + file.getName() + "/message: " + message);
-        this.message=message;
-        this.file=file;
+
+    public StringToFileAction(String name, String message, File file) {
+        super(name, type, "File: " + file.getName() + "/message: " + message);
+        this.message = message;
+        this.file = file;
     }
 
-    public String getMessage(){
+    public String getMessage() {
         return message;
     }
 
-    public File getFile(){
+    public File getFile() {
         return file;
     }
 

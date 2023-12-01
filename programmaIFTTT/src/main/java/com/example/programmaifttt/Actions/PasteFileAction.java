@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-public class PasteFileAction extends Action{
+public class PasteFileAction extends Action {
     private String sourcePath;
     private String destinationPath;
 
@@ -26,17 +26,11 @@ public class PasteFileAction extends Action{
     @Override
     public boolean execute() {
         try {
-            // Creazione degli oggetti per rappresentare i percorsi
             Path source = new File(sourcePath).toPath();
             Path destination = new File(destinationPath).toPath();
-
-            // Spostamento del file
             Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
-
-            // Restituzione true se il processo è riuscito
             return true;
         } catch (Exception e) {
-            // Gestione delle eccezioni, ad esempio nel caso di un errore di spostamento del file
             e.printStackTrace();
             return false;
         }
