@@ -63,7 +63,9 @@ public abstract class Action {
         jsonObject.put("type", type);
         jsonObject.put("value", value);
         switch (type) {
-            case "Audio", "External Program", "Append String to File", "Delete File", "Move File", "Paste File" -> jsonObject.put("filePath", filePath);
+            case "Audio", "External Program", "Append String to File",
+                    "Delete File", "Move File", "Paste File"
+                    -> jsonObject.put("filePath", filePath);
         }
         return jsonObject;
     }
