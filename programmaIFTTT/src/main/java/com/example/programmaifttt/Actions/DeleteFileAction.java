@@ -21,8 +21,7 @@ public class DeleteFileAction extends  Action{
     public boolean execute() {
         try {
             //detete file
-            fileToDelete.delete();
-            return true;
+            return fileToDelete.delete();
         } catch (Exception e) {
             e.printStackTrace();
             return false;
