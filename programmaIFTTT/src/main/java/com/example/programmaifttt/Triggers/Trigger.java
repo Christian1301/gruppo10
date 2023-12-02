@@ -1,5 +1,6 @@
 package com.example.programmaifttt.Triggers;
 
+import com.example.programmaifttt.Enums.DayOfWeekEnum;
 import org.json.JSONObject;
 
 public abstract class Trigger {
@@ -66,11 +67,20 @@ public abstract class Trigger {
         String name = jsonObject.getString("name");
         String type = jsonObject.getString("type");
         String value = jsonObject.getString("value");
-        if (type.equals("Time Of Day")) {
-            String[] time = value.split(":");
-            int hours = Integer.parseInt(time[0]);
-            int minutes = Integer.parseInt(time[1]);
-            return new TimeOfDayTrigger(name, hours, minutes);
+        switch (type) {
+            case "Time Of Day" -> {
+                String[] time = value.split(":");
+                int hours = Integer.parseInt(time[0]);
+                int minutes = Integer.parseInt(time[1]);
+                return new TimeOfDayTrigger(name, hours, minutes);
+            }
+            case "Day Of Month" -> {
+                int day = Integer.parseInt(value.split(":")[1]);
+                return new DayOfMonthTrigger(name, day);
+            }
+            case "Day Of Week" -> {
+                return new DayOfWeekTrigger(name, DayOfWeekEnum.valueOf(value.split(":")[1]));
+            }
         }
         return null;
     }

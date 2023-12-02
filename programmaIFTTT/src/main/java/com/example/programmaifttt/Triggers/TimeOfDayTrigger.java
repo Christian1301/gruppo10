@@ -12,7 +12,6 @@ public class TimeOfDayTrigger extends Trigger {
         super(name, type, hours + ":" + minutes);
         this.hours = hours;
         this.minutes = minutes;
-
     }
 
     public int getHours() {
@@ -47,10 +46,7 @@ public class TimeOfDayTrigger extends Trigger {
         // Get the current time
         LocalTime currentTime = LocalTime.now();
         // Check if the current time is greater than or equal to the time of the trigger
-        if (currentTime.getHour() > hours && currentTime.getMinute() > minutes) {
-            return true;
-        }
-        return false;
+        return currentTime.getHour() > hours && currentTime.getMinute() > minutes;
     }
 }
 
