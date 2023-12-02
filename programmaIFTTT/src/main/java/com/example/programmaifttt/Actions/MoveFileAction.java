@@ -30,7 +30,7 @@ public class MoveFileAction extends Action {
             // Get the absolute path of the file to move and of the destination
             Path source = fileToMove.toPath();
             Path destination = destinationPath.toPath();
-            Files.move(source, destination, StandardCopyOption.REPLACE_EXISTING);
+            Files.move(source, destination.resolve(fileToMove.getName()), StandardCopyOption.REPLACE_EXISTING);
             // Delete the file from the original path
             Files.deleteIfExists(source);
             return true;

@@ -30,7 +30,7 @@ public class PasteFileAction extends Action {
             // Get the absolute path of the file to paste and of the destination
             Path source = fileToPaste.toPath();
             Path destination = destinationPath.toPath();
-            Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(source, destination.resolve(fileToPaste.getName()), StandardCopyOption.REPLACE_EXISTING);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
