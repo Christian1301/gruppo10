@@ -82,7 +82,7 @@ public abstract class Action {
             case "External Program" ->
                     new ExternalProgramAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
             case "Append String to File" ->
-                    new AppendStringToFileAction(name, value, new File(jsonObject.getString("filePath")));
+                    new AppendStringToFileAction(name, value.split("/")[1].split(": ")[1], new File(jsonObject.getString("filePath")));
             case "Delete File" ->
                     new DeleteFileAction(name, new File(jsonObject.getString("filePath")));
             case "Move File" ->

@@ -11,8 +11,8 @@ public class AppendStringToFileAction extends Action{
 
     public AppendStringToFileAction(String name, String message, File file){
         super(name,type,"File: " + file.getName() + "/message to append: " + message, file.getAbsolutePath());
-        this.message=message;
-        this.file=file;
+        this.message = message;
+        this.file = file;
     }
 
     public String getMessage() {
