@@ -20,7 +20,6 @@ public class Scheduler implements RuleControllerObserver {
         this.interval = interval;
         this.ruleController = ruleController;
         this.iftttController = IFTTTController;
-        ruleController.addObserver(this);
     }
 
     public void start() {
@@ -56,7 +55,6 @@ public class Scheduler implements RuleControllerObserver {
     public void update(RuleController ruleController) {
         // RuleController has been updated from outside
         // You might want to add additional logic here if needed
-        checkRules();
         updateUI();
     }
 

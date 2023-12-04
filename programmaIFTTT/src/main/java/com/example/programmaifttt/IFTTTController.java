@@ -706,8 +706,8 @@ public class IFTTTController {
                 moveFileValSel.setVisible(true);
             }
             case PasteFileAction.type -> {
-                deleteFileValSel.setDisable(false);
-                deleteFileValSel.setVisible(true);
+                pasteFileValSel.setDisable(false);
+                pasteFileValSel.setVisible(true);
             }
         }
     }
