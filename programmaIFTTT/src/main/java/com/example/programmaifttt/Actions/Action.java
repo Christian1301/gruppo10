@@ -80,7 +80,7 @@ public abstract class Action {
             case AudioAction.type ->
                     new AudioAction(name, new File(jsonObject.getString("filePath")));
             case ExternalProgramAction.type ->
-                    new ExternalProgramAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
+                new ExternalProgramAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
             case AppendStringToFileAction.type ->
                     new AppendStringToFileAction(name, value.split("/")[1].split(": ")[1], new File(jsonObject.getString("filePath")));
             case DeleteFileAction.type ->
