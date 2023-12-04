@@ -62,8 +62,8 @@ public abstract class Action {
         jsonObject.put("type", type);
         jsonObject.put("value", value);
         switch (type) {
-            case "Audio", "External Program", "Append String to File",
-                    "Delete File", "Move File", "Paste File"
+            case AudioAction.type , ExternalProgramAction.type, AppendStringToFileAction.type, DeleteFileAction.type,
+                    MoveFileAction.type, PasteFileAction.type
                     -> jsonObject.put("filePath", filePath);
         }
         return jsonObject;
@@ -75,19 +75,19 @@ public abstract class Action {
         String type = jsonObject.getString("type");
         String value = jsonObject.getString("value");
         return switch (type) {
-            case "Message Box" ->
+            case MessageBoxAction.type ->
                     new MessageBoxAction(name, value);
-            case "Audio" ->
+            case AudioAction.type ->
                     new AudioAction(name, new File(jsonObject.getString("filePath")));
-            case "External Program" ->
-                    new ExternalProgramAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
-            case "Append String to File" ->
+            case ExternalProgramAction.type ->
+                new ExternalProgramAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
+            case AppendStringToFileAction.type ->
                     new AppendStringToFileAction(name, value.split("/")[1].split(": ")[1], new File(jsonObject.getString("filePath")));
-            case "Delete File" ->
+            case DeleteFileAction.type ->
                     new DeleteFileAction(name, new File(jsonObject.getString("filePath")));
-            case "Move File" ->
+            case MoveFileAction.type ->
                     new MoveFileAction(name, new File(jsonObject.getString("filePath").split(" ")[0]), new File(jsonObject.getString("filePath").split(" ")[1]));
-            case "Paste File" ->
+            case PasteFileAction.type ->
                     new PasteFileAction(name, new File(jsonObject.getString("filePath").split(" ")[0]), new File(jsonObject.getString("filePath").split(" ")[1]));
             default ->
                     null;
