@@ -24,7 +24,7 @@ public class AppendStringToFileAction extends Action{
     public boolean execute() {
         try {
             FileWriter fileWriter = new FileWriter(file, true);
-            fileWriter.write(message);
+            fileWriter.write(message+"\n");
             fileWriter.close();
             return true;
         } catch (IOException e) {

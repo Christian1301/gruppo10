@@ -1,9 +1,10 @@
 package com.example.programmaifttt.Actions;
 
 import java.io.File;
-import java.nio.file.Files;
+
 
 public class DeleteFileAction extends  Action{
+
     public static final String type = "Delete File";
     private File fileToDelete;
 
@@ -19,8 +20,8 @@ public class DeleteFileAction extends  Action{
     @Override
     public boolean execute() {
         try {
-            Files.delete(fileToDelete.toPath());
-            return true;
+            //detete file
+            return fileToDelete.delete();
         } catch (Exception e) {
             e.printStackTrace();
             return false;

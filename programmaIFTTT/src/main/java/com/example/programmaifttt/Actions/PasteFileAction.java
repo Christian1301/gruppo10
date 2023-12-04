@@ -11,7 +11,7 @@ public class PasteFileAction extends Action {
     private File destinationPath;
 
     public PasteFileAction(String name, File fileToPaste, File destinationPath) {
-        super(name, type, "File:" + fileToPaste + "/DestinationPath:" + destinationPath.getAbsolutePath(), fileToPaste.getAbsolutePath() + " " + destinationPath.getAbsolutePath());
+        super(name, type, "File:" + fileToPaste + "/DestinationPath:" + destinationPath.getAbsolutePath(), fileToPaste.getAbsolutePath());
         this.fileToPaste = fileToPaste;
         this.destinationPath = destinationPath;
     }
@@ -20,8 +20,8 @@ public class PasteFileAction extends Action {
         return fileToPaste;
     }
 
-    public String getDestinationPath() {
-        return destinationPath.getAbsolutePath();
+    public File getDestinationPath() {
+        return destinationPath;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class PasteFileAction extends Action {
             // Get the absolute path of the file to paste and of the destination
             Path source = fileToPaste.toPath();
             Path destination = destinationPath.toPath();
-            Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(source, destination.resolve(fileToPaste.getName()), StandardCopyOption.REPLACE_EXISTING);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

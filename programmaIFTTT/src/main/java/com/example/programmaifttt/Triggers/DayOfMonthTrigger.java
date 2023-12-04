@@ -8,7 +8,7 @@ public class DayOfMonthTrigger extends Trigger {
 
     // Constructor
     public DayOfMonthTrigger(String name, Integer day) {
-        super(name, type, "Day:" + day);
+        super(name, type, "Day: " + day);
         this.day = day;
     }
 

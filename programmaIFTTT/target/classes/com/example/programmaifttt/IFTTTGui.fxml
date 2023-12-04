@@ -75,7 +75,7 @@
         </AnchorPane>
             <StackPane prefHeight="150.0" prefWidth="200.0">
                <children>
-                  <SplitPane fx:id="rulePage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0">
+                  <SplitPane fx:id="rulePage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0" visible="false">
                      <items>
                     <AnchorPane prefHeight="576.0" prefWidth="251.0">
                       <padding>
@@ -183,7 +183,7 @@
                         </AnchorPane>
                      </items>
                   </SplitPane>
-                  <SplitPane fx:id="actionPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0" visible="false">
+                  <SplitPane fx:id="actionPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0">
                      <items>
                         <AnchorPane prefHeight="576.0" prefWidth="251.0">
                            <padding>
@@ -231,7 +231,7 @@
                                                 </VBox>
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane fx:id="messageBoxValSel" prefHeight="200.0" prefWidth="200.0">
+                                          <AnchorPane fx:id="messageBoxValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
                                              <children>
                                                 <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <padding>
@@ -240,6 +240,106 @@
                                                    <children>
                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert the message" />
                                                       <TextField fx:id="messageBoxVal" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="appendStringToFileValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert the message" />
+                                                      <TextField fx:id="messageToAppend" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the text file:" />
+                                                      <Button fx:id="selectTextFileBtn" mnemonicParsing="false" onAction="#selectTextFile" text="Select file" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File Selected:" />
+                                                      <Label fx:id="textFileSelectedLabel" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="deleteFileValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the file to delete:" />
+                                                      <Button fx:id="selectDeleteFileBtn" mnemonicParsing="false" onAction="#selectDeleteFile" text="Select file" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File Selected:" />
+                                                      <Label fx:id="deleteFileSelectedLabel" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="externalProgramValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert the command line arguments" />
+                                                      <TextField fx:id="commandLineArgumentsVal" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select file to execute:" />
+                                                      <Button fx:id="selectExternalProgramBtn" mnemonicParsing="false" onAction="#selectExternalProgram" text="Select file" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File Selected:" />
+                                                      <Label fx:id="externalProgramSelected" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="moveFileValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the file and the directory:" />
+                                                      <Button fx:id="selectMoveFileBtn" mnemonicParsing="false" onAction="#selectMoveFile" text="Select file" />
+                                                      <Button fx:id="selectMoveFileDirectoryBtn" mnemonicParsing="false" onAction="#selectMoveFileDirectory" text="Select directory" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File Selected:" />
+                                                      <Label fx:id="selectedMoveFile" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Directory Selected" />
+                                                      <Label fx:id="selectedMoveFileDirectory" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="pasteFileValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the file and the directory:" />
+                                                      <Button fx:id="selectPasteFileBtn" mnemonicParsing="false" onAction="#selectPasteFile" text="Select file" />
+                                                      <Button fx:id="selectPasteFileDirectoryBtn" mnemonicParsing="false" onAction="#selectPasteFileDirectory" text="Select directory" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File Selected:" />
+                                                      <Label fx:id="selectedPasteFile" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Directory Selected" />
+                                                      <Label fx:id="selectedPasteFileDirectory" />
                                                    </children>
                                                 </VBox>
                                              </children>
