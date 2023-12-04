@@ -86,9 +86,9 @@ public abstract class Action {
             case DeleteFileAction.type ->
                     new DeleteFileAction(name, new File(jsonObject.getString("filePath")));
             case MoveFileAction.type ->
-                    new MoveFileAction(name, new File(jsonObject.getString("filePath").split(" ")[0]), new File(jsonObject.getString("filePath").split(" ")[1]));
+                    new MoveFileAction(name, new File(jsonObject.getString("filePath")), new File(value.split("/")[1].split(": ")[1]));
             case PasteFileAction.type ->
-                    new PasteFileAction(name, new File(jsonObject.getString("filePath").split(" ")[0]), new File(jsonObject.getString("filePath").split(" ")[1]));
+                    new PasteFileAction(name, new File(jsonObject.getString("filePath")), new File(value.split("/")[1].split(": ")[1]));
             default ->
                     null;
         };
