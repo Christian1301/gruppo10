@@ -14,12 +14,16 @@ public class DayOfWeekTrigger extends Trigger {
         this.day = dayOfWeek.getDay();
     }
 
+    public String getDay() {
+        return day;
+    }
+
     @Override
     public boolean evaluate() {
         // Get the current day of the week
         DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
         // Check if the current day of the week matches the trigger day of the week
-        return currentDayOfWeek.toString().equalsIgnoreCase(getValue());
+        return currentDayOfWeek.toString().equalsIgnoreCase(getDay());
     }
 
     @Override

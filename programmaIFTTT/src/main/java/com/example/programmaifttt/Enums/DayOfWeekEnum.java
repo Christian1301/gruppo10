@@ -1,13 +1,13 @@
 package com.example.programmaifttt.Enums;
 
 public enum DayOfWeekEnum {
-    MONDAY("Monday"),
-    TUESDAY("Tuesday"),
-    WEDNESDAY("Wednesday"),
-    THURSDAY("Thursday"),
-    FRIDAY("Friday"),
-    SATURDAY("Saturday"),
-    SUNDAY("Sunday");
+    MONDAY("MONDAY"),
+    TUESDAY("TUESDAY"),
+    WEDNESDAY("WEDESDAY"),
+    THURSDAY("THURSDAY"),
+    FRIDAY("FRIDAY"),
+    SATURDAY("SATURDAY"),
+    SUNDAY("SUNDAY");
 
     private final String day;
 

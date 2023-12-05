@@ -4,6 +4,7 @@ module com.example.programmaifttt {
     requires java.desktop;
     requires org.json;
     requires javafx.media;
+    requires junit;
 
     opens com.example.programmaifttt to javafx.fxml;
     exports com.example.programmaifttt;
@@ -13,4 +14,6 @@ module com.example.programmaifttt {
     opens com.example.programmaifttt.Actions to javafx.fxml;
     exports com.example.programmaifttt.BackEnd;
     opens com.example.programmaifttt.BackEnd to javafx.fxml;
+    exports com.example.programmaifttt.Tests;
+    opens com.example.programmaifttt.Tests to javafx.fxml;
 }
