@@ -1,16 +1,17 @@
 package com.example.programmaifttt.Triggers;
+
 import java.time.LocalTime;
-public class TimeOfDayTrigger extends Trigger{
+
+public class TimeOfDayTrigger extends Trigger {
     public static final String type = "Time Of Day";
     private int hours;
     private int minutes;
 
     // Constructor
-    public TimeOfDayTrigger(String name,int hours,int minutes) {
-        super(name,type, hours + ":" + minutes);
+    public TimeOfDayTrigger(String name, int hours, int minutes) {
+        super(name, type, hours + ":" + minutes);
         this.hours = hours;
         this.minutes = minutes;
-
     }
 
     public int getHours() {
@@ -40,6 +41,12 @@ public class TimeOfDayTrigger extends Trigger{
         return false;
     }
 
-
+    @Override
+    public boolean isEvaluable() {
+        // Get the current time
+        LocalTime currentTime = LocalTime.now();
+        // Check if the current time is greater than or equal to the time of the trigger
+        return currentTime.getHour() > hours && currentTime.getMinute() > minutes;
+    }
 }
 

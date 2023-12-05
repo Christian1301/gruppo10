@@ -1,18 +1,17 @@
 package com.example.programmaifttt.Actions;
 
 import javafx.application.Platform;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import java.io.File;
 
-public class AudioTextAction extends Action {
-    public static final String type = "Audio Text";
+public class AudioAction extends Action {
+    public static final String type = "Audio";
     private File audioFile;
 
-    public AudioTextAction(String name, File audioFile) {
-        super(name, type, "File: " + audioFile.getName());
+    public AudioAction(String name, File audioFile) {
+        super(name, type, "File: " + audioFile.getName(), audioFile.getAbsolutePath());
         this.audioFile = audioFile;
-
     }
 
     public File getAudioFile() {

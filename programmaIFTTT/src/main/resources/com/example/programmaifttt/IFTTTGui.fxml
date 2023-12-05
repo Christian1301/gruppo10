@@ -34,6 +34,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
@@ -60,7 +61,8 @@
                 <Button fx:id="editRulesBtn" mnemonicParsing="false" onAction="#showRulesPage" text="Edit Rules" />
                         <Button fx:id="editTriggersBtn" mnemonicParsing="false" onAction="#showTriggersPage" text="Edit Triggers" />
                         <Button fx:id="editActionsBtn" mnemonicParsing="false" onAction="#showActionsPage" text="Edit Actions" />
-                        <Separator prefWidth="200.0" />
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Set the interval for the check in seconds" wrappingWidth="169.634765625" />
+                        <TextField fx:id="intervalSchedulerSel" prefHeight="27.0" prefWidth="159.0" />
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Start or stop the program" />
                         <Button fx:id="startSchedulerBtn" mnemonicParsing="false" onAction="#startScheduler" text="Start" />
                         <Button fx:id="stopSchedulerBtn" mnemonicParsing="false" onAction="#stopScheduler" text="Stop" />
@@ -82,9 +84,12 @@
                       <children>
                         <TableView fx:id="ruleTable" layoutX="14.0" layoutY="-21.0" prefHeight="588.6666666666666" prefWidth="415.3333333333333" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
-                            <TableColumn fx:id="ruleTableName" prefWidth="133.0" text="Name" />
-                            <TableColumn fx:id="ruleTableTrigger" prefWidth="105.0" text="Trigger" />
-                            <TableColumn fx:id="ruleTableAction" prefWidth="116.0" text="Action" />
+                            <TableColumn fx:id="ruleTableName" prefWidth="74.0" text="Name" />
+                            <TableColumn fx:id="ruleTableTrigger" prefWidth="81.0" text="Trigger" />
+                            <TableColumn fx:id="ruleTableAction" minWidth="3.0" prefWidth="74.0" text="Action" />
+                                    <TableColumn fx:id="ruleTableMultiUse" prefWidth="61.0" text="Multi Use" />
+                                    <TableColumn fx:id="ruleTableSleepTime" prefWidth="67.0" text="Sleep Time" />
+                                    <TableColumn fx:id="ruleTableState" prefWidth="38.0" text="State" />
                           </columns>
                         </TableView>
                       </children>
@@ -102,7 +107,16 @@
                             <ChoiceBox fx:id="triggerSelect" prefWidth="150.0" />
                             <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the Action" />
                             <ChoiceBox fx:id="actionSelect" prefWidth="150.0" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select if it can be repeated" />
+                                    <CheckBox fx:id="multiUseCheckBox" mnemonicParsing="false" text="Multi Use" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="If it can be repeated insert the Sleep Time in seconds" wrappingWidth="189.568359375" />
+                                    <TextField fx:id="sleepTimeSelBox" />
                             <Button fx:id="ruleCreateBtn" mnemonicParsing="false" onAction="#createRule" text="Create Rule" />
+                                    <Separator prefWidth="200.0" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Activate or Deactivate a Rule" />
+                                    <CheckBox fx:id="toggleActiveRuleCheckBox" mnemonicParsing="false" text="Active" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Delete selected Rule" />
+                                    <Button fx:id="deleteSelectedRuleBtn" mnemonicParsing="false" onAction="#deleteSelectedRule" text="Delete Rule" />
                           </children>
                         </VBox>
                       </children>
@@ -160,6 +174,9 @@
                                        </children>
                                     </StackPane>
                                     <Button fx:id="triggerCreateBtn" mnemonicParsing="false" onAction="#createTrigger" text="Create Trigger" />
+                                    <Separator prefWidth="200.0" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Delete selected Trigger" />
+                                    <Button fx:id="deleteSelectedTriggerBtn" mnemonicParsing="false" onAction="#deleteSelectedTrigger" text="Delete Trigger" />
                                  </children>
                               </VBox>
                            </children>
@@ -214,7 +231,7 @@
                                                 </VBox>
                                              </children>
                                           </AnchorPane>
-                                          <AnchorPane fx:id="messageBoxValSel" prefHeight="200.0" prefWidth="200.0">
+                                          <AnchorPane fx:id="messageBoxValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
                                              <children>
                                                 <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <padding>
@@ -230,9 +247,112 @@
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </StackPane.margin>
                                           </AnchorPane>
+                                          <AnchorPane fx:id="appendStringToFileValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert the message" />
+                                                      <TextField fx:id="messageToAppend" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the text file:" />
+                                                      <Button fx:id="selectTextFileBtn" mnemonicParsing="false" onAction="#selectTextFile" text="Select file" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File Selected:" />
+                                                      <Label fx:id="textFileSelectedLabel" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="deleteFileValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the file to delete:" />
+                                                      <Button fx:id="selectDeleteFileBtn" mnemonicParsing="false" onAction="#selectDeleteFile" text="Select file" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File Selected:" />
+                                                      <Label fx:id="deleteFileSelectedLabel" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="externalProgramValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert the command line arguments" />
+                                                      <TextField fx:id="commandLineArgumentsVal" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select file to execute:" />
+                                                      <Button fx:id="selectExternalProgramBtn" mnemonicParsing="false" onAction="#selectExternalProgram" text="Select file" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File Selected:" />
+                                                      <Label fx:id="externalProgramSelected" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="moveFileValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the file and the directory:" />
+                                                      <Button fx:id="selectMoveFileBtn" mnemonicParsing="false" onAction="#selectMoveFile" text="Select file" />
+                                                      <Button fx:id="selectMoveFileDirectoryBtn" mnemonicParsing="false" onAction="#selectMoveFileDirectory" text="Select directory" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File Selected:" />
+                                                      <Label fx:id="selectedMoveFile" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Directory Selected" />
+                                                      <Label fx:id="selectedMoveFileDirectory" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="pasteFileValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the file and the directory:" />
+                                                      <Button fx:id="selectPasteFileBtn" mnemonicParsing="false" onAction="#selectPasteFile" text="Select file" />
+                                                      <Button fx:id="selectPasteFileDirectoryBtn" mnemonicParsing="false" onAction="#selectPasteFileDirectory" text="Select directory" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File Selected:" />
+                                                      <Label fx:id="selectedPasteFile" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Directory Selected" />
+                                                      <Label fx:id="selectedPasteFileDirectory" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                          </AnchorPane>
                                        </children>
                                     </StackPane>
                                     <Button fx:id="actionCreateBtn" mnemonicParsing="false" onAction="#createAction" text="Create Action" />
+                                    <Separator prefWidth="200.0" />
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Delete a selected Action" wrappingWidth="221.34765625" />
+                                    <Button fx:id="deleteSelectedActionBtn" mnemonicParsing="false" onAction="#deleteSelectedAction" text="Delete Action" />
                                  </children>
                               </VBox>
                            </children>

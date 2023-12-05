@@ -1,58 +1,71 @@
 package com.example.programmaifttt.Actions;
 
 import org.json.JSONObject;
-
 import java.io.File;
 
 public abstract class Action {
-      private String name;
-      private String type;
-      private String value;
+    private String name;
+    private String type;
+    private String value;
+    private String filePath;
 
-      // Constructor
-      public Action(String name, String type, String value) {
+    public Action(String name, String type, String value) {
         this.name = name;
         this.type = type;
         this.value = value;
-      }
+        this.filePath = null;
+    }
 
-      public String getName() {
-        return name;
-      }
-
-      public void setName(String name) {
+    public Action(String name, String type, String value, String filePath) {
         this.name = name;
-      }
+        this.type = type;
+        this.value = value;
+        this.filePath = filePath;
+    }
 
-      public String getType() {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getType() {
         return type;
-      }
+    }
 
-      public String getValue() {
-          return value;
-      }
+    public String getValue() {
+        return value;
+    }
 
-      @Override
-      public String toString() {return name;
-      }
+    @Override
+    public String toString() {
+        return name;
+    }
 
-      //equals
-      @Override
-      public boolean equals(Object obj) {
+    //equals
+    @Override
+    public boolean equals(Object obj) {
         if (obj instanceof Action) {
-          Action action = (Action) obj;
-          return this.name.equals(action.name);
+            Action action = (Action) obj;
+            return this.name.equals(action.name);
         }
         return false;
-      }
+    }
 
-      public abstract boolean execute();
+    public abstract boolean execute();
 
     public JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("name", name);
         jsonObject.put("type", type);
         jsonObject.put("value", value);
+        switch (type) {
+            case AudioAction.type , ExternalProgramAction.type, AppendStringToFileAction.type, DeleteFileAction.type,
+                    MoveFileAction.type, PasteFileAction.type
+                    -> jsonObject.put("filePath", filePath);
+        }
         return jsonObject;
     }
 
@@ -61,12 +74,23 @@ public abstract class Action {
         String name = jsonObject.getString("name");
         String type = jsonObject.getString("type");
         String value = jsonObject.getString("value");
-        if (type.equals("Audio Text")) {
-            return new AudioTextAction(name, new File(value));
-        } else if (type.equals("Message Box")) {
-            return new MessageBoxAction(name, value);
-        } else {
-            return null;
-        }
+        return switch (type) {
+            case MessageBoxAction.type ->
+                    new MessageBoxAction(name, value);
+            case AudioAction.type ->
+                    new AudioAction(name, new File(jsonObject.getString("filePath")));
+            case ExternalProgramAction.type ->
+                new ExternalProgramAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
+            case AppendStringToFileAction.type ->
+                    new AppendStringToFileAction(name, value.split("/")[1].split(": ")[1], new File(jsonObject.getString("filePath")));
+            case DeleteFileAction.type ->
+                    new DeleteFileAction(name, new File(jsonObject.getString("filePath")));
+            case MoveFileAction.type ->
+                    new MoveFileAction(name, new File(jsonObject.getString("filePath")), new File(value.split("/")[1].split(": ")[1]));
+            case PasteFileAction.type ->
+                    new PasteFileAction(name, new File(jsonObject.getString("filePath")), new File(value.split("/")[1].split(": ")[1]));
+            default ->
+                    null;
+        };
     }
 }

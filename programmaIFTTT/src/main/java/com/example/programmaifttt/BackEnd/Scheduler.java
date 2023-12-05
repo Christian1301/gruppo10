@@ -1,13 +1,10 @@
 package com.example.programmaifttt.BackEnd;
 
 
-import com.example.programmaifttt.BackEnd.Rule;
-import com.example.programmaifttt.BackEnd.RuleController;
 import com.example.programmaifttt.IFTTTController;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +20,6 @@ public class Scheduler implements RuleControllerObserver {
         this.interval = interval;
         this.ruleController = ruleController;
         this.iftttController = IFTTTController;
-        ruleController.addObserver(this);
     }
 
     public void start() {
@@ -59,35 +55,38 @@ public class Scheduler implements RuleControllerObserver {
     public void update(RuleController ruleController) {
         // RuleController has been updated from outside
         // You might want to add additional logic here if needed
-        checkRules();
         updateUI();
     }
 
     public void checkRules() {
         synchronized (ruleController) {
             List<Rule> rulesToDelete = new ArrayList<>();
-
             for (Rule rule : ruleController.getRules()) {
-                if (rule.getTrigger().evaluate()) {
-                    if (rule.getAction().execute()) {
-                        // Action executed successfully
-                    } else {
-                        // Create popup window with error
-                        Platform.runLater(() -> {
-                            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                            alert.setTitle("Error");
-                            alert.setHeaderText(null);
-                            alert.setContentText("Error with action " + rule.getAction().getName() +
-                                    " of rule " + rule.getName());
+                if (rule.getState()) {
+                    if (rule.getLastUse() == null || (rule.getLastUse() != null && rule.getLastUse().getTime() + rule.getSleepTime() * 1000 > System.currentTimeMillis())) {
+                        if (rule.getTrigger().evaluate()) {
+                            if (rule.getAction().execute()) {
+                                rule.setLastUse();
+                                if (!rule.isMultiUse()) {
+                                    rulesToDelete.add(rule);
+                                }
+                            } else {
+                                // Create popup window with error
+                                Platform.runLater(() -> {
+                                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                                    alert.setTitle("Error");
+                                    alert.setHeaderText(null);
+                                    alert.setContentText("Error with action " + rule.getAction().getName() +
+                                            " of rule " + rule.getName());
 
-                            // Wait for the user to click OK
-                            alert.showAndWait();
-                        });
+                                    // Wait for the user to click OK
+                                    alert.showAndWait();
+                                });
+                            }
+                        }
                     }
-                    rulesToDelete.add(rule);
                 }
             }
-
             // Remove the rules outside the loop after finishing the iteration
             Platform.runLater(() -> {
                 for (Rule rule : rulesToDelete) {
@@ -95,7 +94,6 @@ public class Scheduler implements RuleControllerObserver {
 
                 }
             });
-
         }
     }
 

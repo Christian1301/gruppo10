@@ -1,9 +1,8 @@
 package com.example.programmaifttt;
 
-import com.example.programmaifttt.Actions.Action;
+import com.example.programmaifttt.Actions.*;
 
-import com.example.programmaifttt.Actions.AudioTextAction;
-import com.example.programmaifttt.Actions.MessageBoxAction;
+import com.example.programmaifttt.Actions.Action;
 import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.BackEnd.RuleController;
 import com.example.programmaifttt.BackEnd.Scheduler;
@@ -23,6 +22,7 @@ import javafx.collections.ObservableList;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.List;
 
 public class IFTTTController {
 
@@ -102,6 +102,15 @@ public class IFTTTController {
     private RuleController ruleController;
     private Scheduler scheduler;
     private File audioFile;
+
+    private File textFile;
+    private File deleteFile;
+    private File externalProgram;
+    private File moveFile;
+    private File moveFileDirectory;
+    private File pasteFile;
+    private File pasteFileDirectory;
+
     private BooleanProperty createRuleButtonDisabled = new SimpleBooleanProperty(true);
     private BooleanProperty createTriggerButtonDisabled = new SimpleBooleanProperty(true);
     private BooleanProperty createActionButtonDisabled = new SimpleBooleanProperty(true);
@@ -125,6 +134,68 @@ public class IFTTTController {
     private Button startSchedulerBtn;
     @FXML
     private Button stopSchedulerBtn;
+    @FXML
+    private TextField intervalSchedulerSel;
+    @FXML
+    private Button deleteSelectedRuleBtn;
+    @FXML
+    private Button deleteSelectedTriggerBtn;
+    @FXML
+    private Button deleteSelectedActionBtn;
+    @FXML
+    private TableColumn ruleTableMultiUse;
+    @FXML
+    private TableColumn ruleTableSleepTime;
+    @FXML
+    private TableColumn ruleTableState;
+    @FXML
+    private CheckBox multiUseCheckBox;
+    @FXML
+    private TextField sleepTimeSelBox;
+    @FXML
+    private CheckBox toggleActiveRuleCheckBox;
+    @FXML
+    private AnchorPane appendStringToFileValSel;
+    @FXML
+    private TextField messageToAppend;
+    @FXML
+    private Button selectTextFileBtn;
+    @FXML
+    private Label textFileSelectedLabel;
+    @FXML
+    private AnchorPane deleteFileValSel;
+    @FXML
+    private Button selectDeleteFileBtn;
+    @FXML
+    private Label deleteFileSelectedLabel;
+    @FXML
+    private AnchorPane externalProgramValSel;
+    @FXML
+    private TextField commandLineArgumentsVal;
+    @FXML
+    private Button selectExternalProgramBtn;
+    @FXML
+    private Label externalProgramSelected;
+    @FXML
+    private AnchorPane moveFileValSel;
+    @FXML
+    private Button selectMoveFileBtn;
+    @FXML
+    private Button selectMoveFileDirectoryBtn;
+    @FXML
+    private Label selectedMoveFile;
+    @FXML
+    private Label selectedMoveFileDirectory;
+    @FXML
+    private Button selectPasteFileBtn;
+    @FXML
+    private Button selectPasteFileDirectoryBtn;
+    @FXML
+    private Label selectedPasteFile;
+    @FXML
+    private Label selectedPasteFileDirectory;
+    @FXML
+    private AnchorPane pasteFileValSel;
 
     //get rule controller
     public RuleController getRuleController() {
@@ -139,7 +210,17 @@ public class IFTTTController {
         this.ruleController = data.getRuleController();
 
         this.audioFile = null;
-        scheduler = new Scheduler( 10 ,ruleController, this);
+        this.textFile = null;
+        this.deleteFile = null;
+        this.externalProgram = null;
+        this.moveFile = null;
+        this.moveFileDirectory = null;
+        this.pasteFile = null;
+        this.pasteFileDirectory = null;
+
+
+        intervalSchedulerSel.setText("10");
+        scheduler = new Scheduler(Integer.parseInt(intervalSchedulerSel.getText()), ruleController, this);
         stopSchedulerBtn.setDisable(true);
         //init the pages
         disablePages();
@@ -171,6 +252,10 @@ public class IFTTTController {
         disablePages();
         rulePage.setDisable(false);
         rulePage.setVisible(true);
+        editRulesBtn.setDisable(true);
+        editTriggersBtn.setDisable(false);
+        editActionsBtn.setDisable(false);
+
     }
 
     @FXML
@@ -178,6 +263,9 @@ public class IFTTTController {
         disablePages();
         triggerPage.setDisable(false);
         triggerPage.setVisible(true);
+        editRulesBtn.setDisable(false);
+        editTriggersBtn.setDisable(true);
+        editActionsBtn.setDisable(false);
     }
 
     @FXML
@@ -185,6 +273,10 @@ public class IFTTTController {
         disablePages();
         actionPage.setDisable(false);
         actionPage.setVisible(true);
+        editRulesBtn.setDisable(false);
+        editTriggersBtn.setDisable(false);
+        editActionsBtn.setDisable(true);
+
     }
 
     @FXML
@@ -192,14 +284,27 @@ public class IFTTTController {
         String name = ruleName.getText();
         Trigger trigger = triggerSelect.getValue();
         Action action = actionSelect.getValue();
+        Boolean multiUse = multiUseCheckBox.isSelected();
+        //get the sleep time from the text field and if its not a number call the error alert
+        int sleepTime;
+        //if the multi use checkbox is not selected the sleep time is null
+        if (multiUse) {
+            try {
+                sleepTime = Integer.parseInt(sleepTimeSelBox.getText());
+            } catch (NumberFormatException e) {
+                showErrorAlert("Error", "Sleep time must be a number!");
+                return;
+            }
+        } else {
+            sleepTime = 0;
+        }
+        //create the rule
 
 
-        Rule newRule = new Rule(name, trigger, action);
+        Rule newRule = new Rule(name, trigger, action, true, multiUse, sleepTime);
         ruleController.addRule(newRule);
         // Refresh the table after adding a new rule
         ruleData.setAll(ruleController.getRules());
-
-
     }
 
     @FXML
@@ -222,6 +327,12 @@ public class IFTTTController {
     public void createAction(ActionEvent actionEvent) {
         String name = actionName.getText();
         String type = actionTypeSelect.getValue();
+        //check if value is selected based on type
+        if (checkValueSelected(type)) {
+            showErrorAlert("Error", "Value not selected!");
+            return;
+        }
+
         Action newAction = createNewAction(name, type);
 
         ruleController.addAction(newAction);
@@ -231,17 +342,70 @@ public class IFTTTController {
         actionSelect.setItems(FXCollections.observableArrayList(ruleController.getActions()));
     }
 
+    private boolean checkValueSelected(String type) {
+        switch (type) {
+            case AudioAction.type -> {
+                return audioFile == null;
+            }
+            case MessageBoxAction.type -> {
+                return messageBoxVal.getText().isEmpty();
+            }
+            case AppendStringToFileAction.type -> {
+                return textFile == null || messageToAppend.getText().isEmpty();
+            }
+            case DeleteFileAction.type -> {
+                return deleteFile == null;
+            }
+            case ExternalProgramAction.type -> {
+                return externalProgram == null || commandLineArgumentsVal.getText().isEmpty();
+            }
+            case MoveFileAction.type -> {
+                return moveFile == null || moveFileDirectory == null;
+            }
+            case PasteFileAction.type -> {
+                return pasteFile == null || pasteFileDirectory == null;
+            }
+        }
+        return false;
+
+    }
+
     private Action createNewAction(String name, String type) {
         switch (type) {
-            case AudioTextAction.type -> {
-                AudioTextAction audioTextAction = new AudioTextAction(name, audioFile);
-                //audioTextAction.execute();
-                return audioTextAction;
+            case AudioAction.type -> {
+                AudioAction audioAction = new AudioAction(name, audioFile);
+                //audioAction.execute();
+                return audioAction;
             }
             case MessageBoxAction.type -> {
                 MessageBoxAction messageBoxAction = new MessageBoxAction(name, messageBoxVal.getText());
                 //messageBoxAction.execute();
                 return messageBoxAction;
+            }
+            case AppendStringToFileAction.type -> {
+                AppendStringToFileAction appendStringToFileAction = new AppendStringToFileAction(name, messageToAppend.getText(), textFile );
+                //appendStringToFileAction.execute();
+                return appendStringToFileAction;
+            }
+            case DeleteFileAction.type -> {
+                DeleteFileAction deleteFileAction = new DeleteFileAction(name, deleteFile);
+                //deleteFileAction.execute();
+                return deleteFileAction;
+            }
+            case ExternalProgramAction.type -> {
+                ExternalProgramAction externalProgramAction = new ExternalProgramAction(name, externalProgram, commandLineArgumentsVal.getText());
+                //externalProgramAction.execute();
+                return externalProgramAction;
+            }
+            case MoveFileAction.type -> {
+                MoveFileAction moveFileAction = new MoveFileAction(name, moveFile, moveFileDirectory);
+                //moveFileAction.execute();
+                return moveFileAction;
+            }
+            case PasteFileAction.type -> {
+                PasteFileAction pasteFileAction = new PasteFileAction(name, pasteFile, pasteFileDirectory);
+                //pasteFileAction.execute();
+                return pasteFileAction;
             }
         }
         return null;
@@ -262,6 +426,10 @@ public class IFTTTController {
         ruleTableName.setCellValueFactory(new PropertyValueFactory<>("name"));
         ruleTableTrigger.setCellValueFactory(new PropertyValueFactory<>("trigger"));
         ruleTableAction.setCellValueFactory(new PropertyValueFactory<>("action"));
+        ruleTableMultiUse.setCellValueFactory(new PropertyValueFactory<>("multiUse"));
+        ruleTableSleepTime.setCellValueFactory(new PropertyValueFactory<>("sleepTime"));
+        ruleTableState.setCellValueFactory(new PropertyValueFactory<>("state"));
+
 
         // Connect the ruleData to the table
         ruleTable.setItems(ruleData);
@@ -278,6 +446,33 @@ public class IFTTTController {
                         .or(Bindings.isNull(triggerSelect.valueProperty()))
                         .or(Bindings.isNull(actionSelect.valueProperty()))
         );
+
+        //bind the delete button disabled property based on whether a rule is selected
+        deleteSelectedRuleBtn.disableProperty().bind(Bindings.isNull(ruleTable.getSelectionModel().selectedItemProperty()));
+
+        //bind the sleep time text field disabled property based on whether the multi use checkbox is selected
+        sleepTimeSelBox.disableProperty().bind(multiUseCheckBox.selectedProperty().not());
+
+        //bind the toggle active rule checkbox disabled property based on whether a rule is selected
+        toggleActiveRuleCheckBox.disableProperty().bind(Bindings.isNull(ruleTable.getSelectionModel().selectedItemProperty()));
+
+
+        //set the value of the active rule checkbox based on the state of the selected rule
+        toggleActiveRuleCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            Rule selectedRule = ruleTable.getSelectionModel().getSelectedItem();
+            selectedRule.setState(newValue);
+            //refresh the table after changing the state of a rule
+            ruleData.setAll(ruleController.getRules());
+        });
+
+        //set the active rule checkbox to the state of the selected rule
+        ruleTable.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                toggleActiveRuleCheckBox.setSelected(newValue.getState());
+            }
+        });
+
+
 
         // Set items for the ChoiceBoxes
         actionSelect.setItems(FXCollections.observableArrayList(ruleController.getActions()));
@@ -299,6 +494,8 @@ public class IFTTTController {
         // Load initial data into the table (if any)
         triggerData.addAll(ruleController.getTriggers());
 
+        //set the sleep time text field to 60 by default
+        sleepTimeSelBox.setText("60");
 
         // Disable "Create" button by default
         triggerCreateBtn.disableProperty().bind(createTriggerButtonDisabled);
@@ -308,6 +505,9 @@ public class IFTTTController {
                 Bindings.isEmpty(triggerName.textProperty())
                         .or(Bindings.isNull(triggerTypeSelect.valueProperty()))
         );
+
+        //bind the delete button disabled property based on whether a trigger is selected
+        deleteSelectedTriggerBtn.disableProperty().bind(Bindings.isNull(triggerTable.getSelectionModel().selectedItemProperty()));
 
         // Populate the ChoiceBox with all the known types
         triggerTypeSelect.setItems(FXCollections.observableArrayList(TimeOfDayTrigger.type));
@@ -397,21 +597,31 @@ public class IFTTTController {
                         .or(Bindings.isNull(actionTypeSelect.valueProperty()))
         );
 
+        //bind the delete button disabled property based on whether an action is selected
+        deleteSelectedActionBtn.disableProperty().bind(Bindings.isNull(actionTable.getSelectionModel().selectedItemProperty()));
+
+
         // Populate the ChoiceBox with all the known types
-        actionTypeSelect.setItems(FXCollections.observableArrayList(AudioTextAction.type, MessageBoxAction.type));
+        actionTypeSelect.setItems(FXCollections.observableArrayList(AudioAction.type, MessageBoxAction.type, AppendStringToFileAction.type, DeleteFileAction.type, ExternalProgramAction.type, MoveFileAction.type, PasteFileAction.type));
 
         initActionTypes();
     }
 
     private void initActionTypes() {
-        //Audio Text init
+        //init all action types
         initActionTypeAudioText();
         initActionTypeMessageBox();
+        initActionTypeAppendStringToFile();
+        initActionTypeDeleteFile();
+        initActionTypeExternalProgram();
+        initActionTypeMoveFile();
+        initActionTypePasteFile();
 
         disbleActionValueBox();
 
     }
 
+    //init all action types
     private void initActionTypeMessageBox() {
         // Set the default value for the message
         messageBoxVal.setText("Rule triggered!");
@@ -427,8 +637,39 @@ public class IFTTTController {
         audioFileSelectedLabel.setText(defaultAudioFileName);
         audioFile = new File(defaultAudioFilePath);
 
-
     }
+
+    private void initActionTypeAppendStringToFile() {
+        // Set the default value for the message
+        messageToAppend.setText("the rule was triggered!");
+        //set the label to no file selected
+        textFileSelectedLabel.setText("No file selected");
+    }
+
+    private void initActionTypeDeleteFile() {
+        // Set the default value for the message
+        deleteFileSelectedLabel.setText("No file selected");
+    }
+
+    private void initActionTypeExternalProgram() {
+        // Set the default value for the message
+        externalProgramSelected.setText("No file selected");
+    }
+
+    private void initActionTypeMoveFile() {
+        // Set the default value for the message
+        selectedMoveFile.setText("no file selected");
+        selectedMoveFileDirectory.setText("no directory selected");
+    }
+
+    private void initActionTypePasteFile() {
+        // Set the default value for the message
+        selectedPasteFile.setText("no file selected");
+        selectedPasteFileDirectory.setText("no directory selected");
+    }
+
+
+
 
     @FXML
     public void changeActionValueBox(ActionEvent actionEvent) {
@@ -440,13 +681,33 @@ public class IFTTTController {
         disbleActionValueBox();
         String selectedType = actionTypeSelect.getValue();
         switch (selectedType) {
-            case AudioTextAction.type -> {
+            case AudioAction.type -> {
                 audioTextValSel.setDisable(false);
                 audioTextValSel.setVisible(true);
             }
-            case "Message Box" -> {
+            case MessageBoxAction.type -> {
                 messageBoxValSel.setDisable(false);
                 messageBoxValSel.setVisible(true);
+            }
+            case AppendStringToFileAction.type -> {
+                appendStringToFileValSel.setDisable(false);
+                appendStringToFileValSel.setVisible(true);
+            }
+            case DeleteFileAction.type -> {
+                deleteFileValSel.setDisable(false);
+                deleteFileValSel.setVisible(true);
+            }
+            case ExternalProgramAction.type -> {
+                externalProgramValSel.setDisable(false);
+                externalProgramValSel.setVisible(true);
+            }
+            case MoveFileAction.type -> {
+                moveFileValSel.setDisable(false);
+                moveFileValSel.setVisible(true);
+            }
+            case PasteFileAction.type -> {
+                pasteFileValSel.setDisable(false);
+                pasteFileValSel.setVisible(true);
             }
         }
     }
@@ -460,43 +721,153 @@ public class IFTTTController {
         //Message Box
         messageBoxValSel.setDisable(true);
         messageBoxValSel.setVisible(false);
-        //new action types here
+        //Append String To File
+        appendStringToFileValSel.setDisable(true);
+        appendStringToFileValSel.setVisible(false);
+        //Delete File
+        deleteFileValSel.setDisable(true);
+        deleteFileValSel.setVisible(false);
+        //External Program
+        externalProgramValSel.setDisable(true);
+        externalProgramValSel.setVisible(false);
+        //Move File
+        moveFileValSel.setDisable(true);
+        moveFileValSel.setVisible(false);
+        //Paste File
+        pasteFileValSel.setDisable(true);
+        pasteFileValSel.setVisible(false);
 
 
     }
 
-    @FXML
-    public void selectAudioFile(ActionEvent actionEvent) {
-        //open a file chooser to select an audio file and set the label to the selected file
+
+    //funtion to call when chosing a file
+    private File selectFile() {
+        //open a file chooser to select a file
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         int result = fileChooser.showOpenDialog(null);
 
         if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            audioFileSelectedLabel.setText(selectedFile.getName());
-            audioFile = selectedFile;
+            return fileChooser.getSelectedFile();
         }
+        return null;
+    }
 
+    private File selectDirectory() {
+        //open a file chooser to select a directory
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int result = fileChooser.showOpenDialog(null);
 
+        if (result == JFileChooser.APPROVE_OPTION) {
+            return fileChooser.getSelectedFile();
+        }
+        return null;
+    }
+
+    @FXML
+    public void selectAudioFile(ActionEvent actionEvent) {
+        File selectedFile = selectFile();
+        if (selectedFile != null) {
+            audioFile = selectedFile;
+            audioFileSelectedLabel.setText(selectedFile.getName());
+        }
+    }
+
+    @FXML
+    public void selectTextFile(ActionEvent actionEvent) {
+        File selectedFile = selectFile();
+        if (selectedFile != null) {
+            textFile = selectedFile;
+            textFileSelectedLabel.setText(selectedFile.getName());
+        }
 
     }
 
     @FXML
+    public void selectDeleteFile(ActionEvent actionEvent) {
+        File selectedFile = selectFile();
+        if (selectedFile != null) {
+            deleteFile = selectedFile;
+            deleteFileSelectedLabel.setText(selectedFile.getName());
+        }
+    }
+
+    @FXML
+    public void selectExternalProgram(ActionEvent actionEvent) {
+        File selectedFile = selectFile();
+        if (selectedFile != null) {
+            externalProgram = selectedFile;
+            externalProgramSelected.setText(selectedFile.getName());
+        }
+    }
+
+    @FXML
+    public void selectMoveFile(ActionEvent actionEvent) {
+        File selectedFile = selectFile();
+        if (selectedFile != null) {
+            moveFile = selectedFile;
+            selectedMoveFile.setText(selectedFile.getName());
+        }
+    }
+
+    @FXML
+    public void selectMoveFileDirectory(ActionEvent actionEvent) {
+        File selectedDirectory = selectDirectory();
+        if (selectedDirectory != null) {
+            moveFileDirectory = selectedDirectory;
+            selectedMoveFileDirectory.setText(selectedDirectory.getName());
+        }
+    }
+
+    @FXML
+    public void selectPasteFile(ActionEvent actionEvent) {
+        File selectedFile = selectFile();
+        if (selectedFile != null) {
+            pasteFile = selectedFile;
+            selectedPasteFile.setText(selectedFile.getName());
+        }
+    }
+
+    @FXML
+    public void selectPasteFileDirectory(ActionEvent actionEvent) {
+        File selectedDirectory = selectDirectory();
+        if (selectedDirectory != null) {
+            pasteFileDirectory = selectedDirectory;
+            selectedPasteFileDirectory.setText(selectedDirectory.getName());
+        }
+    }
+
+    @FXML
     public void startScheduler(ActionEvent actionEvent) {
-        if(ruleController.getRules().size() > 0) {
+        List<Rule> rules = ruleController.getRules();
+
+        if (rules.isEmpty()) {
+            showErrorAlert("Error", "No rules to schedule!");
+            return;
+        }
+
+        try {
+            int interval = Integer.parseInt(intervalSchedulerSel.getText());
+            scheduler = new Scheduler(interval, ruleController, this);
             scheduler.start();
             stopSchedulerBtn.setDisable(false);
             startSchedulerBtn.setDisable(true);
-        } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText(null);
-            alert.setContentText("No rules to schedule!");
-
-            // Wait for the user to click OK
-            alert.showAndWait();
+        } catch (NumberFormatException e) {
+            showErrorAlert("Error", "Interval must be a number!");
         }
+    }
+
+    private void showErrorAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+
+        // Wait for the user to click OK
+        alert.showAndWait();
     }
 
     @FXML
@@ -513,4 +884,40 @@ public class IFTTTController {
             actionData.setAll(ruleController.getActions());
         });
     }
+
+    @FXML
+    public void deleteSelectedRule(ActionEvent actionEvent) {
+        //get the selected rule and delete it
+        Rule selectedRule = ruleTable.getSelectionModel().getSelectedItem();
+        ruleController.deleteRule(selectedRule.getName());
+        //refresh the table after deleting a rule
+        ruleData.setAll(ruleController.getRules());
+    }
+
+    @FXML
+    public void deleteSelectedTrigger(ActionEvent actionEvent) {
+        //get the selected trigger and delete it if it is not used in any rule
+        Trigger selectedTrigger = triggerTable.getSelectionModel().getSelectedItem();
+        if (ruleController.isTriggerUsed(selectedTrigger)) {
+            showErrorAlert("Error", "Trigger is used in a rule!");
+        } else {
+            ruleController.deleteTrigger(selectedTrigger.getName());
+            //refresh the table after deleting a trigger
+            triggerData.setAll(ruleController.getTriggers());
+        }
+    }
+
+    @FXML
+    public void deleteSelectedAction(ActionEvent actionEvent) {
+        //get the selected action and delete it if it is not used in any rule
+        Action selectedAction = actionTable.getSelectionModel().getSelectedItem();
+        if (ruleController.isActionUsed(selectedAction)) {
+            showErrorAlert("Error", "Action is used in a rule!");
+        } else {
+            ruleController.deleteAction(selectedAction.getName());
+            //refresh the table after deleting an action
+            actionData.setAll(ruleController.getActions());
+        }
+    }
+
 }
