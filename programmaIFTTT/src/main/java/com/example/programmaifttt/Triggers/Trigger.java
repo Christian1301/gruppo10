@@ -3,17 +3,30 @@ package com.example.programmaifttt.Triggers;
 import com.example.programmaifttt.Enums.DayOfWeekEnum;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+
 public abstract class Trigger {
 
     private String name;
     private String type;
     private String value;
+    private String filePath;
 
     // Constructor
     public Trigger(String name, String type,String value) {
         this.name = name;
         this.type = type;
         this.value = value;
+        this.filePath = null;
+    }
+
+    // Constructor
+    public Trigger(String name, String type,String value, String filePath) {
+        this.name = name;
+        this.type = type;
+        this.value = value;
+        this.filePath = filePath;
     }
 
     // Get the name of the trigger
@@ -59,6 +72,10 @@ public abstract class Trigger {
         jsonObject.put("name", name);
         jsonObject.put("type", type);
         jsonObject.put("value", value);
+        switch (type) {
+            case FileSizeTrigger.type, ExternalProgramTrigger.type, FileExistenceTrigger.type ->
+                jsonObject.put("filePath", filePath);
+        }
         return jsonObject;
     }
 
@@ -81,9 +98,24 @@ public abstract class Trigger {
             case DayOfWeekTrigger.type -> {
                 return new DayOfWeekTrigger(name, DayOfWeekEnum.valueOf(value.split(":")[1]));
             }
+            case FileExistenceTrigger.type -> {
+                File file = new File (jsonObject.getString("filePath"));
+                return new FileExistenceTrigger(name, file);
+            }
+            case FileSizeTrigger.type -> {
+                File file = new File (jsonObject.getString("filePath"));
+                long sizeThreshold = Long.parseLong(value.split("/")[1].split(": ")[1]);
+                return new FileSizeTrigger(name, file, sizeThreshold);
+            }
+            case ExternalProgramTrigger.type -> {
+                File file = new File (jsonObject.getString("filePath"));
+                String commandLineArguments = value.split("/")[1].split(": ")[1];
+                int exitCode = Integer.parseInt(value.split("/")[2].split(": ")[1]);
+                return new ExternalProgramTrigger(name, file, commandLineArguments, exitCode);
+            }
         }
         return null;
     }
 
-    public abstract boolean isEvaluable();
+    public abstract boolean isEvaluable() throws IOException;
 }

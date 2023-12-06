@@ -29,12 +29,9 @@ public class ExternalProgramAction extends Action {
             ProcessBuilder processBuilder = new ProcessBuilder();
             processBuilder.command().add(externalProgram.getAbsolutePath());
             processBuilder.command().addAll(java.util.Arrays.asList(commandLineArguments.split(" ")));
-            Process process = processBuilder.start();
-            // Wait for the external program to terminate and print the exit code
-            int exitCode = process.waitFor();
-            System.out.println("Il programma esterno è stato eseguito con codice di uscita: " + exitCode);
+            processBuilder.start();
             return true;
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
