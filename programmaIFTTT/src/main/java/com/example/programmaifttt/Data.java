@@ -34,7 +34,7 @@ public class Data {
     }
 
 
-    //take the rulecontroller and put it in the data the rules, the triggers and the actions
+    //take the ruleController and put it in the data the rules, the triggers and the actions
     public JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
         JSONArray rules = new JSONArray();
