@@ -3,7 +3,7 @@ package com.example.programmaifttt.Enums;
 public enum DayOfWeekEnum {
     MONDAY("MONDAY"),
     TUESDAY("TUESDAY"),
-    WEDNESDAY("WEDESDAY"),
+    WEDNESDAY("WEDNESDAY"),
     THURSDAY("THURSDAY"),
     FRIDAY("FRIDAY"),
     SATURDAY("SATURDAY"),
