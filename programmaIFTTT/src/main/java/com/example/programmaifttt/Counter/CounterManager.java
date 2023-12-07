@@ -34,4 +34,13 @@ public class CounterManager {
         }
         return counterValues;
     }
+
+    public void addToCounterValue(String counterName, int addValue) throws Exception {
+        Counter counter = getCounter(counterName);
+        if (counter != null) {
+            counter.setValue(counter.getValue() + addValue);
+        } else {
+            throw new Exception("Counter " + counterName + " does not exist.");
+        }
+    }
 }

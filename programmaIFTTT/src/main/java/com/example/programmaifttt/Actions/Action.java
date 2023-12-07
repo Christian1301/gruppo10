@@ -1,5 +1,6 @@
 package com.example.programmaifttt.Actions;
 
+import com.example.programmaifttt.Counter.CounterManager;
 import org.json.JSONObject;
 import java.io.File;
 
@@ -74,13 +75,14 @@ public abstract class Action {
         String name = jsonObject.getString("name");
         String type = jsonObject.getString("type");
         String value = jsonObject.getString("value");
+        CounterManager CounterManager;
         return switch (type) {
             case MessageBoxAction.type ->
                     new MessageBoxAction(name, value);
             case AudioAction.type ->
                     new AudioAction(name, new File(jsonObject.getString("filePath")));
             case ExternalProgramAction.type ->
-                new ExternalProgramAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
+                    new ExternalProgramAction(name, new File(jsonObject.getString("filePath")), value.split("/")[1].split(": ")[1]);
             case AppendStringToFileAction.type ->
                     new AppendStringToFileAction(name, value.split("/")[1].split(": ")[1], new File(jsonObject.getString("filePath")));
             case DeleteFileAction.type ->
@@ -89,6 +91,21 @@ public abstract class Action {
                     new MoveFileAction(name, new File(jsonObject.getString("filePath")), new File(value.split("/")[1].split(": ")[1]));
             case PasteFileAction.type ->
                     new PasteFileAction(name, new File(jsonObject.getString("filePath")), new File(value.split("/")[1].split(": ")[1]));
+            case SetCounterValueAction.type -> {
+                    CounterManager = new CounterManager();
+                    String counterName = value.split("/")[0].split(": ")[1].split(": ")[0];
+                    int counterValue = Integer.parseInt(value.split("/")[1].split(": ")[1]);
+                    CounterManager.createCounter(counterName, counterValue);
+                    yield new SetCounterValueAction(name, CounterManager, counterName, counterValue);
+            }
+            case AddToCounterValueAction.type -> {
+                    CounterManager = new CounterManager();
+                    String counterName = value.split("/")[0].split(": ")[1].split(": ")[0];
+                    int addValue = Integer.parseInt(value.split("/")[1].split(": ")[1]);
+                    int currentValue = Integer.parseInt(value.split("/")[1].split("/")[1].split(": ")[1]);
+                    CounterManager.createCounter(counterName, currentValue);
+                    yield new AddToCounterValueAction(name, CounterManager, counterName, addValue);
+            }
             default ->
                     null;
         };
