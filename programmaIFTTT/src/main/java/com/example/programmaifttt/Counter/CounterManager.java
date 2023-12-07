@@ -43,4 +43,14 @@ public class CounterManager {
             throw new Exception("Counter " + counterName + " does not exist.");
         }
     }
+
+    public void addCounterValueToAnother(String sourceCounterName, String targetCounterName) throws Exception {
+        Counter sourceCounter = getCounter(sourceCounterName);
+        Counter targetCounter = getCounter(targetCounterName);
+        if (sourceCounter != null && targetCounter != null) {
+            targetCounter.setValue(targetCounter.getValue() + sourceCounter.getValue());
+        } else {
+            throw new Exception("One or both counters do not exist.");
+        }
+    }
 }

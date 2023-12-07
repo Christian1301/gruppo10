@@ -106,6 +106,16 @@ public abstract class Action {
                     CounterManager.createCounter(counterName, currentValue);
                     yield new AddToCounterValueAction(name, CounterManager, counterName, addValue);
             }
+            case AddCounterValueToAnotherAction.type -> {
+                    CounterManager = new CounterManager();
+                    String sourceCounterName = value.split("/")[0].split(": ")[1].split(", ")[0];
+                    int sourceCounterValue = Integer.parseInt(value.split("/")[0].split(": ")[1].split(", ")[1]);
+                    String targetCounterName = value.split("/")[1].split(": ")[1].split(", ")[0];
+                    int targetCounterValue = Integer.parseInt(value.split("/")[1].split(": ")[1].split(", ")[1]);
+                    CounterManager.createCounter(sourceCounterName, sourceCounterValue);
+                    CounterManager.createCounter(targetCounterName, targetCounterValue);
+                    yield new AddCounterValueToAnotherAction(name, CounterManager, sourceCounterName, targetCounterName);
+            }
             default ->
                     null;
         };
