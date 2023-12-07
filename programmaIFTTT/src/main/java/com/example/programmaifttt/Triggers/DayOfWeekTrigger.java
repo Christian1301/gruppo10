@@ -10,7 +10,7 @@ public class DayOfWeekTrigger extends Trigger {
 
     // Constructor
     public DayOfWeekTrigger(String name, DayOfWeekEnum dayOfWeek) {
-        super(name, type, "Day " + dayOfWeek.getDay());
+        super(name, type, "Day: " + dayOfWeek.getDay());
         this.day = dayOfWeek.getDay();
     }
 

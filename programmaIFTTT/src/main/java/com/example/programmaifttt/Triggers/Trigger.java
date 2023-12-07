@@ -86,17 +86,17 @@ public abstract class Trigger {
         String value = jsonObject.getString("value");
         switch (type) {
             case TimeOfDayTrigger.type -> {
-                String[] time = value.split(":");
+                String[] time = value.split(": ");
                 int hours = Integer.parseInt(time[0]);
                 int minutes = Integer.parseInt(time[1]);
                 return new TimeOfDayTrigger(name, hours, minutes);
             }
             case DayOfMonthTrigger.type -> {
-                int day = Integer.parseInt(value.split(":")[1]);
+                int day = Integer.parseInt(value.split(": ")[1]);
                 return new DayOfMonthTrigger(name, day);
             }
             case DayOfWeekTrigger.type -> {
-                return new DayOfWeekTrigger(name, DayOfWeekEnum.valueOf(value.split(":")[1]));
+                return new DayOfWeekTrigger(name, DayOfWeekEnum.valueOf(value.split(": ")[1]));
             }
             case FileExistenceTrigger.type -> {
                 File file = new File (jsonObject.getString("filePath"));
