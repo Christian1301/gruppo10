@@ -23,11 +23,11 @@ public class FileExistenceTrigger extends Trigger {
 
     @Override
     public boolean evaluate() {
-        return Files.exists(Paths.get(file.getAbsolutePath(), file.getName()));
+        return isEvaluable();
     }
 
     @Override
     public boolean isEvaluable() {
-        return Files.exists(Paths.get(file.getAbsolutePath(), file.getName()));
+        return Files.exists(Paths.get(file.getAbsolutePath()));
     }
 }
