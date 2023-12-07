@@ -9,7 +9,7 @@ public class FileExistenceTrigger extends Trigger {
     private final File file;
 
     public FileExistenceTrigger(String name, File file) {
-        super(name, type, "File: " + file.getName() + "/Directory: " + file.getAbsolutePath());
+        super(name, type, "File: " + file.getName() + "/Directory: " + file.getAbsolutePath(), file.getAbsolutePath());
         this.file = file;
     }
 
@@ -23,11 +23,11 @@ public class FileExistenceTrigger extends Trigger {
 
     @Override
     public boolean evaluate() {
-        return Files.exists(Paths.get(file.getAbsolutePath(), file.getName()));
+        return isEvaluable();
     }
 
     @Override
     public boolean isEvaluable() {
-        return Files.exists(Paths.get(file.getAbsolutePath(), file.getName()));
+        return Files.exists(Paths.get(file.getAbsolutePath()));
     }
 }

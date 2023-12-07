@@ -2,6 +2,8 @@ package com.example.programmaifttt.Triggers;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class ExternalProgramTrigger extends Trigger {
     public static final String type = "External Program";
@@ -44,6 +46,6 @@ public class ExternalProgramTrigger extends Trigger {
 
     @Override
     public boolean isEvaluable() {
-        return externalProgram.exists();
+        return Files.exists(Paths.get(externalProgram.getAbsolutePath()));
     }
 }

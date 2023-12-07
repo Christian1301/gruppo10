@@ -6,7 +6,7 @@ public class TextAction extends Action {
     private String messageText;
 
     public TextAction(String name, String type, String messageText) {
-        super(name, type, "Message" + messageText);
+        super(name, type, "Message: " + messageText);
         this.messageText = messageText;
     }
 

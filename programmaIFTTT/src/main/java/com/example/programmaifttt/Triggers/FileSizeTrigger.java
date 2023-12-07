@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class FileSizeTrigger extends Trigger {
     public static final String type = "File Size";
@@ -38,7 +39,7 @@ public class FileSizeTrigger extends Trigger {
 
     @Override
     public boolean isEvaluable() throws IOException {
-        Path path = file.getAbsoluteFile().toPath();
+        Path path = Paths.get(file.getAbsolutePath());
         return Files.exists(path) && Files.size(path) > sizeThreshold;
     }
 }

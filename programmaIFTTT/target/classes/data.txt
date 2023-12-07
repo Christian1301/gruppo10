@@ -1,1 +1,1 @@
-{"rules":[],"triggers":[],"actions":[]}
+{"rules":[],"triggers":[{"filePath":"C:\\Users\\chris\\Desktop\\ROMANO-CHRISTIAN.pdf","name":"uyugkiyb","type":"File Existence","value":"File: ROMANO-CHRISTIAN.pdf/Directory: C:\\Users\\chris\\Desktop\\ROMANO-CHRISTIAN.pdf"}],"actions":[{"filePath":"C:\\Users\\chris\\Desktop\\ROMANO-CHRISTIAN.pdf","name":"khbljb","type":"Delete File","value":"File: ROMANO-CHRISTIAN.pdf"}]}
