@@ -100,9 +100,9 @@ public abstract class Action {
             }
             case AddToCounterValueAction.type -> {
                     CounterManager = new CounterManager();
-                    String counterName = value.split("/")[0].split(": ")[1].split(": ")[0];
+                    String counterName = value.split("/")[0].split(": ")[1];
                     int addValue = Integer.parseInt(value.split("/")[1].split(": ")[1]);
-                    int currentValue = Integer.parseInt(value.split("/")[1].split("/")[1].split(": ")[1]);
+                    int currentValue = Integer.parseInt(value.split("/")[2].split(": ")[1]);
                     CounterManager.createCounter(counterName, currentValue);
                     yield new AddToCounterValueAction(name, CounterManager, counterName, addValue);
             }

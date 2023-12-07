@@ -53,4 +53,33 @@ public class CounterManager {
             throw new Exception("One or both counters do not exist.");
         }
     }
+
+    public boolean compareCounterValue(String counterName, String comparisonOperator, int comparisonValue) throws Exception {
+        Counter counter = getCounter(counterName);
+        if (counter != null) {
+            return switch (comparisonOperator) {
+                case "equal to" -> counter.getValue() == comparisonValue;
+                case "less than" -> counter.getValue() < comparisonValue;
+                case "greater than" -> counter.getValue() > comparisonValue;
+                default -> throw new Exception("Invalid comparison operator.");
+            };
+        } else {
+            throw new Exception("Counter " + counterName + " does not exist.");
+        }
+    }
+
+    public boolean compareCounterValues(String sourceCounterName, String comparisonOperator, String targetCounterName) throws Exception {
+        Counter sourceCounter = getCounter(sourceCounterName);
+        Counter targetCounter = getCounter(targetCounterName);
+        if (sourceCounter != null && targetCounter != null) {
+            return switch (comparisonOperator) {
+                case "equal to" -> sourceCounter.getValue() == targetCounter.getValue();
+                case "less than" -> sourceCounter.getValue() < targetCounter.getValue();
+                case "greater than" -> sourceCounter.getValue() > targetCounter.getValue();
+                default -> throw new Exception("Invalid comparison operator.");
+            };
+        } else {
+            throw new Exception("One or both counters do not exist.");
+        }
+    }
 }

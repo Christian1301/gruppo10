@@ -1,5 +1,6 @@
 package com.example.programmaifttt.Triggers;
 
+import com.example.programmaifttt.Counter.CounterManager;
 import com.example.programmaifttt.Enums.DayOfWeekEnum;
 import org.json.JSONObject;
 
@@ -112,6 +113,26 @@ public abstract class Trigger {
                 String commandLineArguments = value.split("/")[1].split(": ")[1];
                 int exitCode = Integer.parseInt(value.split("/")[2].split(": ")[1]);
                 return new ExternalProgramTrigger(name, file, commandLineArguments, exitCode);
+            }
+            case CounterValueTrigger.type -> {
+                CounterManager counterManager = new CounterManager();
+                String counterName = value.split("/")[0].split(": ")[1];
+                int currentValue = Integer.parseInt(value.split("/")[1]);
+                String comparisonOperator = value.split("/")[2];
+                int comparisonValue = Integer.parseInt(value.split("/")[3]);
+                counterManager.createCounter(counterName, currentValue);
+                return new CounterValueTrigger(name, counterManager, counterName, comparisonOperator, comparisonValue);
+            }
+            case CounterToCounterTrigger.type -> {
+                CounterManager counterManager = new CounterManager();
+                String sourceCounterName = value.split("/")[0].split(": ")[1];
+                int sourceCounterValue = Integer.parseInt(value.split("/")[1]);
+                String comparisonOperator = value.split("/")[2];
+                String targetCounterName = value.split("/")[3].split(": ")[1];
+                int targetCounterValue = Integer.parseInt(value.split("/")[4]);
+                counterManager.createCounter(sourceCounterName, sourceCounterValue);
+                counterManager.createCounter(targetCounterName, targetCounterValue);
+                return new CounterToCounterTrigger(name, counterManager, sourceCounterName, comparisonOperator, targetCounterName);
             }
         }
         return null;
