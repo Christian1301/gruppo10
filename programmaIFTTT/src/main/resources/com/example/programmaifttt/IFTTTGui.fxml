@@ -36,6 +36,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
@@ -123,7 +124,7 @@
                     </AnchorPane>
                      </items>
                   </SplitPane>
-                  <SplitPane fx:id="triggerPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0" visible="false">
+                  <SplitPane fx:id="triggerPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0">
                      <items>
                         <AnchorPane prefHeight="576.0" prefWidth="251.0">
                            <padding>
@@ -153,12 +154,12 @@
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert Trigger Value" />
                                     <StackPane prefHeight="150.0" prefWidth="200.0">
                                        <children>
-                                          <AnchorPane fx:id="timeOfDayTriggerValSel" prefHeight="200.0" prefWidth="200.0">
+                                          <AnchorPane fx:id="timeOfDayTriggerValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
                                              <StackPane.margin>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </StackPane.margin>
                                              <children>
-                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <padding>
                                                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                                    </padding>
@@ -167,6 +168,98 @@
                                                       <ChoiceBox fx:id="timeTriggerHours" prefWidth="150.0" />
                                                       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the Minutes" />
                                                       <ChoiceBox fx:id="timeTriggerMinutes" prefWidth="150.0" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="dayOfWeekTriggerValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the Day of the week:" />
+                                                      <ChoiceBox fx:id="dayTriggerSelected" prefWidth="150.0" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="dayOfMonthTriggerValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the Day of the month:" />
+                                                      <DatePicker fx:id="dayOfMonthSelected" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="externalProgramTriggerValSel" prefHeight="200.0" prefWidth="200.0">
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                             <children>
+                                                <VBox prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert the command line arguments" />
+                                                      <TextField fx:id="commandLineArgumentsTriggerSel" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select file to execute:" />
+                                                      <Button fx:id="selectExternalProgramTriggerBtn" mnemonicParsing="false" onAction="#selectExternalProgramTrigger" text="Select file" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the exit Status:" />
+                                                      <TextField fx:id="externalProgramTriggerExistStatusSel" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File Selected:" />
+                                                      <Label fx:id="externalProgramSelected1" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="fileExistenceTriggerValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox layoutY="-39.0" prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the File to check:" />
+                                                      <Button fx:id="selectFileExistTriggerBtn" mnemonicParsing="false" onAction="#selectFileExistTrigger" text="Select File" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File selected:" />
+                                                      <Label fx:id="fileExistTriggerLabel" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="fileSizeTriggerValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <StackPane.margin>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </StackPane.margin>
+                                             <children>
+                                                <VBox prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the File to check:" />
+                                                      <Button fx:id="selectFileSizeTriggerBtn" mnemonicParsing="false" onAction="#selectFileSizeTrigger" text="Select File" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Insert size in bytes:" />
+                                                      <TextField fx:id="fileSizeTriggerSizeSel" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="File selected:" />
+                                                      <Label fx:id="fileSizeTriggerLabel" />
                                                    </children>
                                                 </VBox>
                                              </children>
@@ -183,7 +276,7 @@
                         </AnchorPane>
                      </items>
                   </SplitPane>
-                  <SplitPane fx:id="actionPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0">
+                  <SplitPane fx:id="actionPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0" visible="false">
                      <items>
                         <AnchorPane prefHeight="576.0" prefWidth="251.0">
                            <padding>

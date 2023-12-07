@@ -6,8 +6,8 @@ import com.example.programmaifttt.Actions.Action;
 import com.example.programmaifttt.BackEnd.Rule;
 import com.example.programmaifttt.BackEnd.RuleController;
 import com.example.programmaifttt.BackEnd.Scheduler;
-import com.example.programmaifttt.Triggers.TimeOfDayTrigger;
-import com.example.programmaifttt.Triggers.Trigger;
+import com.example.programmaifttt.Enums.DayOfWeekEnum;
+import com.example.programmaifttt.Triggers.*;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -111,6 +111,10 @@ public class IFTTTController {
     private File pasteFile;
     private File pasteFileDirectory;
 
+    private File externalProgramTrig;
+    private File fileExistTrig;
+    private File fileSizeTrig;
+
     private BooleanProperty createRuleButtonDisabled = new SimpleBooleanProperty(true);
     private BooleanProperty createTriggerButtonDisabled = new SimpleBooleanProperty(true);
     private BooleanProperty createActionButtonDisabled = new SimpleBooleanProperty(true);
@@ -196,6 +200,38 @@ public class IFTTTController {
     private Label selectedPasteFileDirectory;
     @FXML
     private AnchorPane pasteFileValSel;
+    @FXML
+    private AnchorPane dayOfWeekTriggerValSel;
+    @FXML
+    private ChoiceBox dayTriggerSelected;
+    @FXML
+    private AnchorPane dayOfMonthTriggerValSel;
+    @FXML
+    private DatePicker dayOfMonthSelected;
+    @FXML
+    private AnchorPane externalProgramTriggerValSel;
+    @FXML
+    private TextField commandLineArgumentsTriggerSel;
+    @FXML
+    private Button selectExternalProgramTriggerBtn;
+    @FXML
+    private TextField externalProgramTriggerExistStatusSel;
+    @FXML
+    private Label externalProgramSelected1;
+    @FXML
+    private AnchorPane fileExistenceTriggerValSel;
+    @FXML
+    private Button selectFileExistTriggerBtn;
+    @FXML
+    private Label fileExistTriggerLabel;
+    @FXML
+    private AnchorPane fileSizeTriggerValSel;
+    @FXML
+    private Button selectFileSizeTriggerBtn;
+    @FXML
+    private TextField fileSizeTriggerSizeSel;
+    @FXML
+    private Label fileSizeTriggerLabel;
 
     //get rule controller
     public RuleController getRuleController() {
@@ -217,6 +253,10 @@ public class IFTTTController {
         this.moveFileDirectory = null;
         this.pasteFile = null;
         this.pasteFileDirectory = null;
+        this.externalProgramTrig = null;
+        this.fileExistTrig = null;
+        this.fileSizeTrig = null;
+
 
 
         intervalSchedulerSel.setText("10");
@@ -311,6 +351,12 @@ public class IFTTTController {
     public void createTrigger(ActionEvent actionEvent) {
         String name = triggerName.getText();
         String type = triggerTypeSelect.getValue();
+        //check if value is selected based on type
+        if (checkValueSelectedTrigger(type)) {
+            showErrorAlert("Error", "Value not selected!");
+            return;
+        }
+
         //create the trigger based on type
         Trigger newTrigger = createNewTrigger(name, type);
 
@@ -321,6 +367,30 @@ public class IFTTTController {
         triggerSelect.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
 
 
+    }
+
+    private boolean checkValueSelectedTrigger(String type) {
+        switch (type) {
+            case TimeOfDayTrigger.type -> {
+                return false;
+            }
+            case DayOfWeekTrigger.type -> {
+                return dayTriggerSelected.getValue() == null;
+            }
+            case DayOfMonthTrigger.type -> {
+                return dayOfMonthSelected.getValue() == null;
+            }
+            case ExternalProgramTrigger.type -> {
+                return externalProgramTrig == null || commandLineArgumentsTriggerSel.getText().isEmpty() || externalProgramTriggerExistStatusSel.getText().isEmpty();
+            }
+            case FileExistenceTrigger.type -> {
+                return fileExistTrig == null;
+            }
+            case FileSizeTrigger.type -> {
+                return fileSizeTrig == null || fileSizeTriggerSizeSel.getText().isEmpty();
+            }
+        }
+        return false;
     }
 
     @FXML
@@ -431,6 +501,10 @@ public class IFTTTController {
         ruleTableState.setCellValueFactory(new PropertyValueFactory<>("state"));
 
 
+        //set the sleep time text field to 60 by default
+        sleepTimeSelBox.setText("60");
+
+
         // Connect the ruleData to the table
         ruleTable.setItems(ruleData);
 
@@ -494,8 +568,6 @@ public class IFTTTController {
         // Load initial data into the table (if any)
         triggerData.addAll(ruleController.getTriggers());
 
-        //set the sleep time text field to 60 by default
-        sleepTimeSelBox.setText("60");
 
         // Disable "Create" button by default
         triggerCreateBtn.disableProperty().bind(createTriggerButtonDisabled);
@@ -510,7 +582,7 @@ public class IFTTTController {
         deleteSelectedTriggerBtn.disableProperty().bind(Bindings.isNull(triggerTable.getSelectionModel().selectedItemProperty()));
 
         // Populate the ChoiceBox with all the known types
-        triggerTypeSelect.setItems(FXCollections.observableArrayList(TimeOfDayTrigger.type));
+        triggerTypeSelect.setItems(FXCollections.observableArrayList(TimeOfDayTrigger.type, DayOfWeekTrigger.type, DayOfMonthTrigger.type, ExternalProgramTrigger.type, FileExistenceTrigger.type, FileSizeTrigger.type));
 
         initTriggerTypes();
 
@@ -520,7 +592,40 @@ public class IFTTTController {
 
         //Time Of Day init
         initTriggerTypeTOD();
+        initTriggerTypeTOW();
+        initTriggerTypeTOM();
+        initTriggerTypeEP();
+        initTriggerTypeFE();
+        initTriggerTypeFS();
         disableTriggerValueBox();
+    }
+
+    private void initTriggerTypeTOW() {
+        // Populate the ChoiceBox with all the days of the week from DayOfWeekEnum
+        dayTriggerSelected.setItems(FXCollections.observableArrayList(DayOfWeekEnum.values()));
+
+    }
+
+    private void initTriggerTypeTOM() {
+        //set the default date to today
+        dayOfMonthSelected.setValue(dayOfMonthSelected.getValue());
+
+
+    }
+
+    private void initTriggerTypeEP() {
+        //set the label to no file selected
+        externalProgramSelected1.setText("No file selected");
+    }
+
+    private void initTriggerTypeFE() {
+        //set the label to no file selected
+        fileExistTriggerLabel.setText("No file selected");
+    }
+
+    private void initTriggerTypeFS() {
+        //set the label to no file selected
+        fileSizeTriggerLabel.setText("No file selected");
     }
 
     private void disableTriggerValueBox() {
@@ -529,7 +634,22 @@ public class IFTTTController {
         //Time Of Day
         timeOfDayTriggerValSel.setDisable(true);
         timeOfDayTriggerValSel.setVisible(false);
-        //new trigger types here
+        //Day Of Week
+        dayOfWeekTriggerValSel.setDisable(true);
+        dayOfWeekTriggerValSel.setVisible(false);
+        //Day Of Month
+        dayOfMonthTriggerValSel.setDisable(true);
+        dayOfMonthTriggerValSel.setVisible(false);
+        //External Program
+        externalProgramTriggerValSel.setDisable(true);
+        externalProgramTriggerValSel.setVisible(false);
+        //File Existence
+        fileExistenceTriggerValSel.setDisable(true);
+        fileExistenceTriggerValSel.setVisible(false);
+        //File Size
+        fileSizeTriggerValSel.setDisable(true);
+        fileSizeTriggerValSel.setVisible(false);
+
 
     }
 
@@ -557,6 +677,26 @@ public class IFTTTController {
                 timeOfDayTriggerValSel.setDisable(false);
                 timeOfDayTriggerValSel.setVisible(true);
             }
+            case DayOfWeekTrigger.type -> {
+                dayOfWeekTriggerValSel.setDisable(false);
+                dayOfWeekTriggerValSel.setVisible(true);
+            }
+            case DayOfMonthTrigger.type -> {
+                dayOfMonthTriggerValSel.setDisable(false);
+                dayOfMonthTriggerValSel.setVisible(true);
+            }
+            case ExternalProgramTrigger.type -> {
+                externalProgramTriggerValSel.setDisable(false);
+                externalProgramTriggerValSel.setVisible(true);
+            }
+            case FileExistenceTrigger.type -> {
+                fileExistenceTriggerValSel.setDisable(false);
+                fileExistenceTriggerValSel.setVisible(true);
+            }
+            case FileSizeTrigger.type -> {
+                fileSizeTriggerValSel.setDisable(false);
+                fileSizeTriggerValSel.setVisible(true);
+            }
         }
 
     }
@@ -568,6 +708,30 @@ public class IFTTTController {
                 int hours = timeTriggerHours.getValue();
                 int minutes = timeTriggerMinutes.getValue();
                 return  new TimeOfDayTrigger(name,hours,minutes);
+            }
+            case DayOfWeekTrigger.type -> {
+                DayOfWeekEnum day = (DayOfWeekEnum) dayTriggerSelected.getValue();
+                return new DayOfWeekTrigger(name,day);
+            }
+            case DayOfMonthTrigger.type -> {
+                int day = dayOfMonthSelected.getValue().getDayOfMonth();
+                return new DayOfMonthTrigger(name,day);
+            }
+            case ExternalProgramTrigger.type -> {
+                ExternalProgramTrigger externalProgramTrigger = new ExternalProgramTrigger(name, externalProgramTrig, commandLineArgumentsTriggerSel.getText(), Integer.parseInt( externalProgramTriggerExistStatusSel.getText()));
+
+                return externalProgramTrigger;
+            }
+            case FileExistenceTrigger.type -> {
+                FileExistenceTrigger fileExistenceTrigger = new FileExistenceTrigger(name, fileExistTrig);
+
+                return fileExistenceTrigger;
+            }
+            case FileSizeTrigger.type -> {
+                int size = Integer.parseInt(fileSizeTriggerSizeSel.getText());
+                FileSizeTrigger fileSizeTrigger = new FileSizeTrigger(name, fileSizeTrig, size);
+                //fileSizeTrigger.execute();
+                return fileSizeTrigger;
             }
         }
         return null;
@@ -920,4 +1084,32 @@ public class IFTTTController {
         }
     }
 
+    @FXML
+    public void selectExternalProgramTrigger(ActionEvent actionEvent) {
+        File selectedFile = selectFile();
+        if (selectedFile != null) {
+            externalProgramTrig = selectedFile;
+            externalProgramSelected1.setText(selectedFile.getName());
+        }
+
+    }
+
+    @FXML
+    public void selectFileExistTrigger(ActionEvent actionEvent) {
+        File selectedFile = selectFile();
+        if (selectedFile != null) {
+            fileExistTrig = selectedFile;
+            fileExistTriggerLabel.setText(selectedFile.getName());
+        }
+    }
+
+    @FXML
+    public void selectFileSizeTrigger(ActionEvent actionEvent) {
+        File selectedFile = selectFile();
+        if (selectedFile != null) {
+            fileSizeTrig = selectedFile;
+            fileSizeTriggerLabel.setText(selectedFile.getName());
+
+        }
+    }
 }
