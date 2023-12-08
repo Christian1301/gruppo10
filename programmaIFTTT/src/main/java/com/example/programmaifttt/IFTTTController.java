@@ -239,7 +239,12 @@ public class IFTTTController {
     }
 
 
-    //init methods
+    /*
+
+    Methods for the main page
+
+     */
+
     @FXML
     public void initialize() {
         Data data = Data.loadDatas();
@@ -285,8 +290,6 @@ public class IFTTTController {
 
     }
 
-    //main page methods
-
     @FXML
     public void showRulesPage(ActionEvent actionEvent) {
         disablePages();
@@ -320,176 +323,39 @@ public class IFTTTController {
     }
 
     @FXML
-    public void createRule(ActionEvent actionEvent) {
-        String name = ruleName.getText();
-        Trigger trigger = triggerSelect.getValue();
-        Action action = actionSelect.getValue();
-        Boolean multiUse = multiUseCheckBox.isSelected();
-        //get the sleep time from the text field and if its not a number call the error alert
-        int sleepTime;
-        //if the multi use checkbox is not selected the sleep time is null
-        if (multiUse) {
-            try {
-                sleepTime = Integer.parseInt(sleepTimeSelBox.getText());
-            } catch (NumberFormatException e) {
-                showErrorAlert("Error", "Sleep time must be a number!");
-                return;
-            }
-        } else {
-            sleepTime = 0;
-        }
-        //create the rule
+    public void startScheduler(ActionEvent actionEvent) {
+        List<Rule> rules = ruleController.getRules();
 
-
-        Rule newRule = new Rule(name, trigger, action, true, multiUse, sleepTime);
-        ruleController.addRule(newRule);
-        // Refresh the table after adding a new rule
-        ruleData.setAll(ruleController.getRules());
-    }
-
-    @FXML
-    public void createTrigger(ActionEvent actionEvent) {
-        String name = triggerName.getText();
-        String type = triggerTypeSelect.getValue();
-        //check if value is selected based on type
-        if (checkValueSelectedTrigger(type)) {
-            showErrorAlert("Error", "Value not selected!");
+        if (rules.isEmpty()) {
+            showErrorAlert("Error", "No rules to schedule!");
             return;
         }
 
-        //create the trigger based on type
-        Trigger newTrigger = createNewTrigger(name, type);
-
-        ruleController.addTrigger(newTrigger);
-        //refresh the table after adding a new trigger
-        triggerData.setAll(ruleController.getTriggers());
-        //refresh the trigger list in rule page
-        triggerSelect.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
-
-
-    }
-
-    private boolean checkValueSelectedTrigger(String type) {
-        switch (type) {
-            case TimeOfDayTrigger.type -> {
-                return false;
-            }
-            case DayOfWeekTrigger.type -> {
-                return dayTriggerSelected.getValue() == null;
-            }
-            case DayOfMonthTrigger.type -> {
-                return dayOfMonthSelected.getValue() == null;
-            }
-            case ExternalProgramTrigger.type -> {
-                return externalProgramTrig == null || commandLineArgumentsTriggerSel.getText().isEmpty() || externalProgramTriggerExistStatusSel.getText().isEmpty();
-            }
-            case FileExistenceTrigger.type -> {
-                return fileExistTrig == null;
-            }
-            case FileSizeTrigger.type -> {
-                return fileSizeTrig == null || fileSizeTriggerSizeSel.getText().isEmpty();
-            }
+        try {
+            int interval = Integer.parseInt(intervalSchedulerSel.getText());
+            scheduler = new Scheduler(interval, ruleController, this);
+            scheduler.start();
+            stopSchedulerBtn.setDisable(false);
+            startSchedulerBtn.setDisable(true);
+        } catch (NumberFormatException e) {
+            showErrorAlert("Error", "Interval must be a number!");
         }
-        return false;
     }
 
     @FXML
-    public void createAction(ActionEvent actionEvent) {
-        String name = actionName.getText();
-        String type = actionTypeSelect.getValue();
-        //check if value is selected based on type
-        if (checkValueSelected(type)) {
-            showErrorAlert("Error", "Value not selected!");
-            return;
-        }
-
-        Action newAction = createNewAction(name, type);
-
-        ruleController.addAction(newAction);
-        //refresh the table after adding a new action
-        actionData.setAll(ruleController.getActions());
-        //refresh the action list in rule page
-        actionSelect.setItems(FXCollections.observableArrayList(ruleController.getActions()));
-    }
-
-    private boolean checkValueSelected(String type) {
-        switch (type) {
-            case AudioAction.type -> {
-                return audioFile == null;
-            }
-            case MessageBoxAction.type -> {
-                return messageBoxVal.getText().isEmpty();
-            }
-            case AppendStringToFileAction.type -> {
-                return textFile == null || messageToAppend.getText().isEmpty();
-            }
-            case DeleteFileAction.type -> {
-                return deleteFile == null;
-            }
-            case ExternalProgramAction.type -> {
-                return externalProgram == null || commandLineArgumentsVal.getText().isEmpty();
-            }
-            case MoveFileAction.type -> {
-                return moveFile == null || moveFileDirectory == null;
-            }
-            case PasteFileAction.type -> {
-                return pasteFile == null || pasteFileDirectory == null;
-            }
-        }
-        return false;
-
-    }
-
-    private Action createNewAction(String name, String type) {
-        switch (type) {
-            case AudioAction.type -> {
-                AudioAction audioAction = new AudioAction(name, audioFile);
-                //audioAction.execute();
-                return audioAction;
-            }
-            case MessageBoxAction.type -> {
-                MessageBoxAction messageBoxAction = new MessageBoxAction(name, messageBoxVal.getText());
-                //messageBoxAction.execute();
-                return messageBoxAction;
-            }
-            case AppendStringToFileAction.type -> {
-                AppendStringToFileAction appendStringToFileAction = new AppendStringToFileAction(name, messageToAppend.getText(), textFile );
-                //appendStringToFileAction.execute();
-                return appendStringToFileAction;
-            }
-            case DeleteFileAction.type -> {
-                DeleteFileAction deleteFileAction = new DeleteFileAction(name, deleteFile);
-                //deleteFileAction.execute();
-                return deleteFileAction;
-            }
-            case ExternalProgramAction.type -> {
-                ExternalProgramAction externalProgramAction = new ExternalProgramAction(name, externalProgram, commandLineArgumentsVal.getText());
-                //externalProgramAction.execute();
-                return externalProgramAction;
-            }
-            case MoveFileAction.type -> {
-                MoveFileAction moveFileAction = new MoveFileAction(name, moveFile, moveFileDirectory);
-                //moveFileAction.execute();
-                return moveFileAction;
-            }
-            case PasteFileAction.type -> {
-                PasteFileAction pasteFileAction = new PasteFileAction(name, pasteFile, pasteFileDirectory);
-                //pasteFileAction.execute();
-                return pasteFileAction;
-            }
-        }
-        return null;
+    public void stopScheduler(ActionEvent actionEvent) {
+        scheduler.stop();
+        stopSchedulerBtn.setDisable(true);
+        startSchedulerBtn.setDisable(false);
     }
 
 
-    @FXML
-    public void changeTriggerValueBox(ActionEvent event) {
-        updateTriggerValueBox();
-    }
+    /*
+     *
+     *  Methods for the rule page
+     *
+     */
 
-
-
-    //rule page methods
     private void initRulePage(){
 
         // Set up the rule table columns
@@ -554,8 +420,50 @@ public class IFTTTController {
 
     }
 
+    @FXML
+    public void createRule(ActionEvent actionEvent) {
+        String name = ruleName.getText();
+        Trigger trigger = triggerSelect.getValue();
+        Action action = actionSelect.getValue();
+        Boolean multiUse = multiUseCheckBox.isSelected();
+        //get the sleep time from the text field and if its not a number call the error alert
+        int sleepTime;
+        //if the multi use checkbox is not selected the sleep time is null
+        if (multiUse) {
+            try {
+                sleepTime = Integer.parseInt(sleepTimeSelBox.getText());
+            } catch (NumberFormatException e) {
+                showErrorAlert("Error", "Sleep time must be a number!");
+                return;
+            }
+        } else {
+            sleepTime = 0;
+        }
+        //create the rule
 
-    //trigger page init methods
+
+        Rule newRule = new Rule(name, trigger, action, true, multiUse, sleepTime);
+        ruleController.addRule(newRule);
+        // Refresh the table after adding a new rule
+        ruleData.setAll(ruleController.getRules());
+    }
+
+    @FXML
+    public void deleteSelectedRule(ActionEvent actionEvent) {
+        //get the selected rule and delete it
+        Rule selectedRule = ruleTable.getSelectionModel().getSelectedItem();
+        ruleController.deleteRule(selectedRule.getName());
+        //refresh the table after deleting a rule
+        ruleData.setAll(ruleController.getRules());
+    }
+
+
+    /*
+     *
+     *  Methods for the trigger page
+     *
+     */
+
     private void initTriggerPage(){
         // Set up the trigger table columns
         triggerTableName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -587,7 +495,59 @@ public class IFTTTController {
         initTriggerTypes();
 
     }
+    @FXML
+    public void createTrigger(ActionEvent actionEvent) {
+        String name = triggerName.getText();
+        String type = triggerTypeSelect.getValue();
+        //check if value is selected based on type
+        if (checkValueSelectedTrigger(type)) {
+            showErrorAlert("Error", "Value not selected!");
+            return;
+        }
 
+        //create the trigger based on type
+        Trigger newTrigger = createNewTrigger(name, type);
+
+        ruleController.addTrigger(newTrigger);
+        //refresh the table after adding a new trigger
+        triggerData.setAll(ruleController.getTriggers());
+        //refresh the trigger list in rule page
+        triggerSelect.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
+
+
+    }
+
+    private boolean checkValueSelectedTrigger(String type) {
+        switch (type) {
+            case TimeOfDayTrigger.type -> {
+                return false;
+            }
+            case DayOfWeekTrigger.type -> {
+                return dayTriggerSelected.getValue() == null;
+            }
+            case DayOfMonthTrigger.type -> {
+                return dayOfMonthSelected.getValue() == null;
+            }
+            case ExternalProgramTrigger.type -> {
+                return externalProgramTrig == null || commandLineArgumentsTriggerSel.getText().isEmpty() || externalProgramTriggerExistStatusSel.getText().isEmpty();
+            }
+            case FileExistenceTrigger.type -> {
+                return fileExistTrig == null;
+            }
+            case FileSizeTrigger.type -> {
+                return fileSizeTrig == null || fileSizeTriggerSizeSel.getText().isEmpty();
+            }
+        }
+        return false;
+    }
+
+    @FXML
+    public void changeTriggerValueBox(ActionEvent event) {
+        updateTriggerValueBox();
+    }
+
+
+    //trigger type init methods
     private void initTriggerTypes(){
 
         //Time Of Day init
@@ -737,8 +697,143 @@ public class IFTTTController {
         return null;
     }
 
+    @FXML
+    public void selectExternalProgramTrigger(ActionEvent actionEvent) {
+        File selectedFile = selectFile();
+        if (selectedFile != null) {
+            externalProgramTrig = selectedFile;
+            externalProgramSelected1.setText(selectedFile.getName());
+        }
 
-    //action page init methods
+    }
+
+    @FXML
+    public void selectFileExistTrigger(ActionEvent actionEvent) {
+        File selectedFile = selectFile();
+        if (selectedFile != null) {
+            fileExistTrig = selectedFile;
+            fileExistTriggerLabel.setText(selectedFile.getName());
+        }
+    }
+
+    @FXML
+    public void selectFileSizeTrigger(ActionEvent actionEvent) {
+        File selectedFile = selectFile();
+        if (selectedFile != null) {
+            fileSizeTrig = selectedFile;
+            fileSizeTriggerLabel.setText(selectedFile.getName());
+
+        }
+    }
+
+    @FXML
+    public void deleteSelectedTrigger(ActionEvent actionEvent) {
+        //get the selected trigger and delete it if it is not used in any rule
+        Trigger selectedTrigger = triggerTable.getSelectionModel().getSelectedItem();
+        if (ruleController.isTriggerUsed(selectedTrigger)) {
+            showErrorAlert("Error", "Trigger is used in a rule!");
+        } else {
+            ruleController.deleteTrigger(selectedTrigger.getName());
+            //refresh the table after deleting a trigger
+            triggerData.setAll(ruleController.getTriggers());
+        }
+    }
+
+
+    /*
+     *
+     *  Methods for the action page
+     *
+     */
+
+    @FXML
+    public void createAction(ActionEvent actionEvent) {
+        String name = actionName.getText();
+        String type = actionTypeSelect.getValue();
+        //check if value is selected based on type
+        if (checkValueSelected(type)) {
+            showErrorAlert("Error", "Value not selected!");
+            return;
+        }
+
+        Action newAction = createNewAction(name, type);
+
+        ruleController.addAction(newAction);
+        //refresh the table after adding a new action
+        actionData.setAll(ruleController.getActions());
+        //refresh the action list in rule page
+        actionSelect.setItems(FXCollections.observableArrayList(ruleController.getActions()));
+    }
+
+    private boolean checkValueSelected(String type) {
+        switch (type) {
+            case AudioAction.type -> {
+                return audioFile == null;
+            }
+            case MessageBoxAction.type -> {
+                return messageBoxVal.getText().isEmpty();
+            }
+            case AppendStringToFileAction.type -> {
+                return textFile == null || messageToAppend.getText().isEmpty();
+            }
+            case DeleteFileAction.type -> {
+                return deleteFile == null;
+            }
+            case ExternalProgramAction.type -> {
+                return externalProgram == null || commandLineArgumentsVal.getText().isEmpty();
+            }
+            case MoveFileAction.type -> {
+                return moveFile == null || moveFileDirectory == null;
+            }
+            case PasteFileAction.type -> {
+                return pasteFile == null || pasteFileDirectory == null;
+            }
+        }
+        return false;
+
+    }
+
+    private Action createNewAction(String name, String type) {
+        switch (type) {
+            case AudioAction.type -> {
+                AudioAction audioAction = new AudioAction(name, audioFile);
+                //audioAction.execute();
+                return audioAction;
+            }
+            case MessageBoxAction.type -> {
+                MessageBoxAction messageBoxAction = new MessageBoxAction(name, messageBoxVal.getText());
+                //messageBoxAction.execute();
+                return messageBoxAction;
+            }
+            case AppendStringToFileAction.type -> {
+                AppendStringToFileAction appendStringToFileAction = new AppendStringToFileAction(name, messageToAppend.getText(), textFile );
+                //appendStringToFileAction.execute();
+                return appendStringToFileAction;
+            }
+            case DeleteFileAction.type -> {
+                DeleteFileAction deleteFileAction = new DeleteFileAction(name, deleteFile);
+                //deleteFileAction.execute();
+                return deleteFileAction;
+            }
+            case ExternalProgramAction.type -> {
+                ExternalProgramAction externalProgramAction = new ExternalProgramAction(name, externalProgram, commandLineArgumentsVal.getText());
+                //externalProgramAction.execute();
+                return externalProgramAction;
+            }
+            case MoveFileAction.type -> {
+                MoveFileAction moveFileAction = new MoveFileAction(name, moveFile, moveFileDirectory);
+                //moveFileAction.execute();
+                return moveFileAction;
+            }
+            case PasteFileAction.type -> {
+                PasteFileAction pasteFileAction = new PasteFileAction(name, pasteFile, pasteFileDirectory);
+                //pasteFileAction.execute();
+                return pasteFileAction;
+            }
+        }
+        return null;
+    }
+
     private void initActionPage() {
         // Set up the action table columns
         actionTableName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -832,9 +927,6 @@ public class IFTTTController {
         selectedPasteFileDirectory.setText("no directory selected");
     }
 
-
-
-
     @FXML
     public void changeActionValueBox(ActionEvent actionEvent) {
         updateActionValueBox();
@@ -904,32 +996,6 @@ public class IFTTTController {
 
     }
 
-
-    //funtion to call when chosing a file
-    private File selectFile() {
-        //open a file chooser to select a file
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-        int result = fileChooser.showOpenDialog(null);
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            return fileChooser.getSelectedFile();
-        }
-        return null;
-    }
-
-    private File selectDirectory() {
-        //open a file chooser to select a directory
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        int result = fileChooser.showOpenDialog(null);
-
-        if (result == JFileChooser.APPROVE_OPTION) {
-            return fileChooser.getSelectedFile();
-        }
-        return null;
-    }
 
     @FXML
     public void selectAudioFile(ActionEvent actionEvent) {
@@ -1005,73 +1071,6 @@ public class IFTTTController {
     }
 
     @FXML
-    public void startScheduler(ActionEvent actionEvent) {
-        List<Rule> rules = ruleController.getRules();
-
-        if (rules.isEmpty()) {
-            showErrorAlert("Error", "No rules to schedule!");
-            return;
-        }
-
-        try {
-            int interval = Integer.parseInt(intervalSchedulerSel.getText());
-            scheduler = new Scheduler(interval, ruleController, this);
-            scheduler.start();
-            stopSchedulerBtn.setDisable(false);
-            startSchedulerBtn.setDisable(true);
-        } catch (NumberFormatException e) {
-            showErrorAlert("Error", "Interval must be a number!");
-        }
-    }
-
-    private void showErrorAlert(String title, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
-
-        // Wait for the user to click OK
-        alert.showAndWait();
-    }
-
-    @FXML
-    public void stopScheduler(ActionEvent actionEvent) {
-        scheduler.stop();
-        stopSchedulerBtn.setDisable(true);
-        startSchedulerBtn.setDisable(false);
-    }
-
-    public void updateList() {
-        Platform.runLater(() -> {
-            ruleData.setAll(ruleController.getRules());
-            triggerData.setAll(ruleController.getTriggers());
-            actionData.setAll(ruleController.getActions());
-        });
-    }
-
-    @FXML
-    public void deleteSelectedRule(ActionEvent actionEvent) {
-        //get the selected rule and delete it
-        Rule selectedRule = ruleTable.getSelectionModel().getSelectedItem();
-        ruleController.deleteRule(selectedRule.getName());
-        //refresh the table after deleting a rule
-        ruleData.setAll(ruleController.getRules());
-    }
-
-    @FXML
-    public void deleteSelectedTrigger(ActionEvent actionEvent) {
-        //get the selected trigger and delete it if it is not used in any rule
-        Trigger selectedTrigger = triggerTable.getSelectionModel().getSelectedItem();
-        if (ruleController.isTriggerUsed(selectedTrigger)) {
-            showErrorAlert("Error", "Trigger is used in a rule!");
-        } else {
-            ruleController.deleteTrigger(selectedTrigger.getName());
-            //refresh the table after deleting a trigger
-            triggerData.setAll(ruleController.getTriggers());
-        }
-    }
-
-    @FXML
     public void deleteSelectedAction(ActionEvent actionEvent) {
         //get the selected action and delete it if it is not used in any rule
         Action selectedAction = actionTable.getSelectionModel().getSelectedItem();
@@ -1084,32 +1083,53 @@ public class IFTTTController {
         }
     }
 
-    @FXML
-    public void selectExternalProgramTrigger(ActionEvent actionEvent) {
-        File selectedFile = selectFile();
-        if (selectedFile != null) {
-            externalProgramTrig = selectedFile;
-            externalProgramSelected1.setText(selectedFile.getName());
-        }
 
+    /*
+     *
+     *  Other methods
+     *
+     */
+
+    private void showErrorAlert(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+
+        // Wait for the user to click OK
+        alert.showAndWait();
     }
 
-    @FXML
-    public void selectFileExistTrigger(ActionEvent actionEvent) {
-        File selectedFile = selectFile();
-        if (selectedFile != null) {
-            fileExistTrig = selectedFile;
-            fileExistTriggerLabel.setText(selectedFile.getName());
-        }
+    public void updateList() {
+        Platform.runLater(() -> {
+            ruleData.setAll(ruleController.getRules());
+            triggerData.setAll(ruleController.getTriggers());
+            actionData.setAll(ruleController.getActions());
+        });
     }
 
-    @FXML
-    public void selectFileSizeTrigger(ActionEvent actionEvent) {
-        File selectedFile = selectFile();
-        if (selectedFile != null) {
-            fileSizeTrig = selectedFile;
-            fileSizeTriggerLabel.setText(selectedFile.getName());
+    private File selectFile() {
+        //open a file chooser to select a file
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        int result = fileChooser.showOpenDialog(null);
 
+        if (result == JFileChooser.APPROVE_OPTION) {
+            return fileChooser.getSelectedFile();
         }
+        return null;
+    }
+
+    private File selectDirectory() {
+        //open a file chooser to select a directory
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int result = fileChooser.showOpenDialog(null);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            return fileChooser.getSelectedFile();
+        }
+        return null;
     }
 }
