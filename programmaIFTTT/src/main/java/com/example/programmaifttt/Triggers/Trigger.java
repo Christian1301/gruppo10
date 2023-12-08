@@ -139,4 +139,9 @@ public abstract class Trigger {
     }
 
     public abstract boolean isEvaluable() throws IOException;
+
+    //abstract function to check if a trigger is used in another trigger
+    public boolean isUsedIn(Trigger trigger){
+        return this.equals(trigger);
+    }
 }

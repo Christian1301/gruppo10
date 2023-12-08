@@ -120,4 +120,8 @@ public abstract class Action {
                     null;
         };
     }
+
+    public boolean isUsedIn(Action action) {
+        return this.equals(action);
+    }
 }
