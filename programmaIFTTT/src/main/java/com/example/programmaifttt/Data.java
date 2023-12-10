@@ -16,12 +16,9 @@ public class Data {
 
     // Constructor
     public Data() {
-        this.ruleController = new RuleController();
+        this.ruleController = RuleController.getInstance();
     }
 
-    public Data(RuleController ruleController) {
-        this.ruleController = ruleController;
-    }
 
     // Getters
     public RuleController getRuleController() {

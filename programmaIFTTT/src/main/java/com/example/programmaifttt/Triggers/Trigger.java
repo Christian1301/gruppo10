@@ -1,5 +1,7 @@
 package com.example.programmaifttt.Triggers;
 
+import com.example.programmaifttt.BackEnd.Rule;
+import com.example.programmaifttt.BackEnd.RuleController;
 import com.example.programmaifttt.Counter.CounterManager;
 import com.example.programmaifttt.Enums.DayOfWeekEnum;
 import org.json.JSONObject;
@@ -134,14 +136,49 @@ public abstract class Trigger {
                 counterManager.createCounter(targetCounterName, targetCounterValue);
                 return new CounterToCounterTrigger(name, counterManager, sourceCounterName, comparisonOperator, targetCounterName);
             }
+            case ANDTrigger.type -> {
+                //extract the name of the triggers and then get the triggers from the ruleController
+                String trigger1Name = value.split(" AND ")[0];
+                String trigger2Name = value.split(" AND ")[1];
+
+                return new ANDTrigger(name, trigger1Name, trigger2Name);
+            }
+            case ORTrigger.type -> {
+                String trigger1Name = value.split(" OR ")[0];
+                String trigger2Name = value.split(" OR ")[1];
+
+                return new ORTrigger(name, trigger1Name, trigger2Name);
+            }
+            case NOTTrigger.type -> {
+                String triggerName = value.split("NOT ")[1];
+                return new NOTTrigger(name, triggerName);
+            }
         }
         return null;
     }
 
     public abstract boolean isEvaluable() throws IOException;
 
-    //abstract function to check if a trigger is used in another trigger
-    public boolean isUsedIn(Trigger trigger){
-        return this.equals(trigger);
+    //function to check if a trigger is used in another trigger
+    public boolean isUsedIn() {
+        boolean result = false;
+        for (Trigger trigger : RuleController.getInstance().getTriggers()) {
+            if (!trigger.equals(this)) {
+                if (trigger instanceof ANDTrigger) {
+                    ANDTrigger andTrigger = (ANDTrigger) trigger;
+                    result = andTrigger.checkIfUsed(this);
+
+                } else if (trigger instanceof ORTrigger) {
+                    ORTrigger orTrigger = (ORTrigger) trigger;
+                    result = orTrigger.checkIfUsed(this);
+
+                } else if (trigger instanceof NOTTrigger) {
+                    NOTTrigger notTrigger = (NOTTrigger) trigger;
+                    result = notTrigger.checkIfUsed(this);
+
+                }
+            }
+        }
+        return result;
     }
 }

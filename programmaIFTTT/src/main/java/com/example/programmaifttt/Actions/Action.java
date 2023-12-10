@@ -1,5 +1,6 @@
 package com.example.programmaifttt.Actions;
 
+import com.example.programmaifttt.BackEnd.RuleController;
 import com.example.programmaifttt.Counter.CounterManager;
 import org.json.JSONObject;
 import java.io.File;
@@ -116,12 +117,26 @@ public abstract class Action {
                     CounterManager.createCounter(targetCounterName, targetCounterValue);
                     yield new AddCounterValueToAnotherAction(name, CounterManager, sourceCounterName, targetCounterName);
             }
+            case CombinedAction.type -> {
+                    String action1 = value.split(" \\+ ")[0];
+                    String action2 = value.split(" \\+ ")[1];
+                    yield new CombinedAction(name, action1, action2);
+            }
             default ->
                     null;
         };
     }
 
-    public boolean isUsedIn(Action action) {
-        return this.equals(action);
+    public boolean isUsedIn() {
+        boolean result = false;
+        for (Action action : RuleController.getInstance().getActions()){
+            if(!action.equals(this)){
+                if(action instanceof CombinedAction){
+                    CombinedAction combinedAction = (CombinedAction) action;
+                    result = combinedAction.checkIfUsed(this);
+                }
+            }
+        }
+        return result;
     }
 }

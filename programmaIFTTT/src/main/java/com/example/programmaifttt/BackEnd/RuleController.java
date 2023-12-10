@@ -5,20 +5,29 @@ import com.example.programmaifttt.Triggers.Trigger;
 
 import java.util.ArrayList;
 import java.util.List;
+
 public class RuleController{
+    private static RuleController instance;
+
     private List<Rule> rules;
     private List<Trigger> triggers;
     private List<Action> actions;
 
     private List<RuleControllerObserver> observers;
 
-    public RuleController() {
+    private RuleController() {
         this.rules = new ArrayList<>();
         this.triggers = new ArrayList<>();
         this.actions = new ArrayList<>();
         this.observers = new ArrayList<>();
     }
 
+    public static synchronized RuleController getInstance() {
+        if (instance == null) {
+            instance = new RuleController();
+        }
+        return instance;
+    }
     public void addObserver(RuleControllerObserver observer) {
         observers.add(observer);
     }
@@ -114,5 +123,23 @@ public class RuleController{
             }
         }
         return false;
+    }
+
+    public Trigger getTriggerByName(String trigger1Name) {
+        for (Trigger trigger : triggers) {
+            if (trigger.getName().equals(trigger1Name)) {
+                return trigger;
+            }
+        }
+        return null;
+    }
+
+    public Action getActionByName(String action) {
+        for (Action action1 : actions) {
+            if (action1.getName().equals(action)) {
+                return action1;
+            }
+        }
+        return null;
     }
 }

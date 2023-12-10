@@ -232,6 +232,28 @@ public class IFTTTController {
     private TextField fileSizeTriggerSizeSel;
     @FXML
     private Label fileSizeTriggerLabel;
+    @FXML
+    private AnchorPane ANDTriggerValSel;
+    @FXML
+    private ChoiceBox ANDTrigger1;
+    @FXML
+    private ChoiceBox ANDTrigger2;
+    @FXML
+    private AnchorPane ORTriggerValSel;
+    @FXML
+    private ChoiceBox ORTrigger1;
+    @FXML
+    private ChoiceBox ORTrigger2;
+    @FXML
+    private AnchorPane NOTTriggerValSel;
+    @FXML
+    private ChoiceBox NOTTrigger1;
+    @FXML
+    private AnchorPane CombinedActionValSel;
+    @FXML
+    private ChoiceBox CombinedAction1;
+    @FXML
+    private ChoiceBox CombinedAction2;
 
     //get rule controller
     public RuleController getRuleController() {
@@ -248,7 +270,7 @@ public class IFTTTController {
     @FXML
     public void initialize() {
         Data data = Data.loadDatas();
-        this.ruleController = data.getRuleController();
+        this.ruleController = RuleController.getInstance();
 
         this.audioFile = null;
         this.textFile = null;
@@ -265,7 +287,7 @@ public class IFTTTController {
 
 
         intervalSchedulerSel.setText("10");
-        scheduler = new Scheduler(Integer.parseInt(intervalSchedulerSel.getText()), ruleController, this);
+        scheduler = new Scheduler(Integer.parseInt(intervalSchedulerSel.getText()), this);
         stopSchedulerBtn.setDisable(true);
         //init the pages
         disablePages();
@@ -333,7 +355,7 @@ public class IFTTTController {
 
         try {
             int interval = Integer.parseInt(intervalSchedulerSel.getText());
-            scheduler = new Scheduler(interval, ruleController, this);
+            scheduler = new Scheduler(interval, this);
             scheduler.start();
             stopSchedulerBtn.setDisable(false);
             startSchedulerBtn.setDisable(true);
@@ -490,7 +512,17 @@ public class IFTTTController {
         deleteSelectedTriggerBtn.disableProperty().bind(Bindings.isNull(triggerTable.getSelectionModel().selectedItemProperty()));
 
         // Populate the ChoiceBox with all the known types
-        triggerTypeSelect.setItems(FXCollections.observableArrayList(TimeOfDayTrigger.type, DayOfWeekTrigger.type, DayOfMonthTrigger.type, ExternalProgramTrigger.type, FileExistenceTrigger.type, FileSizeTrigger.type));
+        triggerTypeSelect.setItems(FXCollections.observableArrayList(
+                TimeOfDayTrigger.type,
+                DayOfWeekTrigger.type,
+                DayOfMonthTrigger.type,
+                ExternalProgramTrigger.type,
+                FileExistenceTrigger.type,
+                FileSizeTrigger.type,
+                ANDTrigger.type,
+                ORTrigger.type,
+                NOTTrigger.type
+        ));
 
         initTriggerTypes();
 
@@ -501,7 +533,7 @@ public class IFTTTController {
         String type = triggerTypeSelect.getValue();
         //check if value is selected based on type
         if (checkValueSelectedTrigger(type)) {
-            showErrorAlert("Error", "Value not selected!");
+            showErrorAlert("Error", "Value not selected or duplicate combined trigger!");
             return;
         }
 
@@ -512,9 +544,18 @@ public class IFTTTController {
         //refresh the table after adding a new trigger
         triggerData.setAll(ruleController.getTriggers());
         //refresh the trigger list in rule page
+        updateTriggers();
+
+
+    }
+
+    private void updateTriggers() {
         triggerSelect.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
-
-
+        ANDTrigger1.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
+        ANDTrigger2.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
+        ORTrigger1.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
+        ORTrigger2.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
+        NOTTrigger1.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
     }
 
     private boolean checkValueSelectedTrigger(String type) {
@@ -537,6 +578,15 @@ public class IFTTTController {
             case FileSizeTrigger.type -> {
                 return fileSizeTrig == null || fileSizeTriggerSizeSel.getText().isEmpty();
             }
+            case ANDTrigger.type -> {
+                return ANDTrigger1.getValue() == null || ANDTrigger2.getValue() == null || ANDTrigger1.getValue().equals(ANDTrigger2.getValue());
+            }
+            case ORTrigger.type -> {
+                return ORTrigger1.getValue() == null || ORTrigger2.getValue() == null || ORTrigger1.getValue().equals(ORTrigger2.getValue());
+            }
+            case NOTTrigger.type -> {
+                return NOTTrigger1.getValue() == null;
+            }
         }
         return false;
     }
@@ -557,7 +607,27 @@ public class IFTTTController {
         initTriggerTypeEP();
         initTriggerTypeFE();
         initTriggerTypeFS();
+        initTriggerTypeAND();
+        initTriggerTypeOR();
+        initTriggerTypeNOT();
         disableTriggerValueBox();
+    }
+
+    private void initTriggerTypeNOT() {
+        //set the items of the choice boxes
+        NOTTrigger1.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
+    }
+
+    private void initTriggerTypeOR() {
+        //set the items of the choice boxes
+        ORTrigger1.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
+        ORTrigger2.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
+    }
+
+    private void initTriggerTypeAND() {
+        //set the items of the choice boxes
+        ANDTrigger1.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
+        ANDTrigger2.setItems(FXCollections.observableArrayList(ruleController.getTriggers()));
     }
 
     private void initTriggerTypeTOW() {
@@ -609,6 +679,16 @@ public class IFTTTController {
         //File Size
         fileSizeTriggerValSel.setDisable(true);
         fileSizeTriggerValSel.setVisible(false);
+        //AND Trigger
+        ANDTriggerValSel.setDisable(true);
+        ANDTriggerValSel.setVisible(false);
+        //OR Trigger
+        ORTriggerValSel.setDisable(true);
+        ORTriggerValSel.setVisible(false);
+        //NOT Trigger
+        NOTTriggerValSel.setDisable(true);
+        NOTTriggerValSel.setVisible(false);
+
 
 
     }
@@ -657,6 +737,18 @@ public class IFTTTController {
                 fileSizeTriggerValSel.setDisable(false);
                 fileSizeTriggerValSel.setVisible(true);
             }
+            case ANDTrigger.type -> {
+                ANDTriggerValSel.setDisable(false);
+                ANDTriggerValSel.setVisible(true);
+            }
+            case ORTrigger.type -> {
+                ORTriggerValSel.setDisable(false);
+                ORTriggerValSel.setVisible(true);
+            }
+            case NOTTrigger.type -> {
+                NOTTriggerValSel.setDisable(false);
+                NOTTriggerValSel.setVisible(true);
+            }
         }
 
     }
@@ -692,6 +784,20 @@ public class IFTTTController {
                 FileSizeTrigger fileSizeTrigger = new FileSizeTrigger(name, fileSizeTrig, size);
                 //fileSizeTrigger.execute();
                 return fileSizeTrigger;
+            }
+            case ANDTrigger.type -> {
+                Trigger trigger1 = (Trigger) ANDTrigger1.getValue();
+                Trigger trigger2 = (Trigger) ANDTrigger2.getValue();
+                return new ANDTrigger(name, trigger1, trigger2);
+            }
+            case ORTrigger.type -> {
+                Trigger trigger1 = (Trigger) ORTrigger1.getValue();
+                Trigger trigger2 = (Trigger) ORTrigger2.getValue();
+                return new ORTrigger(name, trigger1, trigger2);
+            }
+            case NOTTrigger.type -> {
+                Trigger trigger1 = (Trigger) NOTTrigger1.getValue();
+                return new NOTTrigger(name, trigger1);
             }
         }
         return null;
@@ -732,10 +838,20 @@ public class IFTTTController {
         Trigger selectedTrigger = triggerTable.getSelectionModel().getSelectedItem();
         if (ruleController.isTriggerUsed(selectedTrigger)) {
             showErrorAlert("Error", "Trigger is used in a rule!");
-        } else {
+        }
+        else {
+
+            if(selectedTrigger.isUsedIn()) {
+                showErrorAlert("Error", "Trigger is used in a combined trigger!");
+                return;
+            }
+
+
+
             ruleController.deleteTrigger(selectedTrigger.getName());
             //refresh the table after deleting a trigger
             triggerData.setAll(ruleController.getTriggers());
+            updateTriggers();
         }
     }
 
@@ -762,7 +878,13 @@ public class IFTTTController {
         //refresh the table after adding a new action
         actionData.setAll(ruleController.getActions());
         //refresh the action list in rule page
+        updateActions();
+    }
+
+    private void updateActions() {
         actionSelect.setItems(FXCollections.observableArrayList(ruleController.getActions()));
+        CombinedAction1.setItems(FXCollections.observableArrayList(ruleController.getActions()));
+        CombinedAction2.setItems(FXCollections.observableArrayList(ruleController.getActions()));
     }
 
     private boolean checkValueSelected(String type) {
@@ -787,6 +909,9 @@ public class IFTTTController {
             }
             case PasteFileAction.type -> {
                 return pasteFile == null || pasteFileDirectory == null;
+            }
+            case CombinedAction.type -> {
+                return CombinedAction1.getValue() == null || CombinedAction2.getValue() == null || CombinedAction1.getValue().equals(CombinedAction2.getValue());
             }
         }
         return false;
@@ -830,6 +955,11 @@ public class IFTTTController {
                 //pasteFileAction.execute();
                 return pasteFileAction;
             }
+            case CombinedAction.type -> {
+                Action action1 = (Action) CombinedAction1.getValue();
+                Action action2 = (Action) CombinedAction2.getValue();
+                return new CombinedAction(name, action1, action2);
+            }
         }
         return null;
     }
@@ -861,7 +991,16 @@ public class IFTTTController {
 
 
         // Populate the ChoiceBox with all the known types
-        actionTypeSelect.setItems(FXCollections.observableArrayList(AudioAction.type, MessageBoxAction.type, AppendStringToFileAction.type, DeleteFileAction.type, ExternalProgramAction.type, MoveFileAction.type, PasteFileAction.type));
+        actionTypeSelect.setItems(FXCollections.observableArrayList(
+                AudioAction.type,
+                MessageBoxAction.type,
+                AppendStringToFileAction.type,
+                DeleteFileAction.type,
+                ExternalProgramAction.type,
+                MoveFileAction.type,
+                PasteFileAction.type,
+                CombinedAction.type
+        ));
 
         initActionTypes();
     }
@@ -875,9 +1014,16 @@ public class IFTTTController {
         initActionTypeExternalProgram();
         initActionTypeMoveFile();
         initActionTypePasteFile();
+        initActionTypeCombinedAction();
 
         disbleActionValueBox();
 
+    }
+
+    private void initActionTypeCombinedAction() {
+        //set the items of the choice boxes
+        CombinedAction1.setItems(FXCollections.observableArrayList(ruleController.getActions()));
+        CombinedAction2.setItems(FXCollections.observableArrayList(ruleController.getActions()));
     }
 
     //init all action types
@@ -965,6 +1111,10 @@ public class IFTTTController {
                 pasteFileValSel.setDisable(false);
                 pasteFileValSel.setVisible(true);
             }
+            case CombinedAction.type -> {
+                CombinedActionValSel.setDisable(false);
+                CombinedActionValSel.setVisible(true);
+            }
         }
     }
 
@@ -992,6 +1142,10 @@ public class IFTTTController {
         //Paste File
         pasteFileValSel.setDisable(true);
         pasteFileValSel.setVisible(false);
+        //Combined Action
+        CombinedActionValSel.setDisable(true);
+        CombinedActionValSel.setVisible(false);
+
 
 
     }
@@ -1077,9 +1231,14 @@ public class IFTTTController {
         if (ruleController.isActionUsed(selectedAction)) {
             showErrorAlert("Error", "Action is used in a rule!");
         } else {
+            if (selectedAction.isUsedIn()) {
+                showErrorAlert("Error", "Action is used in a combined action!");
+                return;
+            }
             ruleController.deleteAction(selectedAction.getName());
             //refresh the table after deleting an action
             actionData.setAll(ruleController.getActions());
+            updateActions();
         }
     }
 

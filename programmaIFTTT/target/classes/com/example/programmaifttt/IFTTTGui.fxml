@@ -125,7 +125,7 @@
                     </AnchorPane>
                      </items>
                   </SplitPane>
-                  <SplitPane fx:id="triggerPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0">
+                  <SplitPane fx:id="triggerPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0" visible="false">
                      <items>
                         <AnchorPane prefHeight="576.0" prefWidth="251.0">
                            <padding>
@@ -205,7 +205,7 @@
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </StackPane.margin>
                                           </AnchorPane>
-                                          <AnchorPane fx:id="externalProgramTriggerValSel" prefHeight="200.0" prefWidth="200.0">
+                                          <AnchorPane fx:id="externalProgramTriggerValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
                                              <StackPane.margin>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </StackPane.margin>
@@ -265,6 +265,49 @@
                                                 </VBox>
                                              </children>
                                           </AnchorPane>
+                                          <AnchorPane fx:id="ANDTriggerValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the first Trigger" />
+                                                      <ChoiceBox fx:id="ANDTrigger1" prefWidth="150.0" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the second Trigger" />
+                                                      <ChoiceBox fx:id="ANDTrigger2" prefWidth="150.0" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="ORTriggerValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the first Trigger" />
+                                                      <ChoiceBox fx:id="ORTrigger1" prefWidth="150.0" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the second Trigger" />
+                                                      <ChoiceBox fx:id="ORTrigger2" prefWidth="150.0" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="NOTTriggerValSel" prefHeight="200.0" prefWidth="200.0" visible="false">
+                                             <children>
+                                                <VBox prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the Trigger" />
+                                                      <ChoiceBox fx:id="NOTTrigger1" prefWidth="150.0" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
                                        </children>
                                     </StackPane>
                                     <Button fx:id="triggerCreateBtn" mnemonicParsing="false" onAction="#createTrigger" text="Create Trigger" />
@@ -277,7 +320,7 @@
                         </AnchorPane>
                      </items>
                   </SplitPane>
-                  <SplitPane fx:id="actionPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0" visible="false">
+                  <SplitPane fx:id="actionPage" dividerPositions="0.6268731268731269" prefHeight="200.0" prefWidth="200.0">
                      <items>
                         <AnchorPane prefHeight="576.0" prefWidth="251.0">
                            <padding>
@@ -440,6 +483,22 @@
                                              <StackPane.margin>
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </StackPane.margin>
+                                          </AnchorPane>
+                                          <AnchorPane fx:id="CombinedActionValSel" prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <VBox prefHeight="161.33333333333334" prefWidth="206.0" spacing="10.0">
+                                                   <padding>
+                                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                   </padding>
+                                                   <children>
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the first Action" />
+                                                      <ChoiceBox fx:id="CombinedAction1" prefWidth="150.0" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Select the second Action" />
+                                                      <ChoiceBox fx:id="CombinedAction2" prefWidth="150.0" />
+                                                      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="*The first Action will be executed first" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
                                           </AnchorPane>
                                        </children>
                                     </StackPane>
