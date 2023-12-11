@@ -167,4 +167,54 @@ public class TriggerTest {
         FileSizeTrigger trigger = new FileSizeTrigger("test", file, 1000000);
         assertFalse(trigger.isEvaluable()); // Assuming the file exists and its size does not exceed 1000000 bytes
     }
+
+    //AND TRIGGER TESTS
+    @Test
+    public void andTriggerShouldEvaluateTrueWhenBothTriggersEvaluateTrue() {
+        Trigger trigger1 = new TimeOfDayTrigger("Test", LocalTime.now().getHour(), LocalTime.now().getMinute());
+        Trigger trigger2 = new DayOfMonthTrigger("Test", LocalDate.now().getDayOfMonth());
+        ANDTrigger trigger = new ANDTrigger("Test", trigger1, trigger2);
+        assertTrue(trigger.evaluate());
+    }
+
+    @Test
+    public void andTriggerShouldEvaluateFalseWhenOneTriggerEvaluatesFalse() {
+        Trigger trigger1 = new TimeOfDayTrigger("Test", LocalTime.now().getHour(), LocalTime.now().getMinute());
+        Trigger trigger2 = new DayOfMonthTrigger("Test", LocalDate.now().getDayOfMonth() + 1);
+        ANDTrigger trigger = new ANDTrigger("Test", trigger1, trigger2);
+        assertFalse(trigger.evaluate());
+    }
+
+    //OR TRIGGER TESTS
+    @Test
+    public void orTriggerShouldEvaluateTrueWhenOneTriggerEvaluatesTrue() {
+        Trigger trigger1 = new TimeOfDayTrigger("Test", LocalTime.now().getHour(), LocalTime.now().getMinute());
+        Trigger trigger2 = new DayOfMonthTrigger("Test", LocalDate.now().getDayOfMonth() + 1);
+        ORTrigger trigger = new ORTrigger("Test", trigger1, trigger2);
+        assertTrue(trigger.evaluate());
+    }
+
+    @Test
+    public void orTriggerShouldEvaluateFalseWhenBothTriggersEvaluateFalse() {
+        Trigger trigger1 = new TimeOfDayTrigger("Test", LocalTime.now().getHour(), LocalTime.now().getMinute());
+        Trigger trigger2 = new DayOfMonthTrigger("Test", LocalDate.now().getDayOfMonth() + 1);
+        ORTrigger trigger = new ORTrigger("Test", trigger1, trigger2);
+        assertFalse(trigger.evaluate());
+    }
+
+    //NOT TRIGGER TESTS
+    @Test
+    public void notTriggerShouldEvaluateTrueWhenTriggerEvaluatesFalse() {
+        Trigger trigger = new TimeOfDayTrigger("Test", LocalTime.now().getHour(), LocalTime.now().getMinute() + 1);
+        NOTTrigger notTrigger = new NOTTrigger("Test", trigger);
+        assertTrue(notTrigger.evaluate());
+    }
+
+    @Test
+    public void notTriggerShouldEvaluateFalseWhenTriggerEvaluatesTrue() {
+        Trigger trigger = new TimeOfDayTrigger("Test", LocalTime.now().getHour(), LocalTime.now().getMinute());
+        NOTTrigger notTrigger = new NOTTrigger("Test", trigger);
+        assertFalse(notTrigger.evaluate());
+    }
+
 }
