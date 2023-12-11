@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 public class ActionTest {
 
+    //MESSAGE BOX
     @Test
     public void execute_shouldReturnTrueForMessageBoxAction() {
         // Arrange
@@ -19,6 +20,7 @@ public class ActionTest {
         assertTrue(result);
     }
 
+    //AUDIO ACTION
     @Test
     public void execute_shouldReturnFalseForInvalidAudioAction() {
         // Arrange
@@ -43,6 +45,7 @@ public class ActionTest {
         assertTrue(result);
     }
 
+    //EXTERNAL PROGRAM
     @Test
     public void execute_shouldReturnFalseForInvalidExternalProgramAction() {
         // Arrange
@@ -67,6 +70,7 @@ public class ActionTest {
         assertTrue(result);
     }
 
+    //APPEND STRING TO FILE
     @Test
     public void execute_shouldReturnFalseForInvalidAppendStringToFileAction() {
         // Arrange
@@ -91,6 +95,7 @@ public class ActionTest {
         assertTrue(result);
     }
 
+    //DELETE FILE
     @Test
     public void execute_shouldReturnFalseForInvalidDeleteFileAction() {
         // Arrange
@@ -115,6 +120,7 @@ public class ActionTest {
         assertTrue(result);
     }
 
+    //PASTE FILE
     @Test
     public void execute_shouldReturnFalseForInvalidPasteFileAction() {
         // Arrange
@@ -131,6 +137,31 @@ public class ActionTest {
     public void execute_shouldReturnTrueForValidPasteFileAction() {
         // Arrange
         Action action = new PasteFileAction("Test", new File("existing.txt"), new File("destination.txt"));
+
+        // Act
+        boolean result = action.execute();
+
+        // Assert
+        assertTrue(result);
+    }
+
+    //MOVE FILE
+    @Test
+    public void execute_shouldReturnFalseForInvalidMoveFileAction() {
+        // Arrange
+        Action action = new MoveFileAction("Test", new File("nonexistent.txt"), new File("destination.txt"));
+
+        // Act
+        boolean result = action.execute();
+
+        // Assert
+        assertFalse(result);
+    }
+
+    @Test
+    public void execute_shouldReturnTrueForValidMoveFileAction() {
+        // Arrange
+        Action action = new MoveFileAction("Test", new File("existing.txt"), new File("destination.txt"));
 
         // Act
         boolean result = action.execute();
