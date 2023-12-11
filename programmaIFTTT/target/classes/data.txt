@@ -1,1 +1,1 @@
-{"rules":[],"triggers":[{"name":"12","type":"Time Of Day","value":"17:20"}],"actions":[{"filePath":"C:\\Users\\maxi\\Desktop\\test\\test 1\\test.txt","name":"move","type":"Move File","value":"File: test.txt/DestinationPath: C:\\Users\\maxi\\Desktop\\test\\test 2"},{"filePath":"C:\\Users\\maxi\\Desktop\\Dota 2.url","name":"paste","type":"Paste File","value":"File: Dota 2.url/DestinationPath: C:\\Users\\maxi\\Desktop\\test"}]}
+{"rules":[],"triggers":[],"actions":[]}

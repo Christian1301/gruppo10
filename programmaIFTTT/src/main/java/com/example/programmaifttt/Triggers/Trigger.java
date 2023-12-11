@@ -1,19 +1,35 @@
 package com.example.programmaifttt.Triggers;
 
+import com.example.programmaifttt.BackEnd.Rule;
+import com.example.programmaifttt.BackEnd.RuleController;
+import com.example.programmaifttt.Counter.CounterManager;
 import com.example.programmaifttt.Enums.DayOfWeekEnum;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.IOException;
 
 public abstract class Trigger {
 
     private String name;
     private String type;
     private String value;
+    private String filePath;
 
     // Constructor
     public Trigger(String name, String type,String value) {
         this.name = name;
         this.type = type;
         this.value = value;
+        this.filePath = null;
+    }
+
+    // Constructor
+    public Trigger(String name, String type,String value, String filePath) {
+        this.name = name;
+        this.type = type;
+        this.value = value;
+        this.filePath = filePath;
     }
 
     // Get the name of the trigger
@@ -59,6 +75,10 @@ public abstract class Trigger {
         jsonObject.put("name", name);
         jsonObject.put("type", type);
         jsonObject.put("value", value);
+        switch (type) {
+            case FileSizeTrigger.type, ExternalProgramTrigger.type, FileExistenceTrigger.type ->
+                jsonObject.put("filePath", filePath);
+        }
         return jsonObject;
     }
 
@@ -69,21 +89,96 @@ public abstract class Trigger {
         String value = jsonObject.getString("value");
         switch (type) {
             case TimeOfDayTrigger.type -> {
-                String[] time = value.split(":");
+                String[] time = value.split(": ");
                 int hours = Integer.parseInt(time[0]);
                 int minutes = Integer.parseInt(time[1]);
                 return new TimeOfDayTrigger(name, hours, minutes);
             }
             case DayOfMonthTrigger.type -> {
-                int day = Integer.parseInt(value.split(":")[1]);
+                int day = Integer.parseInt(value.split(": ")[1]);
                 return new DayOfMonthTrigger(name, day);
             }
             case DayOfWeekTrigger.type -> {
-                return new DayOfWeekTrigger(name, DayOfWeekEnum.valueOf(value.split(":")[1]));
+                return new DayOfWeekTrigger(name, DayOfWeekEnum.valueOf(value.split(": ")[1]));
+            }
+            case FileExistenceTrigger.type -> {
+                File file = new File (jsonObject.getString("filePath"));
+                return new FileExistenceTrigger(name, file);
+            }
+            case FileSizeTrigger.type -> {
+                File file = new File (jsonObject.getString("filePath"));
+                long sizeThreshold = Long.parseLong(value.split("/")[1].split(": ")[1]);
+                return new FileSizeTrigger(name, file, sizeThreshold);
+            }
+            case ExternalProgramTrigger.type -> {
+                File file = new File (jsonObject.getString("filePath"));
+                String commandLineArguments = value.split("/")[1].split(": ")[1];
+                int exitCode = Integer.parseInt(value.split("/")[2].split(": ")[1]);
+                return new ExternalProgramTrigger(name, file, commandLineArguments, exitCode);
+            }
+            case CounterValueTrigger.type -> {
+                CounterManager counterManager = new CounterManager();
+                String counterName = value.split("/")[0].split(": ")[1];
+                int currentValue = Integer.parseInt(value.split("/")[1]);
+                String comparisonOperator = value.split("/")[2];
+                int comparisonValue = Integer.parseInt(value.split("/")[3]);
+                counterManager.createCounter(counterName, currentValue);
+                return new CounterValueTrigger(name, counterManager, counterName, comparisonOperator, comparisonValue);
+            }
+            case CounterToCounterTrigger.type -> {
+                CounterManager counterManager = new CounterManager();
+                String sourceCounterName = value.split("/")[0].split(": ")[1];
+                int sourceCounterValue = Integer.parseInt(value.split("/")[1]);
+                String comparisonOperator = value.split("/")[2];
+                String targetCounterName = value.split("/")[3].split(": ")[1];
+                int targetCounterValue = Integer.parseInt(value.split("/")[4]);
+                counterManager.createCounter(sourceCounterName, sourceCounterValue);
+                counterManager.createCounter(targetCounterName, targetCounterValue);
+                return new CounterToCounterTrigger(name, counterManager, sourceCounterName, comparisonOperator, targetCounterName);
+            }
+            case ANDTrigger.type -> {
+                //extract the name of the triggers and then get the triggers from the ruleController
+                String trigger1Name = value.split(" AND ")[0];
+                String trigger2Name = value.split(" AND ")[1];
+
+                return new ANDTrigger(name, trigger1Name, trigger2Name);
+            }
+            case ORTrigger.type -> {
+                String trigger1Name = value.split(" OR ")[0];
+                String trigger2Name = value.split(" OR ")[1];
+
+                return new ORTrigger(name, trigger1Name, trigger2Name);
+            }
+            case NOTTrigger.type -> {
+                String triggerName = value.split("NOT ")[1];
+                return new NOTTrigger(name, triggerName);
             }
         }
         return null;
     }
 
-    public abstract boolean isEvaluable();
+    public abstract boolean isEvaluable() throws IOException;
+
+    //function to check if a trigger is used in another trigger
+    public boolean isUsedIn() {
+        boolean result = false;
+        for (Trigger trigger : RuleController.getInstance().getTriggers()) {
+            if (!trigger.equals(this)) {
+                if (trigger instanceof ANDTrigger) {
+                    ANDTrigger andTrigger = (ANDTrigger) trigger;
+                    result = andTrigger.checkIfUsed(this);
+
+                } else if (trigger instanceof ORTrigger) {
+                    ORTrigger orTrigger = (ORTrigger) trigger;
+                    result = orTrigger.checkIfUsed(this);
+
+                } else if (trigger instanceof NOTTrigger) {
+                    NOTTrigger notTrigger = (NOTTrigger) trigger;
+                    result = notTrigger.checkIfUsed(this);
+
+                }
+            }
+        }
+        return result;
+    }
 }

@@ -22,7 +22,7 @@ public class IFTTTApplication extends Application {
 
         iftttController = fxmlLoader.getController();
         stage.setOnCloseRequest((event) -> {
-            Data dataToSave = new Data(iftttController.getRuleController());
+            Data dataToSave = new Data();
             dataToSave.saveDatas("data.txt");
         });
     }

@@ -16,9 +16,9 @@ public class Scheduler implements RuleControllerObserver {
 
     private IFTTTController iftttController;
 
-    public Scheduler(int interval, RuleController ruleController, IFTTTController IFTTTController) {
+    public Scheduler(int interval, IFTTTController IFTTTController) {
         this.interval = interval;
-        this.ruleController = ruleController;
+        this.ruleController = RuleController.getInstance();
         this.iftttController = IFTTTController;
     }
 

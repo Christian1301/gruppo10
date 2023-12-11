@@ -10,8 +10,12 @@ public class DayOfWeekTrigger extends Trigger {
 
     // Constructor
     public DayOfWeekTrigger(String name, DayOfWeekEnum dayOfWeek) {
-        super(name, type, "Day " + dayOfWeek.getDay());
+        super(name, type, "Day: " + dayOfWeek.getDay());
         this.day = dayOfWeek.getDay();
+    }
+
+    public String getDay() {
+        return day;
     }
 
     @Override
@@ -19,7 +23,7 @@ public class DayOfWeekTrigger extends Trigger {
         // Get the current day of the week
         DayOfWeek currentDayOfWeek = LocalDate.now().getDayOfWeek();
         // Check if the current day of the week matches the trigger day of the week
-        return currentDayOfWeek.toString().equalsIgnoreCase(getValue());
+        return currentDayOfWeek.toString().equalsIgnoreCase(getDay());
     }
 
     @Override

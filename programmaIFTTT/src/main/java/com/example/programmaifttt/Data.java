@@ -16,12 +16,9 @@ public class Data {
 
     // Constructor
     public Data() {
-        this.ruleController = new RuleController();
+        this.ruleController = RuleController.getInstance();
     }
 
-    public Data(RuleController ruleController) {
-        this.ruleController = ruleController;
-    }
 
     // Getters
     public RuleController getRuleController() {
@@ -34,7 +31,7 @@ public class Data {
     }
 
 
-    //take the rulecontroller and put it in the data the rules, the triggers and the actions
+    //take the ruleController and put it in the data the rules, the triggers and the actions
     public JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
         JSONArray rules = new JSONArray();

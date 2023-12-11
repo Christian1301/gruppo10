@@ -9,7 +9,7 @@ public class TimeOfDayTrigger extends Trigger {
 
     // Constructor
     public TimeOfDayTrigger(String name, int hours, int minutes) {
-        super(name, type, hours + ":" + minutes);
+        super(name, type, hours + ": " + minutes);
         this.hours = hours;
         this.minutes = minutes;
     }
